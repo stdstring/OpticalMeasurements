@@ -6,7 +6,8 @@ CONFIG += staticlib
 
 SOURCES +=
 
-HEADERS +=
+HEADERS += \
+    ITransport.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
