@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    src/CommonLib
+    src/CommonLib \
+    src/MainApp
