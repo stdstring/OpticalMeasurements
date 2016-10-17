@@ -8,7 +8,8 @@ SOURCES +=
 
 HEADERS += \
     ITransport.h \
-    ICalculator.h
+    ICalculator.h \
+    Message.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
