@@ -2,7 +2,8 @@
 
 #include <QtPlugin>
 
-#include "Message.h"
+#include "ControlMessage.h"
+#include "DataMessage.h"
 
 namespace CalcApp
 {
@@ -10,9 +11,16 @@ namespace CalcApp
 class ITransport
 {
 public:
-    virtual Message ProcessControlCmd(Message const &request) = 0;
+    // exchange
+    virtual ControlMessage ProcessControlCmd(ControlMessage const &request) = 0;
+    // events
+    // TODO (std_string) : think about signals/slots for events
+    virtual bool HasEvents() const = 0;
+    virtual ControlMessage RetrieveEvent() = 0;
+    // data
+    // TODO (std_string) : think about signals/slots for data
     virtual bool HasData() const = 0;
-    virtual Message RetrieveData() = 0;
+    virtual DataMessage RetrieveData() = 0;
     virtual ~ITransport() { /* do nothing */ }
 };
 

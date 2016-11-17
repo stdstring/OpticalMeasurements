@@ -6,10 +6,10 @@ CONFIG += staticlib
 
 SOURCES +=
 
-HEADERS += \
-    ITransport.h \
-    ICalculator.h \
-    Message.h
+HEADERS += ITransport.h \
+           ICalculator.h \
+           DataMessage.h \
+           ControlMessage.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
