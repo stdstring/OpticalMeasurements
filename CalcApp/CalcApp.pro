@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     src/CommonLib \
-    src/MainApp
+    src/MainApp \
+    src/SimpleFakeTransport
