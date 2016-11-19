@@ -8,17 +8,19 @@ namespace CalcApp
 class ControlMessage
 {
 public:
-    ControlMessage(QByteArray &&data) : _data(data) {}
+    ControlMessage() {}
+    explicit ControlMessage(QByteArray &data) : _data(data) {}
+    explicit ControlMessage(QByteArray &&data) : _data(data) {}
     QByteArray const& GetData() const { return _data; }
 
-    ControlMessage() = delete;
+    /*ControlMessage() = delete;
     ControlMessage(ControlMessage const&) = delete;
     ControlMessage(ControlMessage&&) = delete;
     ControlMessage& operator=(ControlMessage const&) = delete;
-    ControlMessage& operator=(ControlMessage&&) = delete;
+    ControlMessage& operator=(ControlMessage&&) = delete;*/
 
 private:
-    QByteArray &_data;
+    QByteArray _data;
 };
 
 }
