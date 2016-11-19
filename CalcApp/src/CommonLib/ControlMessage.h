@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef>
+#include <QByteArray>
 
 namespace CalcApp
 {
@@ -8,9 +8,8 @@ namespace CalcApp
 class ControlMessage
 {
 public:
-    ControlMessage(size_t size, unsigned char* buffer) : _size(size), _buffer(buffer) {}
-    size_t GetSize() const { return _size; }
-    unsigned char* GetBuffer() const { return _buffer; }
+    ControlMessage(QByteArray &&data) : _data(data) {}
+    QByteArray const& GetData() const { return _data; }
 
     ControlMessage() = delete;
     ControlMessage(ControlMessage const&) = delete;
@@ -19,8 +18,7 @@ public:
     ControlMessage& operator=(ControlMessage&&) = delete;
 
 private:
-    size_t _size;
-    unsigned char *_buffer;
+    QByteArray &_data;
 };
 
 }
