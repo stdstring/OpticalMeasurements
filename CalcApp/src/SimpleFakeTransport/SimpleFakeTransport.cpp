@@ -5,6 +5,8 @@
 #include <string>
 
 #include "../CommonLib/ITransport.h"
+#include "../CommonLib/Message.h"
+#include "../CommonLib/MessageType.h"
 #include "SimpleFakeTransport.h"
 
 namespace CalcApp

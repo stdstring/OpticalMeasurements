@@ -5,6 +5,7 @@
 #include <QtPlugin>
 
 #include "../CommonLib/ITransport.h"
+#include "../CommonLib/Message.h"
 
 namespace CalcApp
 {

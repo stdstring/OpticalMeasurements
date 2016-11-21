@@ -15,6 +15,8 @@ CONFIG += plugin c++11
 SOURCES += SimpleFakeTransport.cpp
 
 HEADERS += ..\CommonLib\ITransport.h \
+           ..\CommonLib\Message.h \
+           ..\CommonLib\MessageType.h \
            SimpleFakeTransport.h
 
 DISTFILES += SimpleFakeTransport.json
