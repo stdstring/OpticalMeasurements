@@ -4,8 +4,6 @@
 #include <QVector>
 #include <QtPlugin>
 
-#include "../CommonLib/ControlMessage.h"
-#include "../CommonLib/DataMessage.h"
 #include "../CommonLib/ITransport.h"
 
 namespace CalcApp
@@ -17,8 +15,7 @@ class SimpleFakeTransportState
 {
 public:
     StateId State;
-    QVector<DataMessage> DataStorage;
-    QVector<ControlMessage> EventStorage;
+    QVector<Message> InputStorage;
 };
 
 class SimpleFakeTransport : public QObject, public ITransport
@@ -29,16 +26,12 @@ class SimpleFakeTransport : public QObject, public ITransport
 public:
     explicit SimpleFakeTransport(QObject *parent = 0);
 
-    // exchange
-    virtual ControlMessage ProcessControlCmd(ControlMessage const &request) override;
-    // events
+    // request-response exchange
+    virtual Message ProcessControlCmd(Message const &request) override;
+    // retrieve data/events
     // TODO (std_string) : think about signals/slots for events
-    virtual bool HasEvents() const override;
-    virtual ControlMessage RetrieveEvent() override;
-    // data
-    // TODO (std_string) : think about signals/slots for data
-    virtual bool HasData() const override;
-    virtual DataMessage RetrieveData() override;
+    virtual bool HasInput() const override;
+    virtual Message RetrieveInput() override;
 
 private:
     // TODO (std_string) : use State Machine Framework instead of this in future

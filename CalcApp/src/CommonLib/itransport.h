@@ -1,26 +1,42 @@
 #pragma once
 
+#include <QByteArray>
 #include <QtPlugin>
-
-#include "ControlMessage.h"
-#include "DataMessage.h"
 
 namespace CalcApp
 {
 
+enum MessageType { REQUEST, RESPONSE, DATA, EVENT };
+
+class Message
+{
+public:
+    Message() {}
+    Message(MessageType type, QByteArray const &data) : _type(type), _data(data) {}
+    Message(MessageType type, QByteArray &&data) : _type(type), _data(data) {}
+    MessageType GetType() const { return _type; }
+    QByteArray const& GetData() const { return _data; }
+
+    //Message() = delete;
+    //Message(Message const&) = delete;
+    //Message(Message&&) = delete;
+    //Message& operator=(Message const&) = delete;
+    //Message& operator=(Message&&) = delete;
+
+private:
+    MessageType _type;
+    QByteArray _data;
+};
+
 class ITransport
 {
 public:
-    // exchange
-    virtual ControlMessage ProcessControlCmd(ControlMessage const &request) = 0;
-    // events
+    // request-response exchange
+    virtual Message ProcessControlCmd(Message const &request) = 0;
+    // retrieve data/events
     // TODO (std_string) : think about signals/slots for events
-    virtual bool HasEvents() const = 0;
-    virtual ControlMessage RetrieveEvent() = 0;
-    // data
-    // TODO (std_string) : think about signals/slots for data
-    virtual bool HasData() const = 0;
-    virtual DataMessage RetrieveData() = 0;
+    virtual bool HasInput() const = 0;
+    virtual Message RetrieveInput() = 0;
     virtual ~ITransport() { /* do nothing */ }
 };
 

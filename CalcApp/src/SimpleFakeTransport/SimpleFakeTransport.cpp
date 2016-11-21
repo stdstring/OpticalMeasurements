@@ -4,8 +4,7 @@
 #include <exception>
 #include <string>
 
-#include "../CommonLib/ControlMessage.h"
-#include "../CommonLib/DataMessage.h"
+#include "../CommonLib/ITransport.h"
 #include "SimpleFakeTransport.h"
 
 namespace CalcApp
@@ -18,80 +17,64 @@ const char *RunResponse = "RUN-RESPONSE-OK";
 const char *RunStopEvent = "RUN-STOP";
 const char *UnknownCommandResponse = "UNKNOWN-COMMAND";
 
-void FillDataMessages(QVector<DataMessage> &dest)
+void FillDataMessages(QVector<Message> &dest)
 {
-    dest.push_back(DataMessage(1, QByteArray("data portion 1")));
-    dest.push_back(DataMessage(2, QByteArray("data portion 13")));
-    dest.push_back(DataMessage(3, QByteArray("data portion 666")));
-    dest.push_back(DataMessage(4, QByteArray("data portion 13*666")));
+    dest.push_back(Message(MessageType::DATA, QByteArray("data portion 1")));
+    dest.push_back(Message(MessageType::DATA, QByteArray("data portion 13")));
+    dest.push_back(Message(MessageType::DATA, QByteArray("data portion 666")));
+    dest.push_back(Message(MessageType::DATA, QByteArray("data portion 13*666")));
 }
 
-void FillEvents(QVector<ControlMessage> &dest)
+void FillEventMessages(QVector<Message> &dest)
 {
-    dest.push_back(ControlMessage(RunStopEvent));
+    dest.push_back(Message(MessageType::EVENT, RunStopEvent));
 }
 
 SimpleFakeTransport::SimpleFakeTransport(QObject *parent) : QObject(parent)
 {
     _state.State = StateId::START;
-    _state.DataStorage.clear();
-    _state.EventStorage.clear();
 }
 
-ControlMessage SimpleFakeTransport::ProcessControlCmd(ControlMessage const &request)
+Message SimpleFakeTransport::ProcessControlCmd(Message const &request)
 {
     std::string requestData = request.GetData().toStdString();
     if (_state.State == StateId::START && requestData == CalibrationRequest)
     {
         _state.State = StateId::CALIBRATION;
-        return ControlMessage(QByteArray(CalibrationResponse));
+        return Message(MessageType::RESPONSE, QByteArray(CalibrationResponse));
     }
     if (_state.State == StateId::CALIBRATION && requestData == RunRequest)
     {
         _state.State = StateId::RUN;
-        FillDataMessages(_state.DataStorage);
-        return ControlMessage(QByteArray(RunResponse));
+        FillDataMessages(_state.InputStorage);
+        return Message(MessageType::RESPONSE, QByteArray(RunResponse));
     }
-    return ControlMessage(QByteArray(UnknownCommandResponse));
+    return Message(MessageType::RESPONSE, QByteArray(UnknownCommandResponse));
 }
 
-bool SimpleFakeTransport::HasEvents() const
+bool SimpleFakeTransport::HasInput() const
 {
-    return _state.State == StateId::STOP && !_state.EventStorage.empty();
+    return !_state.InputStorage.empty();
 }
 
-ControlMessage SimpleFakeTransport::RetrieveEvent()
+Message SimpleFakeTransport::RetrieveInput()
 {
-    if (HasEvents())
+    if (HasInput())
     {
-        ControlMessage message = _state.EventStorage.first();
-        _state.EventStorage.pop_front();
-        if (_state.EventStorage.empty())
-            _state.State = StateId::START;
-        return message;
-    }
-    throw std::logic_error("not implemented");
-}
-
-bool SimpleFakeTransport::HasData() const
-{
-    return _state.State == StateId::RUN && !_state.DataStorage.empty();
-}
-
-DataMessage SimpleFakeTransport::RetrieveData()
-{
-    if (HasData())
-    {
-        DataMessage message = _state.DataStorage.first();
-        _state.DataStorage.pop_front();
-        if (_state.DataStorage.empty())
+        Message message = _state.InputStorage.first();
+        _state.InputStorage.pop_front();
+        if (_state.State == StateId::RUN && _state.InputStorage.empty())
         {
             _state.State = StateId::STOP;
-            FillEvents(_state.EventStorage);
+            FillEventMessages(_state.InputStorage);
+        }
+        if (_state.State == StateId::STOP && _state.InputStorage.empty())
+        {
+            _state.State = StateId::START;
         }
         return message;
     }
-    throw std::logic_error("not implemented");
+    throw std::logic_error("invalid state");
 }
 
 }
