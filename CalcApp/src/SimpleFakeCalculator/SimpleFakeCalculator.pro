@@ -12,10 +12,12 @@ CONFIG += plugin c++11
 
 #DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
-SOURCES += SimpleFakeCalculator.cpp
+SOURCES += SimpleFakeCalculator.cpp \
+           CalculatorWidget.cpp
 
-HEADERS += SimpleFakeCalculator.h \
-           ..\CommonLib\ICalculator.h
+HEADERS += ..\CommonLib\ICalculator.h \
+           SimpleFakeCalculator.h \
+           CalculatorWidget.h
 
 
 DISTFILES += SimpleFakeCalculator.json
@@ -24,3 +26,5 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+FORMS += CalculatorWidget.ui
