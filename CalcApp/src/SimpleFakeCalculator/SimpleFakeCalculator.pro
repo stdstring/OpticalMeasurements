@@ -16,6 +16,9 @@ SOURCES += SimpleFakeCalculator.cpp \
            CalculatorWidget.cpp
 
 HEADERS += ..\CommonLib\ICalculator.h \
+           ..\CommonLib\ITransport.h \
+           ..\CommonLib\Message.h \
+           ..\CommonLib\MessageType.h \
            SimpleFakeCalculator.h \
            CalculatorWidget.h
 

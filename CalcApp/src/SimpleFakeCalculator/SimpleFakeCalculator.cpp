@@ -1,12 +1,13 @@
 #include <QObject>
 #include <QWidget>
 
+#include "../CommonLib/ITransport.h"
 #include "SimpleFakeCalculator.h"
 
 namespace CalcApp
 {
 
-SimpleFakeCalculator::SimpleFakeCalculator(QObject *parent) : QObject(parent)
+SimpleFakeCalculator::SimpleFakeCalculator(QObject *parent, ITransport *transport) : QObject(parent)
 {
 }
 
