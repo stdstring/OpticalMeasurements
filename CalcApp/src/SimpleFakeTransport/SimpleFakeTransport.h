@@ -2,7 +2,7 @@
 
 #include <QObject>
 #include <QVector>
-#include <QtPlugin>
+//#include <QtPlugin>
 
 #include "../CommonLib/ITransport.h"
 #include "../CommonLib/Message.h"
@@ -21,9 +21,9 @@ public:
 
 class SimpleFakeTransport : public QObject, public ITransport
 {
-    Q_OBJECT
-    Q_INTERFACES(CalcApp::ITransport)
-    Q_PLUGIN_METADATA(IID "com.stdstring.CalcApp.ITransport" FILE "SimpleFakeTransport.json")
+    //Q_OBJECT
+    //Q_INTERFACES(CalcApp::ITransport)
+    //Q_PLUGIN_METADATA(IID "com.stdstring.CalcApp.ITransport" FILE "SimpleFakeTransport.json")
 public:
     explicit SimpleFakeTransport(QObject *parent = 0);
 
