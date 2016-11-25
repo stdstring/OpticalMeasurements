@@ -23,7 +23,8 @@ HEADERS += ..\CommonLib\ITransport.h \
            SimpleFakeTransport.h \
            SimpleFakeTransportFactory.h
 
-DISTFILES += SimpleFakeTransport.json
+DISTFILES += \
+    SimpleFakeTransportFactory.json
 
 unix {
     target.path = /usr/lib

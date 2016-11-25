@@ -26,7 +26,8 @@ HEADERS += ..\CommonLib\ICalculator.h \
            SimpleFakeCalculatorFactory.h
 
 
-DISTFILES += SimpleFakeCalculator.json
+DISTFILES += \
+    SimpleFakeCalculatorFactory.json
 
 unix {
     target.path = /usr/lib
