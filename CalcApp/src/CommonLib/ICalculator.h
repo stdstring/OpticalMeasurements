@@ -1,6 +1,5 @@
 #pragma once
 
-//#include <QtPlugin>
 #include <QWidget>
 
 namespace CalcApp
@@ -14,5 +13,3 @@ public:
 };
 
 }
-
-//Q_DECLARE_INTERFACE(CalcApp::ICalculator, "com.stdstring.CalcApp.ICalculator")

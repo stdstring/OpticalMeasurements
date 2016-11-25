@@ -12,12 +12,16 @@ CONFIG += plugin c++11
 
 #DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
-SOURCES += SimpleFakeTransport.cpp
+SOURCES += SimpleFakeTransport.cpp \
+           SimpleFakeTransportFactory.cpp
 
 HEADERS += ..\CommonLib\ITransport.h \
+           ..\CommonLib\ITransportFactory.h \
            ..\CommonLib\Message.h \
            ..\CommonLib\MessageType.h \
-           SimpleFakeTransport.h
+           ..\CommonLib\TransportConfig.h \
+           SimpleFakeTransport.h \
+           SimpleFakeTransportFactory.h
 
 DISTFILES += SimpleFakeTransport.json
 

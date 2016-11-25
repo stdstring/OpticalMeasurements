@@ -1,7 +1,5 @@
 #pragma once
 
-//#include <QtPlugin>
-
 #include "Message.h"
 #include "MessageType.h"
 
@@ -21,5 +19,3 @@ public:
 };
 
 }
-
-//Q_DECLARE_INTERFACE(CalcApp::ITransport, "com.stdstring.CalcApp.ITransport")
