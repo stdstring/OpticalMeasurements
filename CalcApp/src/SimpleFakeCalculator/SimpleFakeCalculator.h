@@ -9,10 +9,10 @@
 namespace CalcApp
 {
 
-class SimpleFakeCalculator : public QObject, ICalculator
+class SimpleFakeCalculator : public QObject, public ICalculator
 {
 public:
-    explicit SimpleFakeCalculator(QObject *parent, ITransport *transport);
+    SimpleFakeCalculator(ITransport *transport, QObject *parent);
 
     virtual QWidget* CreateCalculatorWidget(QWidget *parent) override;
 };

@@ -32,7 +32,7 @@ void FillEventMessages(QVector<Message> &dest)
     dest.push_back(Message(MessageType::EVENT, RunStopEvent));
 }
 
-SimpleFakeTransport::SimpleFakeTransport(QObject *parent) : QObject(parent)
+SimpleFakeTransport::SimpleFakeTransport(const TransportConfig &config, QObject *parent) : QObject(parent)
 {
     _state.State = StateId::START;
 }

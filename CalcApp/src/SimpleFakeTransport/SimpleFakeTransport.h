@@ -5,6 +5,7 @@
 
 #include "../CommonLib/ITransport.h"
 #include "../CommonLib/Message.h"
+#include "../CommonLib/TransportConfig.h"
 
 namespace CalcApp
 {
@@ -21,7 +22,7 @@ public:
 class SimpleFakeTransport : public QObject, public ITransport
 {
 public:
-    explicit SimpleFakeTransport(QObject *parent = 0);
+    explicit SimpleFakeTransport(TransportConfig const& config, QObject *parent = 0);
 
     // request-response exchange
     virtual Message ProcessControlCmd(Message const &request) override;

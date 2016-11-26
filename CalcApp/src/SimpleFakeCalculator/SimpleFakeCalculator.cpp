@@ -7,7 +7,7 @@
 namespace CalcApp
 {
 
-SimpleFakeCalculator::SimpleFakeCalculator(QObject *parent, ITransport *transport) : QObject(parent)
+SimpleFakeCalculator::SimpleFakeCalculator(ITransport *transport, QObject *parent) : QObject(parent)
 {
 }
 
