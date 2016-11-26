@@ -15,6 +15,9 @@ public:
     SimpleFakeCalculator(ITransport *transport, QObject *parent);
 
     virtual QWidget* CreateCalculatorWidget(QWidget *parent) override;
+
+private:
+    ITransport *_transport;
 };
 
 }

@@ -1,7 +1,8 @@
-#ifndef CALCULATORWIDGET_H
-#define CALCULATORWIDGET_H
+#pragma once
 
 #include <QWidget>
+
+#include "../CommonLib/ITransport.h"
 
 namespace Ui
 {
@@ -13,11 +14,13 @@ class CalculatorWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit CalculatorWidget(QWidget *parent = 0);
+    CalculatorWidget(CalcApp::ITransport *transport, QWidget *parent);
     ~CalculatorWidget();
+
+private slots:
+    void RunHandler();
 
 private:
     Ui::CalculatorWidget *ui;
+    CalcApp::ITransport *_transport;
 };
-
-#endif // CALCULATORWIDGET_H
