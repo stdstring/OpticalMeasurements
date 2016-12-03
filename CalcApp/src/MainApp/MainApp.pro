@@ -15,10 +15,12 @@ CONFIG += c++11
 
 SOURCES += main.cpp\
            MainWindow.cpp \
-           SimpleConfigFactory.cpp
+           SimpleConfigFactory.cpp \
+           ComponentLoader.cpp
 
 HEADERS  += MainWindow.h \
             MainAppConfig.h \
-            SimpleConfigFactory.h
+            SimpleConfigFactory.h \
+            ComponentLoader.h
 
 FORMS    += MainWindow.ui
