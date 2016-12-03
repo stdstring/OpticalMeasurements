@@ -11,11 +11,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = MainApp
 TEMPLATE = app
 
+CONFIG += c++11
 
 SOURCES += main.cpp\
-           MainWindow.cpp
+           MainWindow.cpp \
+           SimpleConfigFactory.cpp
 
 HEADERS  += MainWindow.h \
-            MainAppConfig.h
+            MainAppConfig.h \
+            SimpleConfigFactory.h
 
 FORMS    += MainWindow.ui

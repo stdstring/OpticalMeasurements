@@ -18,10 +18,10 @@ public:
     QString const& GetCalculatorLocation() const { return _calculatorLocation; }
 
     MainAppConfig() = delete;
-    MainAppConfig(MainAppConfig const&) = delete;
-    MainAppConfig(MainAppConfig&&) = delete;
-    MainAppConfig& operator=(MainAppConfig const&) = delete;
-    MainAppConfig& operator=(MainAppConfig&&) = delete;
+    //MainAppConfig(MainAppConfig const&) = delete;
+    //MainAppConfig(MainAppConfig&&) = delete;
+    //MainAppConfig& operator=(MainAppConfig const&) = delete;
+    //MainAppConfig& operator=(MainAppConfig&&) = delete;
 
 private:
     QString _transportLocation;
