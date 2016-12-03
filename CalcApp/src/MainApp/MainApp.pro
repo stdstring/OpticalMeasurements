@@ -18,7 +18,12 @@ SOURCES += main.cpp\
            SimpleConfigFactory.cpp \
            ComponentLoader.cpp
 
-HEADERS  += MainWindow.h \
+HEADERS  += ..\CommonLib\ICalculatorFactory.h \
+            ..\CommonLib\ICalculator.h \
+            ..\CommonLib\ITransportFactory.h \
+            ..\CommonLib\ITransport.h \
+            ..\CommonLib\TransportConfig.h \
+            MainWindow.h \
             MainAppConfig.h \
             SimpleConfigFactory.h \
             ComponentLoader.h

@@ -10,9 +10,9 @@ HEADERS += ITransport.h \
            ICalculator.h \
            MessageType.h \
            Message.h \
-    TransportConfig.h \
-    ITransportFactory.h \
-    ICalculatorFactory.h
+           TransportConfig.h \
+           ITransportFactory.h \
+           ICalculatorFactory.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

@@ -17,8 +17,8 @@ CalculatorWidget::CalculatorWidget(CalcApp::ITransport *transport, QWidget *pare
     ui(new Ui::CalculatorWidget),
     _transport(transport)
 {
-    QObject::connect(ui->RunButton, &QPushButton::clicked, this, &CalculatorWidget::RunHandler);
     ui->setupUi(this);
+    QObject::connect(ui->RunButton, &QPushButton::clicked, this, &CalculatorWidget::RunHandler);
 }
 
 CalculatorWidget::~CalculatorWidget()
