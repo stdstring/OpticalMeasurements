@@ -1,7 +1,9 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
+#include <QAbstractSocket>
 #include <QMainWindow>
+#include <QTcpServer>
+#include <QTcpSocket>
 
 namespace Ui {
 class MainWindow;
@@ -16,7 +18,17 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-};
+    Ui::MainWindow *_ui;
+    QTcpServer *_server;
+    QTcpSocket *_serverSocket;
+    QTcpSocket *_clientSocket;
 
-#endif // MAINWINDOW_H
+private slots:
+    void SendEventButtonClick();
+    void SendRequestButtonClick();
+    void ClientConnected();
+    void ClientRead();
+    void ClientDisconnected();
+    void ConnectedToServer();
+    void Error(QAbstractSocket::SocketError socketError);
+};
