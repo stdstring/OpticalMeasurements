@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     _ui->setupUi(this);
     QObject::connect(_ui->SendRequestButton, &QPushButton::clicked, this, &MainWindow::SendRequestButtonClick);
-    QObject::connect(_ui->SendEventButton, &QPushButton::clicked, this, &MainWindow::SendEventButtonClick);
+    QObject::connect(_ui->SendFromServerButton, &QPushButton::clicked, this, &MainWindow::SendEventButtonClick);
     // server listen
     _server = new QTcpServer(this);
     if (!_server->listen(QHostAddress::Any, PortNumber))

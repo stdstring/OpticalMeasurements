@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -57,6 +57,16 @@
         <widget class="QListWidget" name="RequestsList"/>
        </item>
        <item>
+        <widget class="QLabel" name="DataLabel">
+         <property name="text">
+          <string>Data</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="DataInput"/>
+       </item>
+       <item>
         <widget class="QLabel" name="EventLabel">
          <property name="text">
           <string>Event</string>
@@ -67,9 +77,9 @@
         <widget class="QLineEdit" name="EventInput"/>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="SendEventButtonlLayout">
+        <layout class="QHBoxLayout" name="SendFromServerlLayout">
          <item>
-          <spacer name="SendEventButtonLeftSpacer">
+          <spacer name="SendFromServerLeftSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -82,14 +92,14 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="SendEventButton">
+          <widget class="QPushButton" name="SendFromServerButton">
            <property name="text">
-            <string>Send event</string>
+            <string>Send</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="SendEventButtonRightSpacer">
+          <spacer name="SendFromServerRightSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
