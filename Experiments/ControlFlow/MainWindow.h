@@ -9,6 +9,8 @@ namespace Ui {
 class MainWindow;
 }
 
+enum ClientState { WAIT_EVENTS, WAIT_RESPONSE };
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -22,13 +24,13 @@ private:
     QTcpServer *_server;
     QTcpSocket *_serverSocket;
     QTcpSocket *_clientSocket;
+    ClientState _clientState;
 
 private slots:
     void SendEventButtonClick();
     void SendRequestButtonClick();
     void ClientConnected();
-    void ClientRead();
+    void ReadFromClient();
     void ClientDisconnected();
-    void ConnectedToServer();
-    void Error(QAbstractSocket::SocketError socketError);
+    void ReadFromServer();
 };
