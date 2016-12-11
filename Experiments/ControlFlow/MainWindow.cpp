@@ -15,10 +15,11 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
-const quint16 PortNumber = 6666;
+const quint16 TcpPortNumber = 6666;
+const quint16 UdpPortNumber = 7777;
 const char *HostName = "localhost";
 
-void SendData(QTcpSocket *socket, QString const &data)
+void SendTcpData(QTcpSocket *socket, QString const &data)
 {
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
@@ -29,7 +30,7 @@ void SendData(QTcpSocket *socket, QString const &data)
 }
 
 // TODO (std_string) : not suitable for real world
-QString ReadData(QTcpSocket *socket)
+QString ReadTcpData(QTcpSocket *socket)
 {
     QDataStream input(socket);
     quint16 size = 0;
@@ -41,28 +42,60 @@ QString ReadData(QTcpSocket *socket)
     return data;
 }
 
+void SendUdpData(QUdpSocket *socket, QString const &data)
+{
+    QByteArray buffer;
+    QDataStream output(&buffer, QIODevice::WriteOnly);
+    output.setVersion(QDataStream::Qt_5_5);
+    output << static_cast<quint16>(data.size());
+    output << data;
+    socket->writeDatagram(buffer, QHostAddress::LocalHost, UdpPortNumber);
+}
+
+// TODO (std_string) : not suitable for real world
+QString ReadUdpData(QUdpSocket *socket)
+{
+    QByteArray buffer;
+    buffer.resize(socket->pendingDatagramSize());
+    socket->readDatagram(buffer.data(), buffer.size());
+    QDataStream input(&buffer, QIODevice::ReadOnly);
+    quint16 size = 0;
+    input >> size;
+    QString data;
+    input >> data;
+    return data;
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
     _server(nullptr),
-    _serverSocket(nullptr),
-    _clientSocket(nullptr),
-    _clientState(ClientState::WAIT_EVENTS)
+    _serverTcpSocket(nullptr),
+    _clientTcpSocket(nullptr),
+    _clientState(ClientState::WAIT_EVENTS),
+    _serverUdpSocket(nullptr),
+    _clientUdpSocket(nullptr)
 {
     _ui->setupUi(this);
     QObject::connect(_ui->SendRequestButton, &QPushButton::clicked, this, &MainWindow::SendRequestButtonClick);
     QObject::connect(_ui->SendFromServerButton, &QPushButton::clicked, this, &MainWindow::SendEventButtonClick);
     // server listen
     _server = new QTcpServer(this);
-    if (!_server->listen(QHostAddress::Any, PortNumber))
+    if (!_server->listen(QHostAddress::Any, TcpPortNumber))
     {
         throw std::logic_error("Listen error");
     }
-    QObject::connect(_server, &QTcpServer::newConnection, this, &MainWindow::ClientConnected);
+    QObject::connect(_server, &QTcpServer::newConnection, this, &MainWindow::TcpClientConnected);
     // client connect
-    _clientSocket = new QTcpSocket(this);
-    _clientSocket->connectToHost(HostName, PortNumber);
-    QObject::connect(_clientSocket, &QTcpSocket::readyRead, this, &MainWindow::ReadFromServer);
+    _clientTcpSocket = new QTcpSocket(this);
+    _clientTcpSocket->connectToHost(HostName, TcpPortNumber);
+    QObject::connect(_clientTcpSocket, &QTcpSocket::readyRead, this, &MainWindow::ReadFromTcpServer);
+    // server data
+    _serverUdpSocket = new QUdpSocket(this);
+    // client data
+    _clientUdpSocket = new QUdpSocket(this);
+    _clientUdpSocket->bind(UdpPortNumber);
+    QObject::connect(_clientUdpSocket, &QUdpSocket::readyRead, this, &MainWindow::ReadFromUdpServer);
 }
 
 MainWindow::~MainWindow()
@@ -74,10 +107,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::SendEventButtonClick()
 {
-    if (_ui->EventInput->text().isEmpty())
-        return;
-    SendData(_serverSocket, _ui->EventInput->text());
+    if (!_ui->EventInput->text().isEmpty())
+        SendTcpData(_serverTcpSocket, _ui->EventInput->text());
+    if (!_ui->DataInput->text().isEmpty())
+        SendUdpData(_serverUdpSocket, _ui->DataInput->text());
     _ui->EventInput->clear();
+    _ui->DataInput->clear();
 }
 
 void MainWindow::SendRequestButtonClick()
@@ -85,35 +120,41 @@ void MainWindow::SendRequestButtonClick()
     if (_ui->RequestInput->text().isEmpty())
         return;
     _clientState = ClientState::WAIT_RESPONSE;
-    SendData(_clientSocket, _ui->RequestInput->text());
+    SendTcpData(_clientTcpSocket, _ui->RequestInput->text());
     _ui->RequestInput->clear();
 }
 
-void MainWindow::ClientConnected()
+void MainWindow::TcpClientConnected()
 {
-    _serverSocket = _server->nextPendingConnection();
-    QObject::connect(_serverSocket, &QTcpSocket::disconnected, this, &MainWindow::ClientDisconnected);
-    QObject::connect(_serverSocket, &QTcpSocket::readyRead, this, &MainWindow::ReadFromClient);
-    SendData(_serverSocket, "Client connected");
+    _serverTcpSocket = _server->nextPendingConnection();
+    QObject::connect(_serverTcpSocket, &QTcpSocket::disconnected, this, &MainWindow::TcpClientDisconnected);
+    QObject::connect(_serverTcpSocket, &QTcpSocket::readyRead, this, &MainWindow::ReadFromTcpClient);
+    SendTcpData(_serverTcpSocket, "Client connected");
 }
 
-void MainWindow::ClientDisconnected()
+void MainWindow::TcpClientDisconnected()
 {
     //delete _serverSocket;
-    _serverSocket = nullptr;
+    _serverTcpSocket = nullptr;
 }
 
-void MainWindow::ReadFromClient()
+void MainWindow::ReadFromTcpClient()
 {
-    QString data = ReadData(_serverSocket);
+    QString data = ReadTcpData(_serverTcpSocket);
     _ui->RequestsList->addItem(QString::asprintf("REQUEST : %s", data.toStdString().c_str()));
-    SendData(_serverSocket, QString::asprintf("%s is readed", data.toStdString().c_str()));
+    SendTcpData(_serverTcpSocket, QString::asprintf("%s is readed", data.toStdString().c_str()));
 }
 
-void MainWindow::ReadFromServer()
+void MainWindow::ReadFromTcpServer()
 {
-    QString data = ReadData(_clientSocket);
+    QString data = ReadTcpData(_clientTcpSocket);
     const char *description = _clientState == ClientState::WAIT_EVENTS ? "EVENT" : "RESPONSE";
     _ui->ResponsesAndEventsList->addItem(QString::asprintf("%s : %s", description, data.toStdString().c_str()));
     _clientState = ClientState::WAIT_EVENTS;
+}
+
+void MainWindow::ReadFromUdpServer()
+{
+    QString data = ReadUdpData(_clientUdpSocket);
+    _ui->ResponsesAndEventsList->addItem(QString::asprintf("DATA : %s", data.toStdString().c_str()));
 }

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QUdpSocket>
 
 namespace Ui {
 class MainWindow;
@@ -22,15 +23,18 @@ public:
 private:
     Ui::MainWindow *_ui;
     QTcpServer *_server;
-    QTcpSocket *_serverSocket;
-    QTcpSocket *_clientSocket;
+    QTcpSocket *_serverTcpSocket;
+    QTcpSocket *_clientTcpSocket;
     ClientState _clientState;
+    QUdpSocket *_serverUdpSocket;
+    QUdpSocket *_clientUdpSocket;
 
 private slots:
     void SendEventButtonClick();
     void SendRequestButtonClick();
-    void ClientConnected();
-    void ReadFromClient();
-    void ClientDisconnected();
-    void ReadFromServer();
+    void TcpClientConnected();
+    void ReadFromTcpClient();
+    void TcpClientDisconnected();
+    void ReadFromTcpServer();
+    void ReadFromUdpServer();
 };
