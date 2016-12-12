@@ -9,8 +9,10 @@
 #include <QMessageBox>
 #include <QObject>
 #include <QString>
+#include <QTextStream>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QUdpSocket>
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
@@ -141,20 +143,27 @@ void MainWindow::TcpClientDisconnected()
 void MainWindow::ReadFromTcpClient()
 {
     QString data = ReadTcpData(_serverTcpSocket);
-    _ui->RequestsList->addItem(QString::asprintf("REQUEST : %s", data.toStdString().c_str()));
-    SendTcpData(_serverTcpSocket, QString::asprintf("%s is readed", data.toStdString().c_str()));
+    QString item;
+    QTextStream(&item) << "REQUEST : " << data;
+    _ui->RequestsList->addItem(item);
+    QString response;
+    QTextStream(&response) << data << " is readed";
+    SendTcpData(_serverTcpSocket, response);
 }
 
 void MainWindow::ReadFromTcpServer()
 {
     QString data = ReadTcpData(_clientTcpSocket);
-    const char *description = _clientState == ClientState::WAIT_EVENTS ? "EVENT" : "RESPONSE";
-    _ui->ResponsesAndEventsList->addItem(QString::asprintf("%s : %s", description, data.toStdString().c_str()));
+    QString item;
+    QTextStream(&item) << (_clientState == ClientState::WAIT_EVENTS ? "EVENT" : "RESPONSE") << " : " << data;
+    _ui->ResponsesEventsDataList->addItem(item);
     _clientState = ClientState::WAIT_EVENTS;
 }
 
 void MainWindow::ReadFromUdpServer()
 {
     QString data = ReadUdpData(_clientUdpSocket);
-    _ui->ResponsesAndEventsList->addItem(QString::asprintf("DATA : %s", data.toStdString().c_str()));
+    QString item;
+    QTextStream(&item) << "DATA : " << data;
+    _ui->ResponsesEventsDataList->addItem(item);
 }

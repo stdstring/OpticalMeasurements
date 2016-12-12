@@ -135,9 +135,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="ResponsesAndEventsLabel">
+        <widget class="QLabel" name="ResponsesEventsDataLabel">
          <property name="text">
-          <string>Responses &amp; events</string>
+          <string>Responses, events &amp; data</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -145,7 +145,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="ResponsesAndEventsList"/>
+        <widget class="QListWidget" name="ResponsesEventsDataList"/>
        </item>
        <item>
         <widget class="QLabel" name="RequestLabel">
