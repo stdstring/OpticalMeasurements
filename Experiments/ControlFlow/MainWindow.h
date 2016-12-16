@@ -24,7 +24,9 @@ private:
     Ui::MainWindow *_ui;
     QTcpServer *_server;
     QTcpSocket *_serverTcpSocket;
+    quint16 _serverMessageSize;
     QTcpSocket *_clientTcpSocket;
+    quint16 _clientMessageSize;
     ClientState _clientState;
     QUdpSocket *_serverUdpSocket;
     QUdpSocket *_clientUdpSocket;

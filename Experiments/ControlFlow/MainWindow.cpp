@@ -6,8 +6,10 @@
 #include <QDataStream>
 #include <QHostAddress>
 #include <QIODevice>
+#include <QList>
 #include <QMessageBox>
 #include <QObject>
+#include <QPair>
 #include <QString>
 #include <QTextStream>
 #include <QTcpServer>
@@ -31,17 +33,51 @@ void SendTcpData(QTcpSocket *socket, QString const &data)
     socket->write(buffer);
 }
 
-// TODO (std_string) : not suitable for real world
-QString ReadTcpData(QTcpSocket *socket)
+QPair<quint16, QString> StartReadTcpData(QTcpSocket *socket)
 {
+    if (socket->bytesAvailable() < sizeof(quint16))
+        return qMakePair(0, QString());
     QDataStream input(socket);
     quint16 size = 0;
     input >> size;
     if (socket->bytesAvailable() < size)
-        throw std::logic_error("Not all data available");
+        return qMakePair(size, QString());
     QString data;
     input >> data;
+    return qMakePair(size, data);
+}
+
+QString ContinueReadTcpData(QTcpSocket *socket, quint16 size)
+{
+    if (socket->bytesAvailable() < size)
+        return QString();
+    QString data;
+    QDataStream input(socket);
+    input >> data;
     return data;
+}
+
+QPair<quint16, QString> ReadTcpData(QTcpSocket *socket, quint16 size)
+{
+    return size == 0 ? StartReadTcpData(socket) : qMakePair(size, ContinueReadTcpData(socket, size));
+}
+
+void ProcessTcpDataFromClient(QString const &data, QListWidget *destList, QTcpSocket *socket)
+{
+    QString item;
+    QTextStream(&item) << "REQUEST : " << data;
+    destList->addItem(item);
+    QString response;
+    QTextStream(&response) << data << " is readed";
+    SendTcpData(socket, response);
+}
+
+void ProcessTcpDataFromServer(QString const &data, QListWidget *destList, ClientState &state)
+{
+    QString item;
+    QTextStream(&item) << (state == ClientState::WAIT_EVENTS ? "EVENT" : "RESPONSE") << " : " << data;
+    destList->addItem(item);
+    state = ClientState::WAIT_EVENTS;
 }
 
 void SendUdpData(QUdpSocket *socket, QString const &data)
@@ -54,8 +90,7 @@ void SendUdpData(QUdpSocket *socket, QString const &data)
     socket->writeDatagram(buffer, QHostAddress::LocalHost, UdpPortNumber);
 }
 
-// TODO (std_string) : not suitable for real world
-QString ReadUdpData(QUdpSocket *socket)
+QString ReadSingleUdpData(QUdpSocket *socket)
 {
     QByteArray buffer;
     buffer.resize(socket->pendingDatagramSize());
@@ -68,12 +103,25 @@ QString ReadUdpData(QUdpSocket *socket)
     return data;
 }
 
+QList<QString> ReadUdpData(QUdpSocket *socket)
+{
+    QList<QString> dest;
+    while (socket->hasPendingDatagrams())
+    {
+        QString data = ReadSingleUdpData(socket);
+        dest.append(data);
+    }
+    return dest;
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
     _server(nullptr),
     _serverTcpSocket(nullptr),
+    _serverMessageSize(0),
     _clientTcpSocket(nullptr),
+    _clientMessageSize(0),
     _clientState(ClientState::WAIT_EVENTS),
     _serverUdpSocket(nullptr),
     _clientUdpSocket(nullptr)
@@ -142,28 +190,39 @@ void MainWindow::TcpClientDisconnected()
 
 void MainWindow::ReadFromTcpClient()
 {
-    QString data = ReadTcpData(_serverTcpSocket);
-    QString item;
-    QTextStream(&item) << "REQUEST : " << data;
-    _ui->RequestsList->addItem(item);
-    QString response;
-    QTextStream(&response) << data << " is readed";
-    SendTcpData(_serverTcpSocket, response);
+    for(;;)
+    {
+        QPair<quint16, QString> data = ReadTcpData(_serverTcpSocket, _serverMessageSize);
+        if (data.second.isEmpty())
+        {
+            _serverMessageSize = data.first;
+            return;
+        }
+        ProcessTcpDataFromClient(data.second, _ui->RequestsList, _serverTcpSocket);
+    }
 }
 
 void MainWindow::ReadFromTcpServer()
 {
-    QString data = ReadTcpData(_clientTcpSocket);
-    QString item;
-    QTextStream(&item) << (_clientState == ClientState::WAIT_EVENTS ? "EVENT" : "RESPONSE") << " : " << data;
-    _ui->ResponsesEventsDataList->addItem(item);
-    _clientState = ClientState::WAIT_EVENTS;
+    for(;;)
+    {
+        QPair<quint16, QString> data = ReadTcpData(_clientTcpSocket, _clientMessageSize);
+        if (data.second.isEmpty())
+        {
+            _clientMessageSize = data.first;
+            return;
+        }
+        ProcessTcpDataFromServer(data.second, _ui->ResponsesEventsDataList, _clientState);
+    }
 }
 
 void MainWindow::ReadFromUdpServer()
 {
-    QString data = ReadUdpData(_clientUdpSocket);
-    QString item;
-    QTextStream(&item) << "DATA : " << data;
-    _ui->ResponsesEventsDataList->addItem(item);
+    QList<QString> result = ReadUdpData(_clientUdpSocket);
+    foreach(QString data, result)
+    {
+        QString item;
+        QTextStream(&item) << "DATA : " << data;
+        _ui->ResponsesEventsDataList->addItem(item);
+    }
 }
