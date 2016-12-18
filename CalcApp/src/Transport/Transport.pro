@@ -20,7 +20,9 @@ DEFINES += TRANSPORT_LIBRARY
 SOURCES += \
 
 HEADERS += ../../include/ITransport.h \
-           ../../include/ITransportFactory.h
+           ../../include/ITransportFactory.h \
+           ../../include/Message.h \
+           ../../include/MessageType.h
 
 DISTFILES += Transport.json
 
