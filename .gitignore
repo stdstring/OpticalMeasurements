@@ -1,2 +1,5 @@
 # gitignore
 *.pro.user
+CalcApp/bin
+CalcApp/build
+CalcApp/lib.*

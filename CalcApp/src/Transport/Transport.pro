@@ -4,18 +4,30 @@
 #
 #-------------------------------------------------
 
+include( ../../common.pri )
+include( ../../lib.pri )
+
 QT += core
 
-TARGET = Transport
+TARGET = Transport$${LIB_SUFFIX}
 TEMPLATE = lib
 CONFIG += plugin
 
+DEFINES += TRANSPORT_LIBRARY
+
 #DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
-SOURCES +=
+SOURCES += \
 
-HEADERS +=
+HEADERS += ../../include/ITransport.h \
+           ../../include/ITransportFactory.h
+
 DISTFILES += Transport.json
+
+win32 {
+    QMAKE_TARGET_PRODUCT = Transport
+    QMAKE_TARGET_DESCRIPTION = Transport plugin library
+}
 
 unix {
     target.path = /usr/lib
