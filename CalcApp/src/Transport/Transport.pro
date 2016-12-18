@@ -17,12 +17,15 @@ DEFINES += TRANSPORT_LIBRARY
 
 #DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
-SOURCES += \
+SOURCES += Transport.cpp \
+           TransportFactory.cpp
 
 HEADERS += ../../include/ITransport.h \
            ../../include/ITransportFactory.h \
            ../../include/Message.h \
-           ../../include/MessageType.h
+           ../../include/MessageType.h \
+           Transport.h \
+           TransportFactory.h
 
 DISTFILES += Transport.json
 
