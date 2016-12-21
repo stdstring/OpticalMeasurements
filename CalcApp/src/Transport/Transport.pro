@@ -11,21 +11,26 @@ QT += core
 
 TARGET = Transport$${LIB_SUFFIX}
 TEMPLATE = lib
-CONFIG += plugin
+CONFIG += plugin C++11
 
 DEFINES += TRANSPORT_LIBRARY
 
 #DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
 SOURCES += Transport.cpp \
-           TransportFactory.cpp
+           TransportFactory.cpp \
+           MessageInfoFactory.cpp \
+           MessageValidator.cpp
 
 HEADERS += ../../include/ITransport.h \
            ../../include/ITransportFactory.h \
            ../../include/Message.h \
            ../../include/MessageType.h \
            Transport.h \
-           TransportFactory.h
+           TransportFactory.h \
+           MessageInfo.h \
+           MessageInfoFactory.h \
+           MessageValidator.h
 
 DISTFILES += Transport.json
 

@@ -16,10 +16,10 @@ public:
     QByteArray const& GetData() const { return _data; }
 
     Message() = delete;
-    Message(Message const&) = delete;
-    Message(Message&&) = delete;
-    Message& operator=(Message const&) = delete;
-    Message& operator=(Message&&) = delete;
+    //Message(Message const&) = delete;
+    //Message(Message&&) = delete;
+    //Message& operator=(Message const&) = delete;
+    //Message& operator=(Message&&) = delete;
 
 private:
     MessageType _type;
