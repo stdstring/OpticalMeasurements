@@ -20,7 +20,8 @@ DEFINES += TRANSPORT_LIBRARY
 SOURCES += Transport.cpp \
            TransportFactory.cpp \
            MessageInfoFactory.cpp \
-           MessageValidator.cpp
+           MessageValidator.cpp \
+           SimpleMessageCheckStrategy.cpp
 
 HEADERS += ../../include/ITransport.h \
            ../../include/ITransportFactory.h \
@@ -30,7 +31,9 @@ HEADERS += ../../include/ITransport.h \
            TransportFactory.h \
            MessageInfo.h \
            MessageInfoFactory.h \
-           MessageValidator.h
+           MessageValidator.h \
+           IMessageCheckStrategy.h \
+           SimpleMessageCheckStrategy.h
 
 DISTFILES += Transport.json
 
