@@ -4,6 +4,7 @@
 
 namespace CalcApp
 {
+
 MessageInfo CreateMessageInfo(Message const &message)
 {
 }
