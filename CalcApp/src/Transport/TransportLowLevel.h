@@ -11,6 +11,16 @@
 namespace CalcApp
 {
 
+struct TransportConfig
+{
+public:
+    TransportConfig(QString const &tcpAddress, quint16 tcpPort, quint16 udpPort);
+
+    QString TcpAddress;
+    quint16 TcpPort;
+    quint16 UdpPort;
+};
+
 class TcpTransport : public QObject
 {
     Q_OBJECT
@@ -47,8 +57,13 @@ class TransportLowLevel : public TransportLowLevelBase
 {
     Q_OBJECT
 public:
-    explicit TransportLowLevel(QObject *parent);
+    explicit TransportLowLevel(TransportConfig const &config, QObject *parent);
+    virtual void Connect() override;
     virtual Message Exchange(Message const &message) override;
+
+private:
+    TcpTransport *_tcpTrancport;
+    UdpTransport *_udpTrancport;
 };
 
 }

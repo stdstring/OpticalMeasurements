@@ -9,6 +9,13 @@
 namespace CalcApp
 {
 
+TransportConfig::TransportConfig(QString const &tcpAddress, quint16 tcpPort, quint16 udpPort) :
+    TcpAddress(tcpAddress),
+    TcpPort(tcpPort),
+    UdpPort(udpPort)
+{
+}
+
 TcpTransport::TcpTransport(QString const &address, quint16 port, QObject *parent)
 {
 }
@@ -29,7 +36,11 @@ void UdpTransport::Connect()
 {
 }
 
-TransportLowLevel::TransportLowLevel(QObject *parent) : TransportLowLevelBase(parent)
+TransportLowLevel::TransportLowLevel(TransportConfig const &config, QObject *parent) : TransportLowLevelBase(parent)
+{
+}
+
+void TransportLowLevel::Connect()
 {
 }
 
