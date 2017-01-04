@@ -7,7 +7,7 @@
 include( ../../common.pri )
 include( ../../lib.pri )
 
-QT += core
+QT += core network
 
 TARGET = Transport$${LIB_SUFFIX}
 TEMPLATE = lib
