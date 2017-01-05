@@ -62,8 +62,8 @@ public:
     virtual Message Exchange(Message const &message) override;
 
 private:
-    TcpTransport *_tcpTrancport;
-    UdpTransport *_udpTrancport;
+    TcpTransport *_tcpTransport;
+    UdpTransport *_udpTransport;
 };
 
 }
