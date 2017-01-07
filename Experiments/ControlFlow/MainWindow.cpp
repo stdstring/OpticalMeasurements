@@ -62,22 +62,12 @@ QPair<quint16, QString> ReadTcpData(QTcpSocket *socket, quint16 size)
     return size == 0 ? StartReadTcpData(socket) : qMakePair(size, ContinueReadTcpData(socket, size));
 }
 
-void ProcessTcpDataFromClient(QString const &data, QListWidget *destList, QTcpSocket *socket)
+void ProcessNotification(QString const &data, QString const &prefix, QListWidget *destList)
 {
     QString item;
-    QTextStream(&item) << "REQUEST : " << data;
+    QTextStream(&item) << prefix << " : " << data;
     destList->addItem(item);
-    QString response;
-    QTextStream(&response) << data << " is readed";
-    SendTcpData(socket, response);
-}
 
-void ProcessTcpDataFromServer(QString const &data, QListWidget *destList, ClientState &state)
-{
-    QString item;
-    QTextStream(&item) << (state == ClientState::WAIT_EVENTS ? "EVENT" : "RESPONSE") << " : " << data;
-    destList->addItem(item);
-    state = ClientState::WAIT_EVENTS;
 }
 
 void SendUdpData(QUdpSocket *socket, QString const &data)
@@ -114,53 +104,140 @@ QList<QString> ReadUdpData(QUdpSocket *socket)
     return dest;
 }
 
+ServerTransport::ServerTransport(quint16 tcpPort, QObject *parent) :
+    QObject(parent),
+    _server(new QTcpServer(this)),
+    _tcpSocket(nullptr),
+    _tcpMessageSize(0),
+    _udpSocket(new QUdpSocket(this))
+{
+    if (!_server->listen(QHostAddress::Any, tcpPort))
+    {
+        throw std::logic_error("Listen error");
+    }
+    QObject::connect(_server, &QTcpServer::newConnection, this, &ServerTransport::TcpClientConnected);
+}
+
+void ServerTransport::SendEvent(QString const &event)
+{
+    SendTcpData(_tcpSocket, event);
+}
+
+void ServerTransport::SendData(QString const &data)
+{
+    SendUdpData(_udpSocket, data);
+}
+
+void ServerTransport::TcpClientConnected()
+{
+    _tcpSocket = _server->nextPendingConnection();
+    QObject::connect(_tcpSocket, &QTcpSocket::disconnected, this, &ServerTransport::TcpClientDisconnected);
+    QObject::connect(_tcpSocket, &QTcpSocket::readyRead, this, &ServerTransport::ProcessClientRead);
+    SendTcpData(_tcpSocket, "Client connected");
+}
+
+void ServerTransport::ProcessClientRead()
+{
+    for(;;)
+    {
+        QPair<quint16, QString> data = ReadTcpData(_tcpSocket, _tcpMessageSize);
+        if (data.second.isEmpty())
+        {
+            _tcpMessageSize = data.first;
+            return;
+        }
+        emit RequestReceived(RequestMessage(data.second));
+        QString response;
+        QTextStream(&response) << data.second << " is readed";
+        SendTcpData(_tcpSocket, response);
+    }
+}
+
+void ServerTransport::TcpClientDisconnected()
+{
+    _tcpSocket = nullptr;
+}
+
+ClientTransport::ClientTransport(QString const &host, quint16 tcpPort, quint16 udpPort, QObject *parent) :
+    QObject(parent),
+    _host(host),
+    _tcpPort(tcpPort),
+    _udpPort(udpPort),
+    _tcpSocket(new QTcpSocket(this)),
+    _tcpMessageSize(0),
+    _state(ClientState::WAIT_EVENTS),
+    _udpSocket(new QUdpSocket(this))
+{
+    QObject::connect(_tcpSocket, &QTcpSocket::readyRead, this, &ClientTransport::ProcessTcpRead);
+    QObject::connect(_udpSocket, &QUdpSocket::readyRead, this, &ClientTransport::ProcessUdpRead);
+}
+
+void ClientTransport::ConnectToServer()
+{
+    _tcpSocket->connectToHost(_host, _tcpPort);
+    _udpSocket->bind(UdpPortNumber);
+}
+
+void ClientTransport::ProcessRequest(QString const &request)
+{
+    _state = ClientState::WAIT_RESPONSE;
+    SendTcpData(_tcpSocket, request);
+}
+
+void ClientTransport::ProcessTcpRead()
+{
+    for(;;)
+    {
+        QPair<quint16, QString> data = ReadTcpData(_tcpSocket, _tcpMessageSize);
+        if (data.second.isEmpty())
+        {
+            _tcpMessageSize = data.first;
+            return;
+        }
+        if (_state == ClientState::WAIT_RESPONSE)
+            emit ResponseReceived(ResponseMessage(data.second));
+        if (_state == ClientState::WAIT_EVENTS)
+            emit EventReceived(EventMessage(data.second));
+        _state = ClientState::WAIT_EVENTS;
+    }
+}
+
+void ClientTransport::ProcessUdpRead()
+{
+    QList<QString> result = ReadUdpData(_udpSocket);
+    foreach(QString data, result)
+    {
+        emit DataReceived(DataMessage(data));
+    }
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
-    _server(nullptr),
-    _serverTcpSocket(nullptr),
-    _serverMessageSize(0),
-    _clientTcpSocket(nullptr),
-    _clientMessageSize(0),
-    _clientState(ClientState::WAIT_EVENTS),
-    _serverUdpSocket(nullptr),
-    _clientUdpSocket(nullptr)
+    _serverTransport(new ServerTransport(TcpPortNumber, this)),
+    _clientTransport(new ClientTransport(HostName, TcpPortNumber, UdpPortNumber, this))
 {
     _ui->setupUi(this);
     QObject::connect(_ui->SendRequestButton, &QPushButton::clicked, this, &MainWindow::SendRequestButtonClick);
     QObject::connect(_ui->SendFromServerButton, &QPushButton::clicked, this, &MainWindow::SendEventButtonClick);
-    // server listen
-    _server = new QTcpServer(this);
-    if (!_server->listen(QHostAddress::Any, TcpPortNumber))
-    {
-        throw std::logic_error("Listen error");
-    }
-    QObject::connect(_server, &QTcpServer::newConnection, this, &MainWindow::TcpClientConnected);
-    // client connect
-    _clientTcpSocket = new QTcpSocket(this);
-    _clientTcpSocket->connectToHost(HostName, TcpPortNumber);
-    QObject::connect(_clientTcpSocket, &QTcpSocket::readyRead, this, &MainWindow::ReadFromTcpServer);
-    // server data
-    _serverUdpSocket = new QUdpSocket(this);
-    // client data
-    _clientUdpSocket = new QUdpSocket(this);
-    _clientUdpSocket->bind(UdpPortNumber);
-    QObject::connect(_clientUdpSocket, &QUdpSocket::readyRead, this, &MainWindow::ReadFromUdpServer);
+    QObject::connect(_serverTransport, &ServerTransport::RequestReceived, this, &MainWindow::ProcessRequest);
+    QObject::connect(_clientTransport, &ClientTransport::ResponseReceived, this, &MainWindow::ProcessResponse);
+    QObject::connect(_clientTransport, &ClientTransport::EventReceived, this, &MainWindow::ProcessEvent);
+    QObject::connect(_clientTransport, &ClientTransport::DataReceived, this, &MainWindow::ProcessData);
+    _clientTransport->ConnectToServer();
 }
 
 MainWindow::~MainWindow()
 {
-    if (_server != nullptr)
-        _server->close();
     delete _ui;
 }
 
 void MainWindow::SendEventButtonClick()
 {
     if (!_ui->EventInput->text().isEmpty())
-        SendTcpData(_serverTcpSocket, _ui->EventInput->text());
+        _serverTransport->SendEvent(_ui->EventInput->text());
     if (!_ui->DataInput->text().isEmpty())
-        SendUdpData(_serverUdpSocket, _ui->DataInput->text());
+        _serverTransport->SendData(_ui->DataInput->text());
     _ui->EventInput->clear();
     _ui->DataInput->clear();
 }
@@ -169,60 +246,27 @@ void MainWindow::SendRequestButtonClick()
 {
     if (_ui->RequestInput->text().isEmpty())
         return;
-    _clientState = ClientState::WAIT_RESPONSE;
-    SendTcpData(_clientTcpSocket, _ui->RequestInput->text());
+    _clientTransport->ProcessRequest(_ui->RequestInput->text());
     _ui->RequestInput->clear();
 }
 
-void MainWindow::TcpClientConnected()
+
+void MainWindow::ProcessRequest(RequestMessage const &message)
 {
-    _serverTcpSocket = _server->nextPendingConnection();
-    QObject::connect(_serverTcpSocket, &QTcpSocket::disconnected, this, &MainWindow::TcpClientDisconnected);
-    QObject::connect(_serverTcpSocket, &QTcpSocket::readyRead, this, &MainWindow::ReadFromTcpClient);
-    SendTcpData(_serverTcpSocket, "Client connected");
+    ProcessNotification(message.Data, "REQUEST", _ui->RequestsList);
 }
 
-void MainWindow::TcpClientDisconnected()
+void MainWindow::ProcessResponse(ResponseMessage const &message)
 {
-    //delete _serverSocket;
-    _serverTcpSocket = nullptr;
+    ProcessNotification(message.Data, "RESPONSE", _ui->ResponsesEventsDataList);
 }
 
-void MainWindow::ReadFromTcpClient()
+void MainWindow::ProcessEvent(EventMessage const &message)
 {
-    for(;;)
-    {
-        QPair<quint16, QString> data = ReadTcpData(_serverTcpSocket, _serverMessageSize);
-        if (data.second.isEmpty())
-        {
-            _serverMessageSize = data.first;
-            return;
-        }
-        ProcessTcpDataFromClient(data.second, _ui->RequestsList, _serverTcpSocket);
-    }
+    ProcessNotification(message.Data, "EVENT", _ui->ResponsesEventsDataList);
 }
 
-void MainWindow::ReadFromTcpServer()
+void MainWindow::ProcessData(DataMessage const &message)
 {
-    for(;;)
-    {
-        QPair<quint16, QString> data = ReadTcpData(_clientTcpSocket, _clientMessageSize);
-        if (data.second.isEmpty())
-        {
-            _clientMessageSize = data.first;
-            return;
-        }
-        ProcessTcpDataFromServer(data.second, _ui->ResponsesEventsDataList, _clientState);
-    }
-}
-
-void MainWindow::ReadFromUdpServer()
-{
-    QList<QString> result = ReadUdpData(_clientUdpSocket);
-    foreach(QString data, result)
-    {
-        QString item;
-        QTextStream(&item) << "DATA : " << data;
-        _ui->ResponsesEventsDataList->addItem(item);
-    }
+    ProcessNotification(message.Data, "DATA", _ui->ResponsesEventsDataList);
 }
