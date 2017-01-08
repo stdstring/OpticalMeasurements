@@ -9,15 +9,12 @@ namespace Ui {
 class MainWindow;
 }
 
-class Calculator : public QThread
+class Calculator : public QObject
 {
     Q_OBJECT
 public:
-    Calculator(QObject *parent);
+    Calculator();
     void Calculate();
-
-protected:
-    virtual void run() override;
 
 signals:
     void StartCalculation();
@@ -25,6 +22,22 @@ signals:
 
 private slots:
     void ProcessCalculation();
+};
+
+class CalculatorThread : public QThread
+{
+    Q_OBJECT
+public:
+    CalculatorThread(Calculator *calculator, QObject *parent);
+
+protected:
+    virtual void run() override;
+
+private:
+    Calculator *_calculator;
+
+signals:
+    void Notify(QString const &notification);
 };
 
 class MainWindow : public QMainWindow
@@ -38,6 +51,7 @@ public:
 private:
     Ui::MainWindow *_ui;
     Calculator *_calculator;
+    CalculatorThread *_calculatorThread;
 
 private slots:
     void ProcessButtonClick();
