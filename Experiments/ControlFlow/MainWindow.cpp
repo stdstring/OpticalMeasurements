@@ -8,10 +8,12 @@
 #include <QIODevice>
 #include <QList>
 #include <QMessageBox>
+#include <QMetaType>
 #include <QObject>
 #include <QPair>
 #include <QString>
 #include <QTextStream>
+#include <QThread>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QUdpSocket>
@@ -104,28 +106,44 @@ QList<QString> ReadUdpData(QUdpSocket *socket)
     return dest;
 }
 
-ServerTransport::ServerTransport(quint16 tcpPort, QObject *parent) :
-    QObject(parent),
-    _server(new QTcpServer(this)),
+ServerTransport::ServerTransport(quint16 tcpPort) :
+    _tcpPort(tcpPort),
+    _server(nullptr),
     _tcpSocket(nullptr),
     _tcpMessageSize(0),
-    _udpSocket(new QUdpSocket(this))
+    _udpSocket(nullptr)
 {
-    if (!_server->listen(QHostAddress::Any, tcpPort))
-    {
-        throw std::logic_error("Listen error");
-    }
-    QObject::connect(_server, &QTcpServer::newConnection, this, &ServerTransport::TcpClientConnected);
 }
 
 void ServerTransport::SendEvent(QString const &event)
 {
-    SendTcpData(_tcpSocket, event);
+    emit SendingEvent(event);
 }
 
 void ServerTransport::SendData(QString const &data)
 {
-    SendUdpData(_udpSocket, data);
+    emit SendingData(data);
+}
+
+void ServerTransport::ProcessStart()
+{
+    _server = new QTcpServer();
+    _udpSocket = new QUdpSocket(this);
+    if (!_server->listen(QHostAddress::Any, _tcpPort))
+    {
+        throw std::logic_error("Listen error");
+    }
+    QObject::connect(_server, &QTcpServer::newConnection, this, &ServerTransport::TcpClientConnected);
+    QObject::connect(this, &ServerTransport::SendingData, this, &ServerTransport::ProcessSendData);
+    QObject::connect(this, &ServerTransport::SendingEvent, this, &ServerTransport::ProcessSendEvent);
+}
+
+void ServerTransport::ProcessFinish()
+{
+    delete _server;
+    _server = nullptr;
+    delete _udpSocket;
+    _udpSocket = nullptr;
 }
 
 void ServerTransport::TcpClientConnected()
@@ -155,7 +173,19 @@ void ServerTransport::ProcessClientRead()
 
 void ServerTransport::TcpClientDisconnected()
 {
+    QObject::disconnect(_tcpSocket, &QTcpSocket::disconnected, this, &ServerTransport::TcpClientDisconnected);
+    QObject::disconnect(_tcpSocket, &QTcpSocket::readyRead, this, &ServerTransport::ProcessClientRead);
     _tcpSocket = nullptr;
+}
+
+void ServerTransport::ProcessSendEvent(QString const &event)
+{
+    SendTcpData(_tcpSocket, event);
+}
+
+void ServerTransport::ProcessSendData(QString const &data)
+{
+    SendUdpData(_udpSocket, data);
 }
 
 ClientTransport::ClientTransport(QString const &host, quint16 tcpPort, quint16 udpPort, QObject *parent) :
@@ -214,13 +244,22 @@ void ClientTransport::ProcessUdpRead()
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
-    _serverTransport(new ServerTransport(TcpPortNumber, this)),
+    _serverThread(new QThread(this)),
+    _serverTransport(new ServerTransport(TcpPortNumber)),
     _clientTransport(new ClientTransport(HostName, TcpPortNumber, UdpPortNumber, this))
 {
     _ui->setupUi(this);
+    qRegisterMetaType<RequestMessage>("RequestMessage");
+    qRegisterMetaType<ResponseMessage>("ResponseMessage");
+    qRegisterMetaType<EventMessage>("EventMessage");
+    qRegisterMetaType<DataMessage>("DataMessage");
     QObject::connect(_ui->SendRequestButton, &QPushButton::clicked, this, &MainWindow::SendRequestButtonClick);
     QObject::connect(_ui->SendFromServerButton, &QPushButton::clicked, this, &MainWindow::SendEventButtonClick);
     QObject::connect(_serverTransport, &ServerTransport::RequestReceived, this, &MainWindow::ProcessRequest);
+    _serverTransport->moveToThread(_serverThread);
+    QObject::connect(_serverThread, &QThread::started, _serverTransport, &ServerTransport::ProcessStart);
+    QObject::connect(_serverThread, &QThread::finished, _serverTransport, &ServerTransport::ProcessFinish);
+    _serverThread->start();
     QObject::connect(_clientTransport, &ClientTransport::ResponseReceived, this, &MainWindow::ProcessResponse);
     QObject::connect(_clientTransport, &ClientTransport::EventReceived, this, &MainWindow::ProcessEvent);
     QObject::connect(_clientTransport, &ClientTransport::DataReceived, this, &MainWindow::ProcessData);
@@ -230,6 +269,9 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete _ui;
+    _serverThread->exit();
+    _serverThread->wait();
+    delete _serverTransport;
 }
 
 void MainWindow::SendEventButtonClick()

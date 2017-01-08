@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QObject>
 #include <QString>
+#include <QThread>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QUdpSocket>
@@ -50,11 +51,12 @@ class ServerTransport : public QObject
 {
     Q_OBJECT
 public:
-    ServerTransport(quint16 tcpPort, QObject *parent);
+    ServerTransport(quint16 tcpPort);
     void SendEvent(QString const &event);
     void SendData(QString const &data);
 
 private:
+    quint16 _tcpPort;
     QTcpServer *_server;
     QTcpSocket *_tcpSocket;
     quint16 _tcpMessageSize;
@@ -62,11 +64,19 @@ private:
 
 signals:
     void RequestReceived(RequestMessage const &message);
+    void SendingEvent(QString const &event);
+    void SendingData(QString const &data);
+
+public slots:
+    void ProcessStart();
+    void ProcessFinish();
 
 private slots:
     void TcpClientConnected();
     void ProcessClientRead();
     void TcpClientDisconnected();
+    void ProcessSendEvent(QString const &event);
+    void ProcessSendData(QString const &data);
 };
 
 class ClientTransport : public QObject
@@ -106,6 +116,7 @@ public:
 
 private:
     Ui::MainWindow *_ui;
+    QThread *_serverThread;
     ServerTransport *_serverTransport;
     ClientTransport *_clientTransport;
 
