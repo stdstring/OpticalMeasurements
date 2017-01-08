@@ -20,24 +20,11 @@ signals:
     void StartCalculation();
     void Notify(QString const &notification);
 
+public slots:
+    void Started();
+
 private slots:
     void ProcessCalculation();
-};
-
-class CalculatorThread : public QThread
-{
-    Q_OBJECT
-public:
-    CalculatorThread(Calculator *calculator, QObject *parent);
-
-protected:
-    virtual void run() override;
-
-private:
-    Calculator *_calculator;
-
-signals:
-    void Notify(QString const &notification);
 };
 
 class MainWindow : public QMainWindow
@@ -51,7 +38,7 @@ public:
 private:
     Ui::MainWindow *_ui;
     Calculator *_calculator;
-    CalculatorThread *_calculatorThread;
+    QThread *_calculatorThread;
 
 private slots:
     void ProcessButtonClick();
