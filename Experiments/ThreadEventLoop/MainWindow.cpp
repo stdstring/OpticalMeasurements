@@ -57,7 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete _ui;
-    _calculatorThread->quit();
+    _calculatorThread->exit();
+    _calculatorThread->wait();
     delete _calculator;
 }
 
