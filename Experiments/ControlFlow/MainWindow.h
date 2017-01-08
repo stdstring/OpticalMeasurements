@@ -20,15 +20,6 @@ public:
     QString Data;
 };
 
-
-struct ResponseMessage
-{
-public:
-    ResponseMessage() {}
-    ResponseMessage(QString const &data) : Data(data) {}
-    QString Data;
-};
-
 struct EventMessage
 {
 public:
@@ -44,8 +35,6 @@ public:
     DataMessage(QString const &data) : Data(data) {}
     QString Data;
 };
-
-enum ClientState { WAIT_EVENTS, WAIT_RESPONSE };
 
 class ServerTransport : public QObject
 {
@@ -85,7 +74,7 @@ class ClientTransport : public QObject
 public:
     ClientTransport(QString const &host, quint16 tcpPort, quint16 udpPort, QObject *parent);
     void ConnectToServer();
-    void ProcessRequest(QString const &request);
+    QString Exchange(QString const &request);
 
 private:
     QString _host;
@@ -93,11 +82,9 @@ private:
     quint16 _udpPort;
     QTcpSocket *_tcpSocket;
     quint16 _tcpMessageSize;
-    ClientState _state;
     QUdpSocket *_udpSocket;
 
 signals:
-    void ResponseReceived(ResponseMessage const &message);
     void EventReceived(EventMessage const &message);
     void DataReceived(DataMessage const &message);
 
@@ -124,7 +111,6 @@ private slots:
     void SendEventButtonClick();
     void SendRequestButtonClick();
     void ProcessRequest(RequestMessage const &message);
-    void ProcessResponse(ResponseMessage const &message);
     void ProcessEvent(EventMessage const &message);
     void ProcessData(DataMessage const &message);
 };

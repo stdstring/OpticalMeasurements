@@ -156,7 +156,7 @@ void ServerTransport::TcpClientConnected()
 
 void ServerTransport::ProcessClientRead()
 {
-    for(;;)
+    forever
     {
         QPair<quint16, QString> data = ReadTcpData(_tcpSocket, _tcpMessageSize);
         if (data.second.isEmpty())
@@ -195,7 +195,7 @@ ClientTransport::ClientTransport(QString const &host, quint16 tcpPort, quint16 u
     _udpPort(udpPort),
     _tcpSocket(new QTcpSocket(this)),
     _tcpMessageSize(0),
-    _state(ClientState::WAIT_EVENTS),
+    //_state(ClientState::WAIT_EVENTS),
     _udpSocket(new QUdpSocket(this))
 {
     QObject::connect(_tcpSocket, &QTcpSocket::readyRead, this, &ClientTransport::ProcessTcpRead);
@@ -208,15 +208,35 @@ void ClientTransport::ConnectToServer()
     _udpSocket->bind(UdpPortNumber);
 }
 
-void ClientTransport::ProcessRequest(QString const &request)
+QString ClientTransport::Exchange(QString const &request)
 {
-    _state = ClientState::WAIT_RESPONSE;
+    QObject::disconnect(_tcpSocket, &QTcpSocket::readyRead, this, &ClientTransport::ProcessTcpRead);
     SendTcpData(_tcpSocket, request);
+    if (!_tcpSocket->waitForReadyRead())
+        throw std::logic_error("Bad response");
+    if (_tcpSocket->bytesAvailable() < sizeof(quint16))
+        throw std::logic_error("Bad response");
+    QDataStream input(_tcpSocket);
+    quint16 size;
+    input >> size;
+    QString response;
+    forever
+    {
+        if (_tcpSocket->bytesAvailable() >= size)
+        {
+            input >> response;
+            break;
+        }
+        if (!_tcpSocket->waitForReadyRead())
+            throw std::logic_error("Bad response");
+    }
+    QObject::connect(_tcpSocket, &QTcpSocket::readyRead, this, &ClientTransport::ProcessTcpRead);
+    return response;
 }
 
 void ClientTransport::ProcessTcpRead()
 {
-    for(;;)
+    forever
     {
         QPair<quint16, QString> data = ReadTcpData(_tcpSocket, _tcpMessageSize);
         if (data.second.isEmpty())
@@ -224,11 +244,7 @@ void ClientTransport::ProcessTcpRead()
             _tcpMessageSize = data.first;
             return;
         }
-        if (_state == ClientState::WAIT_RESPONSE)
-            emit ResponseReceived(ResponseMessage(data.second));
-        if (_state == ClientState::WAIT_EVENTS)
-            emit EventReceived(EventMessage(data.second));
-        _state = ClientState::WAIT_EVENTS;
+        emit EventReceived(EventMessage(data.second));
     }
 }
 
@@ -250,7 +266,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     _ui->setupUi(this);
     qRegisterMetaType<RequestMessage>("RequestMessage");
-    qRegisterMetaType<ResponseMessage>("ResponseMessage");
     qRegisterMetaType<EventMessage>("EventMessage");
     qRegisterMetaType<DataMessage>("DataMessage");
     QObject::connect(_ui->SendRequestButton, &QPushButton::clicked, this, &MainWindow::SendRequestButtonClick);
@@ -260,7 +275,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(_serverThread, &QThread::started, _serverTransport, &ServerTransport::ProcessStart);
     QObject::connect(_serverThread, &QThread::finished, _serverTransport, &ServerTransport::ProcessFinish);
     _serverThread->start();
-    QObject::connect(_clientTransport, &ClientTransport::ResponseReceived, this, &MainWindow::ProcessResponse);
     QObject::connect(_clientTransport, &ClientTransport::EventReceived, this, &MainWindow::ProcessEvent);
     QObject::connect(_clientTransport, &ClientTransport::DataReceived, this, &MainWindow::ProcessData);
     _clientTransport->ConnectToServer();
@@ -288,7 +302,8 @@ void MainWindow::SendRequestButtonClick()
 {
     if (_ui->RequestInput->text().isEmpty())
         return;
-    _clientTransport->ProcessRequest(_ui->RequestInput->text());
+    QString response = _clientTransport->Exchange(_ui->RequestInput->text());
+    ProcessNotification(response, "RESPONSE", _ui->ResponsesEventsDataList);
     _ui->RequestInput->clear();
 }
 
@@ -296,11 +311,6 @@ void MainWindow::SendRequestButtonClick()
 void MainWindow::ProcessRequest(RequestMessage const &message)
 {
     ProcessNotification(message.Data, "REQUEST", _ui->RequestsList);
-}
-
-void MainWindow::ProcessResponse(ResponseMessage const &message)
-{
-    ProcessNotification(message.Data, "RESPONSE", _ui->ResponsesEventsDataList);
 }
 
 void MainWindow::ProcessEvent(EventMessage const &message)
