@@ -5,6 +5,8 @@
 namespace CalcApp
 {
 
-bool IsMessageValid(MessageInfo const &currentMessage, MessageInfo const &prevMessage);
+enum MessageValidationResult { PROCESS, DELAY, SKIP };
+
+MessageValidationResult IsMessageValid(MessageInfo const &currentMessage, MessageInfo const &prevMessage);
 
 }

@@ -4,9 +4,13 @@
 namespace CalcApp
 {
 
-bool IsMessageValid(MessageInfo const &currentMessage, MessageInfo const &prevMessage)
+MessageValidationResult IsMessageValid(MessageInfo const &currentMessage, MessageInfo const &prevMessage)
 {
-    return currentMessage.GetPackageNumber() == (prevMessage.GetPackageNumber() + 1);
+    if (currentMessage.GetPackageNumber() == (prevMessage.GetPackageNumber() + 1))
+        return MessageValidationResult::PROCESS;
+    if (currentMessage.GetPackageNumber() <= prevMessage.GetPackageNumber())
+        return MessageValidationResult::SKIP;
+    return MessageValidationResult::DELAY;
 }
 
 }
