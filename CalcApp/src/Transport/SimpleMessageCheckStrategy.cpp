@@ -12,7 +12,7 @@ SimpleMessageCheckStrategy::SimpleMessageCheckStrategy(int maxDelayedCount, QObj
 {
 }
 
-bool SimpleMessageCheckStrategy::Check(QList<MessageInfo> const &delayedMessages)
+bool SimpleMessageCheckStrategy::Check(MessageInfo const &messages, QList<MessageData> const &delayedMessages)
 {
     return delayedMessages.size() <= _maxDelayedCount;
 }

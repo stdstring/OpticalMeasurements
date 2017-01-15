@@ -10,7 +10,7 @@ namespace CalcApp
 class IMessageCheckStrategy
 {
 public:
-    virtual bool Check(QList<MessageInfo> const &delayedMessages) = 0;
+    virtual bool Check(MessageInfo const &messages, QList<MessageData> const &delayedMessages) = 0;
 };
 
 }
