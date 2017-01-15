@@ -13,9 +13,10 @@ class TransportLowLevelBase : public QObject
 public:
     TransportLowLevelBase(QObject *parent) : QObject(parent) {}
     virtual void Connect() = 0;
-    virtual Message Exchange(Message const &message) = 0;
+    virtual void Send(Message const &message) = 0;
 
 signals:
+    void ResponseReceived(Message const &message);
     void DataReceived(Message const &message);
     void EventReceived(Message const &message);
 };
