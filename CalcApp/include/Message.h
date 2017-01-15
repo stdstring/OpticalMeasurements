@@ -2,10 +2,10 @@
 
 #include <QByteArray>
 
-#include "MessageType.h"
-
 namespace CalcApp
 {
+
+enum MessageType { REQUEST, RESPONSE, DATA, EVENT };
 
 class Message
 {

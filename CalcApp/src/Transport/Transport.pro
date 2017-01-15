@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 include( ../../common.pri )
-include( ../../lib.pri )
+#include( ../../lib.pri )
 
 QT += core network
 
@@ -17,17 +17,22 @@ DEFINES += TRANSPORT_LIBRARY
 
 #DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
-SOURCES += Transport.cpp \
+SOURCES += LowLevel/TransportLowLevel.cpp \
+           LowLevel/TcpTransport.cpp \
+           LowLevel/UdpTransport.cpp \
+           Transport.cpp \
            TransportFactory.cpp \
            MessageInfoFactory.cpp \
            MessageValidator.cpp \
-           SimpleMessageCheckStrategy.cpp \
-           TransportLowLevel.cpp
+           SimpleMessageCheckStrategy.cpp
 
 HEADERS += ../../include/ITransport.h \
            ../../include/ITransportFactory.h \
            ../../include/Message.h \
-           ../../include/MessageType.h \
+           LowLevel/TransportLowLevel.h \
+           LowLevel/TransportLowLevelBase.h \
+           LowLevel/TcpTransport.h \
+           LowLevel/UdpTransport.h \
            Transport.h \
            TransportFactory.h \
            MessageInfo.h \
@@ -35,8 +40,7 @@ HEADERS += ../../include/ITransport.h \
            MessageValidator.h \
            IMessageCheckStrategy.h \
            SimpleMessageCheckStrategy.h \
-           TransportLowLevel.h \
-           TransportLowLevelBase.h
+           TransportConfig.h
 
 DISTFILES += Transport.json
 
