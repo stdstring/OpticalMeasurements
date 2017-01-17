@@ -15,7 +15,7 @@ public:
     MessageType GetType() const { return _type; }
     QByteArray const& GetData() const { return _data; }
 
-    Message() = delete;
+    //Message() = delete;
     //Message(Message const&) = delete;
     //Message(Message&&) = delete;
     //Message& operator=(Message const&) = delete;

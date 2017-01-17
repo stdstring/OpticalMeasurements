@@ -24,7 +24,8 @@ SOURCES += LowLevel/TransportLowLevel.cpp \
            TransportFactory.cpp \
            MessageInfoFactory.cpp \
            MessageValidator.cpp \
-           SimpleMessageCheckStrategy.cpp
+           SimpleMessageCheckStrategy.cpp \
+           DelayedMessagesProcessor.cpp
 
 HEADERS += ../../include/ITransport.h \
            ../../include/ITransportFactory.h \
@@ -40,7 +41,8 @@ HEADERS += ../../include/ITransport.h \
            MessageValidator.h \
            IMessageCheckStrategy.h \
            SimpleMessageCheckStrategy.h \
-           TransportConfig.h
+           TransportConfig.h \
+           DelayedMessagesProcessor.h
 
 DISTFILES += Transport.json
 

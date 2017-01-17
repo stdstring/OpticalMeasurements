@@ -20,7 +20,7 @@ public:
     // TODO (std_string) : think about this
     int GetCalcNumber() const { return _calcNumber; }
 
-    MessageInfo() = delete;
+    //MessageInfo() = delete;
     //MessageInfo(MessageInfo const&) = delete;
     //MessageInfo(MessageInfo&&) = delete;
     //MessageInfo& operator=(MessageInfo const&) = delete;
