@@ -1,5 +1,6 @@
 #include <QObject>
 
+#include "ITransport.h"
 #include "TcpTransport.h"
 #include "UdpTransport.h"
 #include "Message.h"
@@ -10,7 +11,7 @@ namespace CalcApp
 {
 
 TransportLowLevel::TransportLowLevel(TransportConfig const &config, QObject *parent) :
-    TransportLowLevelBase(parent),
+    ITransport(parent),
     _tcpTransport(new TcpTransport(config.TcpAddress, config.TcpPort, this)),
     _udpTransport(new UdpTransport(config.UdpPort, this))
 {

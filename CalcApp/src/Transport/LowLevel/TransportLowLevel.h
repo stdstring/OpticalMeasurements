@@ -2,16 +2,16 @@
 
 #include <QObject>
 
+#include "ITransport.h"
 #include "TcpTransport.h"
 #include "UdpTransport.h"
 #include "Message.h"
 #include "TransportConfig.h"
-#include "TransportLowLevelBase.h"
 
 namespace CalcApp
 {
 
-class TransportLowLevel : public TransportLowLevelBase
+class TransportLowLevel : public ITransport
 {
     Q_OBJECT
 public:

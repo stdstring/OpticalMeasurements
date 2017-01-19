@@ -31,7 +31,6 @@ HEADERS += ../../include/ITransport.h \
            ../../include/ITransportFactory.h \
            ../../include/Message.h \
            LowLevel/TransportLowLevel.h \
-           LowLevel/TransportLowLevelBase.h \
            LowLevel/TcpTransport.h \
            LowLevel/UdpTransport.h \
            Transport.h \
