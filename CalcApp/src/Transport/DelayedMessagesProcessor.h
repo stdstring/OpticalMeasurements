@@ -15,8 +15,6 @@ public:
     MessageData DeliverMessage(MessageInfo const &prevMessage);
 
 private:
-    QList<MessageData>::ConstIterator FindMessageForDelivery(MessageInfo const &prevMessage);
-
     QList<MessageData> _delayedMessages;
 };
 

@@ -21,7 +21,10 @@ public:
 private:
     ITransport *_transportLowLevel;
     DelayedMessagesProcessor _delayedMessagesProcessor;
-    MessageInfo _currentMessage;
+    MessageInfo _lastProcessedMessage;
+
+private slots:
+    void ReceiveData(Message const &message);
 };
 
 }
