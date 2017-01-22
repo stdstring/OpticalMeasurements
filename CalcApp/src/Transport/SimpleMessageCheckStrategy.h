@@ -12,7 +12,7 @@ namespace CalcApp
 class SimpleMessageCheckStrategy : public IMessageCheckStrategy
 {
 public:
-    SimpleMessageCheckStrategy(int maxDelayedCount, QObject *parent);
+    SimpleMessageCheckStrategy(quint32 maxDelayedCount, QObject *parent);
     virtual bool Check(MessageInfo const &message, QList<MessageData> const &delayedMessages) override;
 
 private:

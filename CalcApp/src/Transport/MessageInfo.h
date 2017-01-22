@@ -17,7 +17,7 @@ public:
     {
     }
 
-    MessageInfo(int packageNumber, int calcNumber) :
+    MessageInfo(quint32 packageNumber, quint32 calcNumber) :
         _isEmpty(false),
         _packageNumber(packageNumber),
         _calcNumber(calcNumber)
@@ -25,9 +25,9 @@ public:
     }
 
     bool IsEmpty() const { return _isEmpty; }
-    int GetPackageNumber() const { return _packageNumber; }
+    quint32 GetPackageNumber() const { return _packageNumber; }
     // TODO (std_string) : think about this
-    int GetCalcNumber() const { return _calcNumber; }
+    quint32 GetCalcNumber() const { return _calcNumber; }
 
     //MessageInfo() = delete;
     //MessageInfo(MessageInfo const&) = delete;
@@ -38,9 +38,9 @@ public:
 private:
     // for using convenience
     bool _isEmpty;
-    int _packageNumber;
+    quint32 _packageNumber;
     // TODO (std_string) : think about this
-    int _calcNumber;
+    quint32 _calcNumber;
 };
 
 typedef QPair<MessageInfo, Message> MessageData;

@@ -8,7 +8,7 @@
 namespace CalcApp
 {
 
-SimpleMessageCheckStrategy::SimpleMessageCheckStrategy(int maxDelayedCount, QObject *parent) :
+SimpleMessageCheckStrategy::SimpleMessageCheckStrategy(quint32 maxDelayedCount, QObject *parent) :
     IMessageCheckStrategy(parent),
     _maxDelayedCount(maxDelayedCount)
 {

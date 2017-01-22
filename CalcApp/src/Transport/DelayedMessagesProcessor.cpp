@@ -12,7 +12,7 @@ namespace CalcApp
 namespace
 {
 
-QList<MessageData>::Iterator FindMessage(QList<MessageData> &storage, int packageNumber)
+QList<MessageData>::Iterator FindMessage(QList<MessageData> &storage, quint32 packageNumber)
 {
     std::function<bool(MessageData&)> predicate = [packageNumber](MessageData &data)
     {
