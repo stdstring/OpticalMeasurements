@@ -1,16 +1,18 @@
 #pragma once
 
 #include <QList>
+#include <QObject>
 
 #include "MessageInfo.h"
 
 namespace CalcApp
 {
 
-class IMessageCheckStrategy
+class IMessageCheckStrategy : public QObject
 {
 public:
-    virtual bool Check(MessageInfo const &messages, QList<MessageData> const &delayedMessages) = 0;
+    IMessageCheckStrategy(QObject *parent) : QObject(parent) {}
+    virtual bool Check(MessageInfo const &message, QList<MessageData> const &delayedMessages) = 0;
 };
 
 }

@@ -11,10 +11,13 @@
 namespace CalcApp
 {
 
-Transport::Transport(ITransport *transportLowLevel, QObject *parent) :
+Transport::Transport(ITransport *transportLowLevel, IMessageCheckStrategy *messageCheckStrategy, QObject *parent) :
     ITransport(parent),
-    _transportLowLevel(transportLowLevel)
+    _transportLowLevel(transportLowLevel),
+    _delayedMessagesProcessor(DelayedMessagesProcessor(messageCheckStrategy))
 {
+    _transportLowLevel->setParent(this);
+    messageCheckStrategy->setParent(this);
     QObject::connect(_transportLowLevel, &ITransport::ResponseReceived, this, &Transport::ResponseReceived);
     QObject::connect(_transportLowLevel, &ITransport::EventReceived, this, &Transport::EventReceived);
     QObject::connect(_transportLowLevel, &ITransport::DataReceived, this, &Transport::ReceiveData);
@@ -48,7 +51,7 @@ void Transport::ReceiveData(Message const &message)
             }
             break;
         case MessageValidationResult::DELAY:
-            _delayedMessagesProcessor.AddDelayedMessage(MessageData(messageInfo, message));
+            _delayedMessagesProcessor.AddDelayedMessage(messageInfo, message);
             break;
         case MessageValidationResult::SKIP:
             break;

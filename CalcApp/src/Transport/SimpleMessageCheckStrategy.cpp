@@ -8,11 +8,13 @@
 namespace CalcApp
 {
 
-SimpleMessageCheckStrategy::SimpleMessageCheckStrategy(int maxDelayedCount, QObject *parent) : QObject(parent), _maxDelayedCount(maxDelayedCount)
+SimpleMessageCheckStrategy::SimpleMessageCheckStrategy(int maxDelayedCount, QObject *parent) :
+    IMessageCheckStrategy(parent),
+    _maxDelayedCount(maxDelayedCount)
 {
 }
 
-bool SimpleMessageCheckStrategy::Check(MessageInfo const &messages, QList<MessageData> const &delayedMessages)
+bool SimpleMessageCheckStrategy::Check(MessageInfo const &message, QList<MessageData> const &delayedMessages)
 {
     return delayedMessages.size() <= _maxDelayedCount;
 }
