@@ -1,9 +1,3 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-12-18T10:24:18
-#
-#-------------------------------------------------
-
 include( ../../common.pri )
 #include( ../../lib.pri )
 
@@ -11,7 +5,7 @@ QT += core network
 
 TARGET = Transport$${LIB_SUFFIX}
 TEMPLATE = lib
-CONFIG += plugin C++11
+CONFIG += plugin
 
 DEFINES += TRANSPORT_LIBRARY
 

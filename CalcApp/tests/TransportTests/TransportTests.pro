@@ -1,3 +1,6 @@
+include( ../../common.pri )
+include( ../../tests.pri )
+
 QT += core
 QT -= gui
 

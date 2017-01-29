@@ -1,8 +1,9 @@
-#include <QCoreApplication>
+#include "gtest/gtest.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
-    return a.exec();
+    //testing::GTEST_FLAG(throw_on_failure) = true;
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
 
