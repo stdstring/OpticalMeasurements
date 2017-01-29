@@ -1,4 +1,7 @@
 TEMPLATE = subdirs
 
-SUBDIRS += \
-    src/Transport
+# projects
+SUBDIRS += src/Transport
+
+# tests
+SUBDIRS += tests/TransportTests
