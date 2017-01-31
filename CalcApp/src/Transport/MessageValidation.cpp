@@ -1,5 +1,5 @@
 #include "MessageInfo.h"
-#include "MessageValidator.h"
+#include "MessageValidation.h"
 
 namespace CalcApp
 {

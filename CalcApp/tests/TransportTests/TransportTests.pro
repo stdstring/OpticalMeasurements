@@ -10,5 +10,13 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp
+LIBS += -L../../lib.$${OS_SUFFIX} -lTransport$${LIB_SUFFIX}
+INCLUDEPATH += ../../src/Transport
 
+HEADERS += ../../include/Message.h
+
+
+SOURCES += main.cpp \
+           MessageValidationTests.cpp \
+           MessageInfoFactoryTests.cpp \
+           SimpleMessageCheckStrategyTests.cpp

@@ -5,7 +5,7 @@
 #include "Message.h"
 #include "MessageInfo.h"
 #include "MessageInfoFactory.h"
-#include "MessageValidator.h"
+#include "MessageValidation.h"
 #include "Transport.h"
 
 namespace CalcApp

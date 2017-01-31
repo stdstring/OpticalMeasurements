@@ -1,5 +1,5 @@
 include( ../../common.pri )
-#include( ../../lib.pri )
+include( ../../lib.pri )
 
 QT += core network
 
@@ -17,9 +17,9 @@ SOURCES += LowLevel/TransportLowLevel.cpp \
            Transport.cpp \
            TransportFactory.cpp \
            MessageInfoFactory.cpp \
-           MessageValidator.cpp \
            SimpleMessageCheckStrategy.cpp \
-           DelayedMessagesProcessor.cpp
+           DelayedMessagesProcessor.cpp \
+           MessageValidation.cpp
 
 HEADERS += ../../include/ITransport.h \
            ../../include/ITransportFactory.h \
@@ -31,11 +31,11 @@ HEADERS += ../../include/ITransport.h \
            TransportFactory.h \
            MessageInfo.h \
            MessageInfoFactory.h \
-           MessageValidator.h \
            IMessageCheckStrategy.h \
            SimpleMessageCheckStrategy.h \
            TransportConfig.h \
-           DelayedMessagesProcessor.h
+           DelayedMessagesProcessor.h \
+           MessageValidation.h
 
 DISTFILES += Transport.json
 
