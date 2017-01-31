@@ -1,5 +1,3 @@
-#pragma once
-
 #include <QList>
 #include <QObject>
 

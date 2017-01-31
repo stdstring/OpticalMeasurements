@@ -12,13 +12,13 @@ CONFIG += C++11
 TEMPLATE = app
 
 SOURCES += main.cpp \
-          Calculator.cpp \
-          ComplexCalculator.cpp
+           Calculator.cpp \
+           ComplexCalculator.cpp \
+           CalculatorDataTest.cpp \
+           CalculatorTest.cpp \
+           ComplexCalculatorTest.cpp
 
 HEADERS += Calculator.h \
            ISimpleCalculator.h \
-           ComplexCalculator.h \
-           CalculatorTest.h \
-           CalculatorDataTest.h \
-           ComplexCalculatorTest.h
+           ComplexCalculator.h
 
