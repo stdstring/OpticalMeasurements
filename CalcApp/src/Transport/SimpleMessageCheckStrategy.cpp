@@ -16,7 +16,7 @@ SimpleMessageCheckStrategy::SimpleMessageCheckStrategy(quint32 maxDelayedCount, 
 
 bool SimpleMessageCheckStrategy::Check(MessageInfo const &message, QList<MessageData> const &delayedMessages)
 {
-    return delayedMessages.size() <= _maxDelayedCount;
+    return delayedMessages.size() < _maxDelayedCount;
 }
 
 }
