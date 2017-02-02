@@ -19,4 +19,5 @@ HEADERS += ../../include/Message.h
 SOURCES += main.cpp \
            MessageValidationTests.cpp \
            MessageInfoFactoryTests.cpp \
-           SimpleMessageCheckStrategyTests.cpp
+           SimpleMessageCheckStrategyTests.cpp \
+    DelayedMessagesProcessorTests.cpp

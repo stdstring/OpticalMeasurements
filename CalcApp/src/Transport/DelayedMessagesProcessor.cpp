@@ -1,6 +1,7 @@
+#include <QList>
+
 #include <algorithm>
 #include <functional>
-#include <QList>
 #include <stdexcept>
 
 #include "MessageInfo.h"
@@ -30,12 +31,13 @@ DelayedMessagesProcessor::DelayedMessagesProcessor(IMessageCheckStrategy *messag
 
 void DelayedMessagesProcessor::AddDelayedMessage(MessageInfo const &info, Message const &message)
 {
+    if (FindMessage(_delayedMessages, info.GetPackageNumber()) != _delayedMessages.end())
+        return;
     // TODO (std_string) : use more specific exception instead of std::logic_error
     // TODO (std_string) : think about using of another approach for this
     if (!_messageCheckStrategy->Check(info, _delayedMessages))
         throw std::logic_error("Can't add yet one delayed message");
-    if (FindMessage(_delayedMessages, info.GetPackageNumber()) == _delayedMessages.end())
-        _delayedMessages.append(MessageData(info, message));
+    _delayedMessages.append(MessageData(info, message));
 }
 
 bool DelayedMessagesProcessor::CanDeliverMessage(MessageInfo const &prevMessage)
