@@ -1,10 +1,13 @@
 #include <QByteArray>
 
+#include <memory>
 #include <stdexcept>
 
 #include "gtest/gtest.h"
 
 #include "DelayedMessagesProcessor.h"
+#include "EqualityOperators.h"
+#include "IMessageCheckStrategy.h"
 #include "Message.h"
 #include "MessageInfo.h"
 #include "SimpleMessageCheckStrategy.h"
@@ -12,36 +15,75 @@
 namespace CalcApp
 {
 
-// TODO (std_string) : move into common library
-bool operator ==(const MessageInfo &left, const MessageInfo &right)
+const quint32 MaxDelayedCount = 2;
+
+class DelayedMessagesProcessorTests : public testing::Test
 {
-    return (left.GetPackageNumber() == right.GetPackageNumber()) && (left.GetCalcNumber() == right.GetCalcNumber());
+public:
+    virtual void SetUp() override;
+    virtual void TearDown() override;
+
+protected:
+    std::shared_ptr<DelayedMessagesProcessor> _processor;
+
+private:
+    std::shared_ptr<IMessageCheckStrategy> _messageCheckStrategy;
+};
+
+void DelayedMessagesProcessorTests::SetUp()
+{
+    _messageCheckStrategy.reset(new SimpleMessageCheckStrategy(MaxDelayedCount));
+    _processor.reset(new DelayedMessagesProcessor(_messageCheckStrategy.get()));
 }
 
-// TODO (std_string) : move into common library
-bool operator ==(const Message &left, const Message &right)
+void DelayedMessagesProcessorTests::TearDown()
 {
-    return (left.GetType() == right.GetType()) && (left.GetData() == right.GetData());
+    _processor.reset();
+    _messageCheckStrategy.reset();
 }
 
-TEST(DelayedMessagesProcessorTests, Lifecycle)
+TEST_F(DelayedMessagesProcessorTests, AddDelayedMessage)
 {
-    const quint32 maxDelayedCount = 2;
     const int repeatedAddCount = 3;
-    SimpleMessageCheckStrategy messageCheckStrategy(maxDelayedCount);
-    DelayedMessagesProcessor processor(&messageCheckStrategy);
-    ASSERT_FALSE(processor.CanDeliverMessage(MessageInfo(1, 0)));
-    ASSERT_THROW(processor.DeliverMessage(MessageInfo(1, 0)), std::logic_error);
     for (int i = 0; i < repeatedAddCount; ++i)
-        ASSERT_NO_THROW(processor.AddDelayedMessage(MessageInfo(5, 0), Message(MessageType::DATA, QByteArray())));
+        ASSERT_NO_THROW(_processor.get()->AddDelayedMessage(MessageInfo(5, 0), Message(MessageType::DATA, QByteArray())));
     for (int i = 0; i < repeatedAddCount; ++i)
-        ASSERT_NO_THROW(processor.AddDelayedMessage(MessageInfo(3, 0), Message(MessageType::DATA, QByteArray())));
-    ASSERT_THROW(processor.AddDelayedMessage(MessageInfo(9, 0), Message(MessageType::DATA, QByteArray())), std::logic_error);
-    ASSERT_FALSE(processor.CanDeliverMessage(MessageInfo(1, 0)));
-    ASSERT_THROW(processor.DeliverMessage(MessageInfo(1, 0)), std::logic_error);
-    ASSERT_TRUE(processor.CanDeliverMessage(MessageInfo(2, 0)));
-    MessageData expectedData(MessageInfo(3, 0), Message(MessageType::DATA, QByteArray()));
-    ASSERT_EQ(expectedData, processor.DeliverMessage(MessageInfo(2, 0)));
+        ASSERT_NO_THROW(_processor.get()->AddDelayedMessage(MessageInfo(3, 0), Message(MessageType::DATA, QByteArray())));
+    ASSERT_THROW(_processor.get()->AddDelayedMessage(MessageInfo(9, 0), Message(MessageType::DATA, QByteArray())), std::logic_error);
+    ASSERT_NO_THROW(_processor.get()->DeliverMessage(MessageInfo(2, 0)));
+    for (int i = 0; i < repeatedAddCount; ++i)
+        ASSERT_NO_THROW(_processor.get()->AddDelayedMessage(MessageInfo(9, 0), Message(MessageType::DATA, QByteArray())));
+}
+
+TEST_F(DelayedMessagesProcessorTests, CanDeliverMessage)
+{
+    ASSERT_FALSE(_processor.get()->CanDeliverMessage(MessageInfo(1, 0)));
+    ASSERT_NO_THROW(_processor.get()->AddDelayedMessage(MessageInfo(5, 0), Message(MessageType::DATA, QByteArray())));
+    ASSERT_FALSE(_processor.get()->CanDeliverMessage(MessageInfo(1, 0)));
+    ASSERT_TRUE(_processor.get()->CanDeliverMessage(MessageInfo(4, 0)));
+}
+
+TEST_F(DelayedMessagesProcessorTests, DeliverMessage)
+{
+    ASSERT_THROW(_processor.get()->DeliverMessage(MessageInfo(1, 0)), std::logic_error);
+    ASSERT_NO_THROW(_processor.get()->AddDelayedMessage(MessageInfo(3, 0), Message(MessageType::DATA, QByteArray())));
+    ASSERT_THROW(_processor.get()->DeliverMessage(MessageInfo(1, 0)), std::logic_error);
+    ASSERT_EQ(MessageData(MessageInfo(3, 0), Message(MessageType::DATA, QByteArray())), _processor.get()->DeliverMessage(MessageInfo(2, 0)));
+    ASSERT_THROW(_processor.get()->DeliverMessage(MessageInfo(2, 0)), std::logic_error);
+}
+
+TEST_F(DelayedMessagesProcessorTests, Lifecycle)
+{
+    ASSERT_FALSE(_processor.get()->CanDeliverMessage(MessageInfo(1, 0)));
+    ASSERT_THROW(_processor.get()->DeliverMessage(MessageInfo(1, 0)), std::logic_error);
+    ASSERT_NO_THROW(_processor.get()->AddDelayedMessage(MessageInfo(5, 0), Message(MessageType::DATA, QByteArray())));
+    ASSERT_NO_THROW(_processor.get()->AddDelayedMessage(MessageInfo(3, 0), Message(MessageType::DATA, QByteArray())));
+    ASSERT_THROW(_processor.get()->AddDelayedMessage(MessageInfo(9, 0), Message(MessageType::DATA, QByteArray())), std::logic_error);
+    ASSERT_FALSE(_processor.get()->CanDeliverMessage(MessageInfo(1, 0)));
+    ASSERT_THROW(_processor.get()->DeliverMessage(MessageInfo(1, 0)), std::logic_error);
+    ASSERT_TRUE(_processor.get()->CanDeliverMessage(MessageInfo(2, 0)));
+    ASSERT_EQ(MessageData(MessageInfo(3, 0), Message(MessageType::DATA, QByteArray())), _processor.get()->DeliverMessage(MessageInfo(2, 0)));
+    ASSERT_NO_THROW(_processor.get()->AddDelayedMessage(MessageInfo(10, 0), Message(MessageType::DATA, QByteArray())));
 }
 
 }

@@ -13,11 +13,13 @@ TEMPLATE = app
 LIBS += -L../../lib.$${OS_SUFFIX} -lTransport$${LIB_SUFFIX}
 INCLUDEPATH += ../../src/Transport
 
-HEADERS += ../../include/Message.h
+HEADERS += ../../include/Message.h \
+    EqualityOperators.h
 
 
 SOURCES += main.cpp \
            MessageValidationTests.cpp \
            MessageInfoFactoryTests.cpp \
            SimpleMessageCheckStrategyTests.cpp \
-    DelayedMessagesProcessorTests.cpp
+    DelayedMessagesProcessorTests.cpp \
+    EqualityOperators.cpp
