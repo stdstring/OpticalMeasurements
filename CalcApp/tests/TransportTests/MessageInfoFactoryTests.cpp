@@ -1,22 +1,15 @@
 #include <QByteArray>
 
-//#include <initializer_list>
 #include <vector>
 
 #include "gtest/gtest.h"
 
 #include "EqualityOperators.h"
-#include "Message.h"
+#include "MessageHelper.h"
 #include "MessageInfo.h"
-#include "MessageInfoFactory.h"
 
 namespace CalcApp
 {
-
-MessageInfo CreateMessageInfo(std::vector<char> const &data)
-{
-    return CreateMessageInfo(Message(MessageType::DATA, QByteArray(data.data(), data.size())));
-}
 
 TEST(MessageInfoFactoryTests, Create)
 {

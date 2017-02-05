@@ -14,12 +14,14 @@ LIBS += -L../../lib.$${OS_SUFFIX} -lTransport$${LIB_SUFFIX}
 INCLUDEPATH += ../../src/Transport
 
 HEADERS += ../../include/Message.h \
-    EqualityOperators.h
+           EqualityOperators.h \
+           MessageHelper.h
 
 
 SOURCES += main.cpp \
            MessageValidationTests.cpp \
            MessageInfoFactoryTests.cpp \
            SimpleMessageCheckStrategyTests.cpp \
-    DelayedMessagesProcessorTests.cpp \
-    EqualityOperators.cpp
+           DelayedMessagesProcessorTests.cpp \
+           EqualityOperators.cpp \
+           MessageHelper.cpp
