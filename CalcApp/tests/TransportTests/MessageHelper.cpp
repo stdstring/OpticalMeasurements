@@ -13,6 +13,11 @@
 namespace CalcApp
 {
 
+Message CreateMessage(MessageType messageType)
+{
+    return Message(messageType, QByteArray());
+}
+
 Message CreateMessage(quint8 packageNumber, quint8 calcNumber)
 {
     QByteArray data;

@@ -13,9 +13,11 @@ TEMPLATE = app
 LIBS += -L../../lib.$${OS_SUFFIX} -lTransport$${LIB_SUFFIX}
 INCLUDEPATH += ../../src/Transport
 
-HEADERS += ../../include/Message.h \
+HEADERS += ../../include/ITransport.h \
+           ../../include/Message.h \
            EqualityOperators.h \
-           MessageHelper.h
+           MessageHelper.h \
+    TransportSignalHandler.h
 
 
 SOURCES += main.cpp \
@@ -24,4 +26,6 @@ SOURCES += main.cpp \
            SimpleMessageCheckStrategyTests.cpp \
            DelayedMessagesProcessorTests.cpp \
            EqualityOperators.cpp \
-           MessageHelper.cpp
+           MessageHelper.cpp \
+           TransportTests.cpp \
+    TransportSignalHandler.cpp

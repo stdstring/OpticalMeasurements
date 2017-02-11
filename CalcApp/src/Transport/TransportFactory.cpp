@@ -21,7 +21,10 @@ ITransport* TransportFactory::Create(QObject *parent)
     TransportConfig transportConfig(1, "127.0.0.1", 6666, 7777);
     ITransport *transportLowLevel = new TransportLowLevel(transportConfig, parent);
     IMessageCheckStrategy *messageCheckStrategy = new SimpleMessageCheckStrategy(transportConfig.MaxDelayedCount, parent);
-    return new Transport(transportLowLevel, messageCheckStrategy, parent);
+    ITransport *transport = new Transport(transportLowLevel, messageCheckStrategy, parent);
+    transportLowLevel->setParent(transport);
+    messageCheckStrategy->setParent(transport);
+    return transport;
 }
 
 }
