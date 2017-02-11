@@ -16,8 +16,6 @@ Transport::Transport(ITransport *transportLowLevel, IMessageCheckStrategy *messa
     _transportLowLevel(transportLowLevel),
     _delayedMessagesProcessor(DelayedMessagesProcessor(messageCheckStrategy))
 {
-    //_transportLowLevel->setParent(this);
-    //messageCheckStrategy->setParent(this);
     QObject::connect(_transportLowLevel, &ITransport::ResponseReceived, this, &Transport::ResponseReceived);
     QObject::connect(_transportLowLevel, &ITransport::EventReceived, this, &Transport::EventReceived);
     QObject::connect(_transportLowLevel, &ITransport::DataReceived, this, &Transport::ReceiveData);
