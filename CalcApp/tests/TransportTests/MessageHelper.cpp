@@ -2,8 +2,7 @@
 #include <QDataStream>
 #include <QIODevice>
 #include <QtGlobal>
-
-#include <vector>
+#include <QVector>
 
 #include "Message.h"
 #include "MessageHelper.h"
@@ -13,27 +12,26 @@
 namespace CalcApp
 {
 
-Message CreateMessage(MessageType messageType)
+Message CreateMessage(MessageType messageType, QVector<char> const &data)
 {
-    return Message(messageType, QByteArray());
+    return Message(messageType, QByteArray(data.data(), data.size()));
 }
 
-Message CreateMessage(quint8 packageNumber, quint8 calcNumber)
+Message CreateMessage(quint8 packageNumber, quint8 calcNumber, QVector<char> const &data)
 {
-    QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
+    QByteArray dest;
+    QDataStream stream(&dest, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_5);
-    char someData[] = {10, 11, 12, 13};
-    stream << static_cast<quint32>(packageNumber) << static_cast<quint32>(calcNumber) << someData;
-    return Message(MessageType::DATA, data);
+    stream << static_cast<quint32>(packageNumber) << static_cast<quint32>(calcNumber) << data;
+    return Message(MessageType::DATA, dest);
 }
 
-MessageData CreateMessageData(quint8 packageNumber, quint8 calcNumber)
+MessageData CreateMessageData(quint8 packageNumber, quint8 calcNumber, QVector<char> const &data)
 {
-    return MessageData(MessageInfo(packageNumber, calcNumber), CreateMessage(packageNumber, calcNumber));
+    return MessageData(MessageInfo(packageNumber, calcNumber), CreateMessage(packageNumber, calcNumber, data));
 }
 
-MessageInfo CreateMessageInfo(std::vector<char> const &data)
+MessageInfo CreateMessageInfo(QVector<char> const &data)
 {
     return CreateMessageInfo(Message(MessageType::DATA, QByteArray(data.data(), data.size())));
 }
