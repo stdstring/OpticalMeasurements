@@ -16,6 +16,8 @@ namespace CalcApp
 namespace
 {
 
+// TODO (std_string) : move into some common place
+
 // format of all incoming/outgoing messages:
 // tag (quint32) - probably added in future
 // size (quint32)

@@ -1,7 +1,7 @@
 include( ../../common.pri )
 include( ../../tests.pri )
 
-QT += core
+QT += core network
 QT -= gui
 
 TARGET = TransportTests
@@ -17,7 +17,8 @@ HEADERS += ../../include/ITransport.h \
            ../../include/Message.h \
            EqualityOperators.h \
            MessageHelper.h \
-           TransportSignalHandler.h
+           TransportSignalHandler.h \
+    TestServer.h
 
 
 SOURCES += main.cpp \
@@ -28,4 +29,5 @@ SOURCES += main.cpp \
            EqualityOperators.cpp \
            MessageHelper.cpp \
            TransportTests.cpp \
-           TransportSignalHandler.cpp
+           TransportSignalHandler.cpp \
+    TestServer.cpp
