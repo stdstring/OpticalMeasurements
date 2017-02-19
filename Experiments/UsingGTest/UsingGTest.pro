@@ -16,9 +16,12 @@ SOURCES += main.cpp \
            ComplexCalculator.cpp \
            CalculatorDataTest.cpp \
            CalculatorTest.cpp \
-           ComplexCalculatorTest.cpp
+           ComplexCalculatorTest.cpp \
+           AsyncCalculator.cpp \
+           AsyncCalculatorTest.cpp
 
 HEADERS += Calculator.h \
            ISimpleCalculator.h \
-           ComplexCalculator.h
+           ComplexCalculator.h \
+           AsyncCalculator.h
 
