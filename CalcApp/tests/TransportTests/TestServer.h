@@ -2,6 +2,7 @@
 
 #include <QList>
 #include <QObject>
+#include <QString>
 #include <QThread>
 #include <QTimer>
 #include <QTcpServer>
@@ -17,11 +18,22 @@
 namespace CalcApp
 {
 
+struct TestServerConfig
+{
+public:
+    TestServerConfig(int timerInterval, QString const &serverAddress, quint16 tcpPortNumber, quint16 udpPortNumber);
+
+    int TimerInterval;
+    QString ServerAddress;
+    quint16 TcpPortNumber;
+    quint16 UdpPortNumber;
+};
+
 class TestServer : public QObject
 {
     Q_OBJECT
 public:
-    TestServer(QList<Message> const &messages, QObject *parent = nullptr);
+    TestServer(TestServerConfig const &config, QList<Message> const &messages, QObject *parent = nullptr);
 
 signals:
     void RequestReceived(Message const &message);
@@ -32,6 +44,7 @@ public slots:
 
 private:
     // TODO (std_string) : think about separation of tcp and udp parts
+    TestServerConfig const &_config;
     QList<Message> _messages;
     QTimer *_timer;
     QTcpServer *_server;
@@ -50,7 +63,7 @@ class TestServerRunner : public QObject
 {
     Q_OBJECT
 public:
-    TestServerRunner(QList<Message> const &messages, QObject *parent = nullptr);
+    TestServerRunner(TestServerConfig const &config, QList<Message> const &messages, QObject *parent = nullptr);
     void Start();
     void Stop();
 

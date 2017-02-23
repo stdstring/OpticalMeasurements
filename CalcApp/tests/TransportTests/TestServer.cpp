@@ -31,12 +31,6 @@
 namespace CalcApp
 {
 
-// TODO (std_string) : use data from config
-const quint16 TcpPortNumber = 6666;
-const quint16 UdpPortNumber = 7777;
-const QString ServerAddress = "127.0.0.1";
-const int TimerInterval = 400;
-
 namespace
 {
 
@@ -47,7 +41,7 @@ namespace
 // size (quint32)
 // byte array
 
-void SendUdpData(QUdpSocket *socket, Message const &message)
+void SendUdpData(QUdpSocket *socket, QString const &serverAddress, quint16 udpPortNumber, Message const &message)
 {
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
@@ -57,7 +51,7 @@ void SendUdpData(QUdpSocket *socket, Message const &message)
     output << static_cast<quint32>(message.GetData().size());
     // byte array
     output << message.GetData();
-    socket->writeDatagram(buffer, QHostAddress(ServerAddress), UdpPortNumber);
+    socket->writeDatagram(buffer, QHostAddress(serverAddress), udpPortNumber);
 }
 
 void SendTcpData(QTcpSocket *socket, Message const &message)
@@ -108,8 +102,17 @@ QPair<quint32, QByteArray> ReadTcpData(QTcpSocket *socket, quint32 size)
 
 }
 
-TestServer::TestServer(QList<Message> const &messages, QObject *parent) :
+TestServerConfig::TestServerConfig(int timerInterval, QString const &serverAddress, quint16 tcpPortNumber, quint16 udpPortNumber) :
+    TimerInterval(timerInterval),
+    ServerAddress(serverAddress),
+    TcpPortNumber(tcpPortNumber),
+    UdpPortNumber(udpPortNumber)
+{
+}
+
+TestServer::TestServer(TestServerConfig const &config, QList<Message> const &messages, QObject *parent) :
     QObject(parent),
+    _config(config),
     _messages(messages),
     _timer(nullptr),
     _server(nullptr),
@@ -124,10 +127,10 @@ void TestServer::Start()
     _timer = new QTimer(this);
     _timer->setSingleShot(true);
     _timer->setTimerType(Qt::TimerType::CoarseTimer);
-    _timer->setInterval(TimerInterval);
+    _timer->setInterval(_config.TimerInterval);
     _server = new QTcpServer(this);
     _udpSocket = new QUdpSocket(this);
-    if (!_server->listen(QHostAddress(ServerAddress), TcpPortNumber))
+    if (!_server->listen(QHostAddress(_config.ServerAddress), _config.TcpPortNumber))
     {
         throw std::logic_error("Listen error");
     }
@@ -152,7 +155,7 @@ void TestServer::ProcessTimeout()
 {
     // TODO (std_string) : use more functional approach
     if (_messages.first().GetType() == MessageType::DATA)
-        SendUdpData(_udpSocket, _messages.takeFirst());
+        SendUdpData(_udpSocket, _config.ServerAddress, _config.UdpPortNumber, _messages.takeFirst());
     else if (_messages.first().GetType() == MessageType::EVENT)
         SendTcpData(_tcpSocket, _messages.takeFirst());
     if (!_messages.isEmpty() && _messages.first().GetType() != MessageType::RESPONSE)
@@ -195,9 +198,9 @@ void TestServer::TcpClientDisconnected()
     QObject::disconnect(_tcpSocket, &QTcpSocket::readyRead, this, &TestServer::ProcessClientRead);
 }
 
-TestServerRunner::TestServerRunner(QList<Message> const &messages, QObject *parent) :
+TestServerRunner::TestServerRunner(TestServerConfig const &config, QList<Message> const &messages, QObject *parent) :
     QObject(parent),
-    _server(new TestServer(messages, nullptr)),
+    _server(new TestServer(config, messages, nullptr)),
     _thread(new QThread(this))
 {
     _server->moveToThread(_thread);

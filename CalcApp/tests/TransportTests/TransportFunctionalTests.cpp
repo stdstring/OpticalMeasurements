@@ -12,27 +12,38 @@
 namespace CalcApp
 {
 
+namespace
+{
+
+// TODO (std_string) : think about location of this data
+const quint16 TcpPortNumber = 6666;
+const quint16 UdpPortNumber = 7777;
+const QString ServerAddress = "127.0.0.1";
+const int TimerInterval = 400;
+const quint32 MaxDelayedCount = 2;
+
+const TestServerConfig serverConfig(TimerInterval, ServerAddress, TcpPortNumber, UdpPortNumber);
+const TransportConfig transportConfig(MaxDelayedCount, ServerAddress, TcpPortNumber, UdpPortNumber);
+
+}
+
 TEST(TransportFunctionalTests, Test1)
 {
     QList<Message> serverData = {CreateMessage(MessageType::RESPONSE, {11, 12, 13})};
-    TestServerRunner server(serverData);
+    TestServerRunner server(serverConfig, serverData);
     QList<ClientEntry> clientData = {ClientEntry(CreateMessagePtr(MessageType::REQUEST, {66}), CreateMessage(MessageType::RESPONSE, {11, 12, 13}))};
-    // TODO (std_string) : think about this
-    TransportConfig config(2, "127.0.0.1", 6666, 7777);
     server.Start();
-    ClientHandler::Check(config, clientData);
+    ClientHandler::Check(transportConfig, clientData);
     server.Stop();
 }
 
 /*TEST(TransportFunctionalTests, Test2)
 {
     QList<Message> serverData = {CreateMessage(MessageType::RESPONSE, {11, 12, 13})};
-    TestServerRunner server(serverData);
+    TestServerRunner server(serverConfig, serverData);
     QList<ClientEntry> clientData = {ClientEntry(CreateMessagePtr(MessageType::REQUEST, {66}), CreateMessage(MessageType::RESPONSE, {11, 12, 14}))};
-    // TODO (std_string) : think about this
-    TransportConfig config(2, "127.0.0.1", 6666, 7777);
     server.Start();
-    ClientHandler::Check(config, clientData);
+    ClientHandler::Check(transportConfig, clientData);
     server.Stop();
 }*/
 
