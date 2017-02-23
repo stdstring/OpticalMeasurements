@@ -1,4 +1,5 @@
 #include <QByteArray>
+#include <QCoreApplication>
 #include <QDataStream>
 #include <QHostAddress>
 #include <QIODevice>
@@ -12,7 +13,7 @@
 #include <QTcpSocket>
 #include <QUdpSocket>
 
-#include <functional>
+#include <memory>
 #include <stdexcept>
 
 #include "gtest/gtest.h"
@@ -216,23 +217,33 @@ void TestServerRunner::Stop()
     _thread->wait();
 }
 
-/*ClientEntry::ClientEntry()
-{
-}*/
-
-ClientEntry::ClientEntry(Message const &expectedMessage) :
-    ClientEntry([](ITransport*) {}, expectedMessage)
+ClientEntry::ClientEntry(Message const &incomingMessage) :
+    ClientEntry(std::shared_ptr<Message>(), incomingMessage)
 {
 }
 
-ClientEntry::ClientEntry(std::function<void(ITransport*)> prepartionAction, Message const &expectedMessage) :
-    PrepartionAction(prepartionAction),
-    ExpectedMessage(expectedMessage)
+ClientEntry::ClientEntry(std::shared_ptr<Message> outgoingMessage, Message const &incomingMessage) :
+    OutgoingMessage(outgoingMessage),
+    IncomingMessage(incomingMessage)
 {
+}
+
+namespace
+{
+
+void SendOutgoingMessage(ITransport *transport, ClientEntry const &entry)
+{
+    if (entry.OutgoingMessage)
+        transport->Send(*entry.OutgoingMessage.get());
+}
+
 }
 
 void ClientHandler::Check(TransportConfig const &config, QList<ClientEntry> const &entries)
 {
+    int argc = 0;
+    QCoreApplication app(argc, {});
+    Q_UNUSED(app);
     ClientHandler handler(config, QThread::currentThread(), entries);
     QThread thread;
     handler.moveToThread(&thread);
@@ -255,12 +266,12 @@ void ClientHandler::ProcessStart()
 {
     ITransport *transportLowLevel = new TransportLowLevel(_config, this);
     IMessageCheckStrategy *messageCheckStrategy = new SimpleMessageCheckStrategy(_config.MaxDelayedCount, this);
-    _transport = new Transport(transportLowLevel, messageCheckStrategy, this);    
-    QObject::connect(_transport, &ITransport::DataReceived, this, &ClientHandler::ProcessData);
-    QObject::connect(_transport, &ITransport::EventReceived, this, &ClientHandler::ProcessEvent);
-    QObject::connect(_transport, &ITransport::ResponseReceived, this, &ClientHandler::ProcessResponse);
+    _transport = new Transport(transportLowLevel, messageCheckStrategy, this);
+    QObject::connect(_transport, &ITransport::DataReceived, this, &ClientHandler::ProcessMessage);
+    QObject::connect(_transport, &ITransport::EventReceived, this, &ClientHandler::ProcessMessage);
+    QObject::connect(_transport, &ITransport::ResponseReceived, this, &ClientHandler::ProcessMessage);
     _transport->Connect();
-    _entries.first().PrepartionAction(_transport);
+    SendOutgoingMessage(_transport, _entries.first());
 }
 
 void ClientHandler::ProcessFinish()
@@ -271,37 +282,14 @@ void ClientHandler::ProcessFinish()
     this->moveToThread(_initThread);
 }
 
-void ClientHandler::ProcessResponse(Message const &message)
+void ClientHandler::ProcessMessage(Message const &message)
 {
-    // TODO (std_string) : code duplication
     EXPECT_FALSE(_entries.isEmpty());
-    EXPECT_EQ(_entries.takeFirst().ExpectedMessage ,message);
+    EXPECT_EQ(_entries.takeFirst().IncomingMessage ,message);
     if (_entries.isEmpty())
         QThread::currentThread()->exit();
     else
-        _entries.first().PrepartionAction(_transport);
-}
-
-void ClientHandler::ProcessData(Message const &message)
-{
-    // TODO (std_string) : code duplication
-    EXPECT_FALSE(_entries.isEmpty());
-    EXPECT_EQ(_entries.takeFirst().ExpectedMessage ,message);
-    if (_entries.isEmpty())
-        QThread::currentThread()->exit();
-    else
-        _entries.first().PrepartionAction(_transport);
-}
-
-void ClientHandler::ProcessEvent(Message const &message)
-{
-    // TODO (std_string) : code duplication
-    EXPECT_FALSE(_entries.isEmpty());
-    EXPECT_EQ(_entries.takeFirst().ExpectedMessage ,message);
-    if (_entries.isEmpty())
-        QThread::currentThread()->exit();
-    else
-        _entries.first().PrepartionAction(_transport);
+        SendOutgoingMessage(_transport, _entries.first());
 }
 
 }

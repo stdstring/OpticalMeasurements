@@ -8,7 +8,7 @@
 #include <QTcpSocket>
 #include <QUdpSocket>
 
-#include <functional>
+#include <memory>
 
 #include "ITransport.h"
 #include "Message.h"
@@ -62,12 +62,11 @@ private:
 struct ClientEntry
 {
 public:
-    /*ClientEntry();*/
-    ClientEntry(Message const &expectedMessage);
-    ClientEntry(std::function<void(ITransport*)> prepartionAction, Message const &expectedMessage);
+    ClientEntry(Message const &incomingMessage);
+    ClientEntry(std::shared_ptr<Message> outgoingMessage, Message const &incomingMessage);
 
-    std::function<void(ITransport*)> PrepartionAction;
-    Message ExpectedMessage;
+    std::shared_ptr<Message> OutgoingMessage;
+    Message IncomingMessage;
 };
 
 class ClientHandler : public QObject
@@ -87,9 +86,7 @@ private:
 private slots:
     void ProcessStart();
     void ProcessFinish();
-    void ProcessResponse(Message const &message);
-    void ProcessData(Message const &message);
-    void ProcessEvent(Message const &message);
+    void ProcessMessage(Message const &message);
 };
 
 }

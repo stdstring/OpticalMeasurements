@@ -4,6 +4,8 @@
 #include <QtGlobal>
 #include <QVector>
 
+#include <memory>
+
 #include "Message.h"
 #include "MessageHelper.h"
 #include "MessageInfo.h"
@@ -15,6 +17,11 @@ namespace CalcApp
 Message CreateMessage(MessageType messageType, QVector<char> const &data)
 {
     return Message(messageType, QByteArray(data.data(), data.size()));
+}
+
+std::shared_ptr<Message> CreateMessagePtr(MessageType messageType, QVector<char> const &data)
+{
+    return std::shared_ptr<Message>(new Message(messageType, QByteArray(data.data(), data.size())));
 }
 
 Message CreateDataMessage(quint8 packageNumber, quint8 calcNumber, QVector<char> const &data)
