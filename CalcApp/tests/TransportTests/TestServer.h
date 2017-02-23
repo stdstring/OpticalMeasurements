@@ -12,6 +12,7 @@
 
 #include "ITransport.h"
 #include "Message.h"
+#include "TransportConfig.h"
 
 namespace CalcApp
 {
@@ -61,7 +62,11 @@ private:
 struct ClientEntry
 {
 public:
-    std::function<void(ITransport*)> PreapartionAction;
+    /*ClientEntry();*/
+    ClientEntry(Message const &expectedMessage);
+    ClientEntry(std::function<void(ITransport*)> prepartionAction, Message const &expectedMessage);
+
+    std::function<void(ITransport*)> PrepartionAction;
     Message ExpectedMessage;
 };
 
@@ -69,11 +74,12 @@ class ClientHandler : public QObject
 {
     Q_OBJECT
 public:
-    static void Check(ITransport *transport, QList<ClientEntry> const &entries);
+    static void Check(TransportConfig const &config, QList<ClientEntry> const &entries);
 
 private:
-    ClientHandler(ITransport *transport, QThread *initThread, QList<ClientEntry> const &entries);
+    ClientHandler(TransportConfig const &config, QThread *initThread, QList<ClientEntry> const &entries);
 
+    TransportConfig _config;
     ITransport *_transport;
     QThread *_initThread;
     QList<ClientEntry> _entries;

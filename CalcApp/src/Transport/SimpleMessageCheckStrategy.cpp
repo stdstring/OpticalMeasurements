@@ -1,5 +1,6 @@
 #include <QList>
 #include <QObject>
+#include <QtGlobal>
 
 #include "IMessageCheckStrategy.h"
 #include "MessageInfo.h"
@@ -16,6 +17,7 @@ SimpleMessageCheckStrategy::SimpleMessageCheckStrategy(quint32 maxDelayedCount, 
 
 bool SimpleMessageCheckStrategy::Check(MessageInfo const &message, QList<MessageData> const &delayedMessages)
 {
+    Q_UNUSED(message);
     return delayedMessages.size() < _maxDelayedCount;
 }
 

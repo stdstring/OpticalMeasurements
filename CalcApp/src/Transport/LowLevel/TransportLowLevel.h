@@ -15,7 +15,7 @@ class TransportLowLevel : public ITransport
 {
     Q_OBJECT
 public:
-    explicit TransportLowLevel(TransportConfig const &config, QObject *parent);
+    explicit TransportLowLevel(TransportConfig const &config, QObject *parent = nullptr);
     virtual void Connect() override;
     virtual void Send(Message const &message) override;
 

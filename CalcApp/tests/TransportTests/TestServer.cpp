@@ -12,12 +12,19 @@
 #include <QTcpSocket>
 #include <QUdpSocket>
 
+#include <functional>
 #include <stdexcept>
 
 #include "gtest/gtest.h"
 
+#include "LowLevel/TransportLowLevel.h"
 #include "EqualityOperators.h"
+#include "IMessageCheckStrategy.h"
+#include "ITransport.h"
 #include "Message.h"
+#include "SimpleMessageCheckStrategy.h"
+#include "Transport.h"
+#include "TransportConfig.h"
 #include "TestServer.h"
 
 namespace CalcApp
@@ -189,7 +196,7 @@ void TestServer::TcpClientDisconnected()
 
 TestServerRunner::TestServerRunner(QList<Message> const &messages, QObject *parent) :
     QObject(parent),
-    _server(new TestServer(messages, this)),
+    _server(new TestServer(messages, nullptr)),
     _thread(new QThread(this))
 {
     _server->moveToThread(_thread);
@@ -206,13 +213,28 @@ void TestServerRunner::Start()
 void TestServerRunner::Stop()
 {
     _thread->exit();
+    _thread->wait();
 }
 
-void ClientHandler::Check(ITransport *transport, QList<ClientEntry> const &entries)
+/*ClientEntry::ClientEntry()
 {
-    ClientHandler handler(transport, QThread::currentThread(), entries);
+}*/
+
+ClientEntry::ClientEntry(Message const &expectedMessage) :
+    ClientEntry([](ITransport*) {}, expectedMessage)
+{
+}
+
+ClientEntry::ClientEntry(std::function<void(ITransport*)> prepartionAction, Message const &expectedMessage) :
+    PrepartionAction(prepartionAction),
+    ExpectedMessage(expectedMessage)
+{
+}
+
+void ClientHandler::Check(TransportConfig const &config, QList<ClientEntry> const &entries)
+{
+    ClientHandler handler(config, QThread::currentThread(), entries);
     QThread thread;
-    transport->moveToThread(&thread);
     handler.moveToThread(&thread);
     QObject::connect(&thread, &QThread::started, &handler, &ClientHandler::ProcessStart);
     QObject::connect(&thread, &QThread::finished, &handler, &ClientHandler::ProcessFinish);
@@ -220,25 +242,32 @@ void ClientHandler::Check(ITransport *transport, QList<ClientEntry> const &entri
     EXPECT_TRUE(thread.wait());
 }
 
-ClientHandler::ClientHandler(ITransport *transport, QThread *initThread, QList<ClientEntry> const &entries) :
+ClientHandler::ClientHandler(TransportConfig const &config, QThread *initThread, QList<ClientEntry> const &entries) :
     QObject(nullptr),
-    _transport(transport),
+    _config(config),
+    _transport(nullptr),
     _initThread(initThread),
     _entries(entries)
 {
-    QObject::connect(_transport, &ITransport::DataReceived, this, &ClientHandler::ProcessData);
-    QObject::connect(_transport, &ITransport::EventReceived, this, &ClientHandler::ProcessEvent);
-    QObject::connect(_transport, &ITransport::ResponseReceived, this, &ClientHandler::ProcessResponse);
 }
 
 void ClientHandler::ProcessStart()
 {
-    _entries.first().PreapartionAction(_transport);
+    ITransport *transportLowLevel = new TransportLowLevel(_config, this);
+    IMessageCheckStrategy *messageCheckStrategy = new SimpleMessageCheckStrategy(_config.MaxDelayedCount, this);
+    _transport = new Transport(transportLowLevel, messageCheckStrategy, this);    
+    QObject::connect(_transport, &ITransport::DataReceived, this, &ClientHandler::ProcessData);
+    QObject::connect(_transport, &ITransport::EventReceived, this, &ClientHandler::ProcessEvent);
+    QObject::connect(_transport, &ITransport::ResponseReceived, this, &ClientHandler::ProcessResponse);
+    _transport->Connect();
+    _entries.first().PrepartionAction(_transport);
 }
 
 void ClientHandler::ProcessFinish()
 {
-    _transport->moveToThread(_initThread);
+    if (_transport != nullptr)
+        delete _transport;
+    _transport = nullptr;
     this->moveToThread(_initThread);
 }
 
@@ -250,7 +279,7 @@ void ClientHandler::ProcessResponse(Message const &message)
     if (_entries.isEmpty())
         QThread::currentThread()->exit();
     else
-        _entries.first().PreapartionAction(_transport);
+        _entries.first().PrepartionAction(_transport);
 }
 
 void ClientHandler::ProcessData(Message const &message)
@@ -261,7 +290,7 @@ void ClientHandler::ProcessData(Message const &message)
     if (_entries.isEmpty())
         QThread::currentThread()->exit();
     else
-        _entries.first().PreapartionAction(_transport);
+        _entries.first().PrepartionAction(_transport);
 }
 
 void ClientHandler::ProcessEvent(Message const &message)
@@ -272,7 +301,7 @@ void ClientHandler::ProcessEvent(Message const &message)
     if (_entries.isEmpty())
         QThread::currentThread()->exit();
     else
-        _entries.first().PreapartionAction(_transport);
+        _entries.first().PrepartionAction(_transport);
 }
 
 }

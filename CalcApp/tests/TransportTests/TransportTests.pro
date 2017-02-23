@@ -18,7 +18,7 @@ HEADERS += ../../include/ITransport.h \
            EqualityOperators.h \
            MessageHelper.h \
            TransportSignalHandler.h \
-    TestServer.h
+           TestServer.h
 
 
 SOURCES += main.cpp \
@@ -30,4 +30,5 @@ SOURCES += main.cpp \
            MessageHelper.cpp \
            TransportTests.cpp \
            TransportSignalHandler.cpp \
-    TestServer.cpp
+           TestServer.cpp \
+           TransportFunctionalTests.cpp

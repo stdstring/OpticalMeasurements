@@ -17,7 +17,7 @@ Message CreateMessage(MessageType messageType, QVector<char> const &data)
     return Message(messageType, QByteArray(data.data(), data.size()));
 }
 
-Message CreateMessage(quint8 packageNumber, quint8 calcNumber, QVector<char> const &data)
+Message CreateDataMessage(quint8 packageNumber, quint8 calcNumber, QVector<char> const &data)
 {
     QByteArray dest;
     QDataStream stream(&dest, QIODevice::WriteOnly);
@@ -28,7 +28,7 @@ Message CreateMessage(quint8 packageNumber, quint8 calcNumber, QVector<char> con
 
 MessageData CreateMessageData(quint8 packageNumber, quint8 calcNumber, QVector<char> const &data)
 {
-    return MessageData(MessageInfo(packageNumber, calcNumber), CreateMessage(packageNumber, calcNumber, data));
+    return MessageData(MessageInfo(packageNumber, calcNumber), CreateDataMessage(packageNumber, calcNumber, data));
 }
 
 MessageInfo CreateMessageInfo(QVector<char> const &data)
