@@ -138,7 +138,7 @@ void TestServer::Start()
     QObject::connect(_timer, &QTimer::timeout, this, &TestServer::ProcessTimeout);
 }
 
-void TestServer::Finish()
+void TestServer::Stop()
 {
     _timer->stop();
     if (_tcpSocket != nullptr)
@@ -198,19 +198,19 @@ void TestServer::TcpClientDisconnected()
     QObject::disconnect(_tcpSocket, &QTcpSocket::readyRead, this, &TestServer::ProcessClientRead);
 }
 
-TestServerRunner::TestServerRunner(TestServerConfig const &config, QList<Message> const &messages, QObject *parent) :
+TestServerRunner::TestServerRunner(TestServerConfig const &config, QObject *parent) :
     QObject(parent),
-    _server(new TestServer(config, messages, nullptr)),
+    _config(config),
     _thread(new QThread(this))
 {
-    _server->moveToThread(_thread);
-    QObject::connect(_thread, &QThread::started, _server, &TestServer::Start);
-    QObject::connect(_thread, &QThread::finished, _server, &TestServer::Finish);
-
 }
 
-void TestServerRunner::Start()
+void TestServerRunner::Start(const QList<Message> &messages)
 {
+    _server.reset(new TestServer(_config, messages, nullptr));
+    _server.get()->moveToThread(_thread);
+    QObject::connect(_thread, &QThread::started, _server.get(), &TestServer::Start);
+    QObject::connect(_thread, &QThread::finished, _server.get(), &TestServer::Stop);
     _thread->start();
 }
 
@@ -218,6 +218,9 @@ void TestServerRunner::Stop()
 {
     _thread->exit();
     _thread->wait();
+    QObject::disconnect(_thread, &QThread::started, _server.get(), &TestServer::Start);
+    QObject::disconnect(_thread, &QThread::finished, _server.get(), &TestServer::Stop);
+    _server.reset();
 }
 
 ClientEntry::ClientEntry(Message const &incomingMessage) :

@@ -40,11 +40,11 @@ signals:
 
 public slots:
     void Start();
-    void Finish();
+    void Stop();
 
 private:
     // TODO (std_string) : think about separation of tcp and udp parts
-    TestServerConfig const &_config;
+    TestServerConfig _config;
     QList<Message> _messages;
     QTimer *_timer;
     QTcpServer *_server;
@@ -63,12 +63,13 @@ class TestServerRunner : public QObject
 {
     Q_OBJECT
 public:
-    TestServerRunner(TestServerConfig const &config, QList<Message> const &messages, QObject *parent = nullptr);
-    void Start();
+    TestServerRunner(TestServerConfig const &config, QObject *parent = nullptr);
+    void Start(QList<Message> const &messages);
     void Stop();
 
 private:
-    TestServer *_server;
+    TestServerConfig _config;
+    std::shared_ptr<TestServer> _server;
     QThread *_thread;
 };
 

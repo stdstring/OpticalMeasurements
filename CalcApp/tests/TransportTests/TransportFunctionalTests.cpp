@@ -1,7 +1,5 @@
 #include <QList>
 
-#include <memory>
-
 #include "gtest/gtest.h"
 
 #include "Message.h"
@@ -30,21 +28,11 @@ const TransportConfig transportConfig(MaxDelayedCount, ServerAddress, TcpPortNum
 TEST(TransportFunctionalTests, Test1)
 {
     QList<Message> serverData = {CreateMessage(MessageType::RESPONSE, {11, 12, 13})};
-    TestServerRunner server(serverConfig, serverData);
+    TestServerRunner server(serverConfig);
     QList<ClientEntry> clientData = {ClientEntry(CreateMessagePtr(MessageType::REQUEST, {66}), CreateMessage(MessageType::RESPONSE, {11, 12, 13}))};
-    server.Start();
+    server.Start(serverData);
     ClientHandler::Check(transportConfig, clientData);
     server.Stop();
 }
-
-/*TEST(TransportFunctionalTests, Test2)
-{
-    QList<Message> serverData = {CreateMessage(MessageType::RESPONSE, {11, 12, 13})};
-    TestServerRunner server(serverConfig, serverData);
-    QList<ClientEntry> clientData = {ClientEntry(CreateMessagePtr(MessageType::REQUEST, {66}), CreateMessage(MessageType::RESPONSE, {11, 12, 14}))};
-    server.Start();
-    ClientHandler::Check(transportConfig, clientData);
-    server.Stop();
-}*/
 
 }
