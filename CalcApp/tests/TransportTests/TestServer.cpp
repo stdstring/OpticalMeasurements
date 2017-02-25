@@ -1,32 +1,19 @@
 #include <QByteArray>
-#include <QCoreApplication>
 #include <QDataStream>
 #include <QHostAddress>
 #include <QIODevice>
 #include <QList>
 #include <QPair>
-#include <QString>
-#include <Qt>
-#include <QThread>
 #include <QTimer>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QUdpSocket>
 
-#include <memory>
 #include <stdexcept>
 
-#include "gtest/gtest.h"
-
-#include "LowLevel/TransportLowLevel.h"
-#include "EqualityOperators.h"
-#include "IMessageCheckStrategy.h"
-#include "ITransport.h"
 #include "Message.h"
-#include "SimpleMessageCheckStrategy.h"
-#include "Transport.h"
-#include "TransportConfig.h"
 #include "TestServer.h"
+#include "TestServerConfig.h"
 
 namespace CalcApp
 {
@@ -100,14 +87,6 @@ QPair<quint32, QByteArray> ReadTcpData(QTcpSocket *socket, quint32 size)
     return size == 0 ? StartReadTcpData(socket) : qMakePair(size, ContinueReadTcpData(socket, size));
 }
 
-}
-
-TestServerConfig::TestServerConfig(int timerInterval, QString const &serverAddress, quint16 tcpPortNumber, quint16 udpPortNumber) :
-    TimerInterval(timerInterval),
-    ServerAddress(serverAddress),
-    TcpPortNumber(tcpPortNumber),
-    UdpPortNumber(udpPortNumber)
-{
 }
 
 TestServer::TestServer(TestServerConfig const &config, QList<Message> const &messages, QObject *parent) :
@@ -196,107 +175,6 @@ void TestServer::TcpClientDisconnected()
 {
     QObject::disconnect(_tcpSocket, &QTcpSocket::disconnected, this, &TestServer::TcpClientDisconnected);
     QObject::disconnect(_tcpSocket, &QTcpSocket::readyRead, this, &TestServer::ProcessClientRead);
-}
-
-TestServerRunner::TestServerRunner(TestServerConfig const &config, QObject *parent) :
-    QObject(parent),
-    _config(config),
-    _thread(new QThread(this))
-{
-}
-
-void TestServerRunner::Start(const QList<Message> &messages)
-{
-    _server.reset(new TestServer(_config, messages, nullptr));
-    _server.get()->moveToThread(_thread);
-    QObject::connect(_thread, &QThread::started, _server.get(), &TestServer::Start);
-    QObject::connect(_thread, &QThread::finished, _server.get(), &TestServer::Stop);
-    _thread->start();
-}
-
-void TestServerRunner::Stop()
-{
-    _thread->exit();
-    _thread->wait();
-    QObject::disconnect(_thread, &QThread::started, _server.get(), &TestServer::Start);
-    QObject::disconnect(_thread, &QThread::finished, _server.get(), &TestServer::Stop);
-    _server.reset();
-}
-
-ClientEntry::ClientEntry(Message const &incomingMessage) :
-    ClientEntry(std::shared_ptr<Message>(), incomingMessage)
-{
-}
-
-ClientEntry::ClientEntry(std::shared_ptr<Message> outgoingMessage, Message const &incomingMessage) :
-    OutgoingMessage(outgoingMessage),
-    IncomingMessage(incomingMessage)
-{
-}
-
-namespace
-{
-
-void SendOutgoingMessage(ITransport *transport, ClientEntry const &entry)
-{
-    if (entry.OutgoingMessage)
-        transport->Send(*entry.OutgoingMessage.get());
-}
-
-}
-
-void ClientHandler::Check(TransportConfig const &config, QList<ClientEntry> const &entries)
-{
-    int argc = 0;
-    QCoreApplication app(argc, {});
-    Q_UNUSED(app);
-    ClientHandler handler(config, QThread::currentThread(), entries);
-    QThread thread;
-    handler.moveToThread(&thread);
-    QObject::connect(&thread, &QThread::started, &handler, &ClientHandler::ProcessStart);
-    QObject::connect(&thread, &QThread::finished, &handler, &ClientHandler::ProcessFinish);
-    thread.start();
-    EXPECT_TRUE(thread.wait());
-}
-
-ClientHandler::ClientHandler(TransportConfig const &config, QThread *initThread, QList<ClientEntry> const &entries) :
-    QObject(nullptr),
-    _config(config),
-    _transport(nullptr),
-    _initThread(initThread),
-    _entries(entries)
-{
-}
-
-void ClientHandler::ProcessStart()
-{
-    ITransport *transportLowLevel = new TransportLowLevel(_config, this);
-    IMessageCheckStrategy *messageCheckStrategy = new SimpleMessageCheckStrategy(_config.MaxDelayedCount, this);
-    _transport = new Transport(transportLowLevel, messageCheckStrategy, this);
-    QObject::connect(_transport, &ITransport::DataReceived, this, &ClientHandler::ProcessMessage);
-    QObject::connect(_transport, &ITransport::EventReceived, this, &ClientHandler::ProcessMessage);
-    QObject::connect(_transport, &ITransport::ResponseReceived, this, &ClientHandler::ProcessMessage);
-    _transport->Connect();
-    if (!_entries.isEmpty())
-        SendOutgoingMessage(_transport, _entries.first());
-}
-
-void ClientHandler::ProcessFinish()
-{
-    if (_transport != nullptr)
-        delete _transport;
-    _transport = nullptr;
-    this->moveToThread(_initThread);
-}
-
-void ClientHandler::ProcessMessage(Message const &message)
-{
-    EXPECT_FALSE(_entries.isEmpty());
-    EXPECT_EQ(_entries.takeFirst().IncomingMessage ,message);
-    if (_entries.isEmpty())
-        QThread::currentThread()->exit();
-    else
-        SendOutgoingMessage(_transport, _entries.first());
 }
 
 }
