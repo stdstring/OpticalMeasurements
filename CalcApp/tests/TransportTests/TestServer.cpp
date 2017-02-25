@@ -277,7 +277,8 @@ void ClientHandler::ProcessStart()
     QObject::connect(_transport, &ITransport::EventReceived, this, &ClientHandler::ProcessMessage);
     QObject::connect(_transport, &ITransport::ResponseReceived, this, &ClientHandler::ProcessMessage);
     _transport->Connect();
-    SendOutgoingMessage(_transport, _entries.first());
+    if (!_entries.isEmpty())
+        SendOutgoingMessage(_transport, _entries.first());
 }
 
 void ClientHandler::ProcessFinish()
