@@ -1,18 +1,19 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2017-02-26T09:54:25
-#
-#-------------------------------------------------
+include( ../../common.pri )
+include( ../../lib.pri )
 
-QT       -= gui
+QT += core network
 
 TARGET = TestServerCore
 TEMPLATE = lib
 CONFIG += staticlib
 
-SOURCES +=
+SOURCES += TestServer.cpp \
+           TestServerRunner.cpp
 
-HEADERS +=
+HEADERS += TestServerConfig.h \
+           TestServer.h \
+           TestServerRunner.h
+
 unix {
     target.path = /usr/lib
     INSTALLS += target

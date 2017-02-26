@@ -11,6 +11,7 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 LIBS += -L../../lib.$${OS_SUFFIX} -lTransport$${LIB_SUFFIX}
+
 INCLUDEPATH += ../../src/Transport
 
 HEADERS += ../../include/ITransport.h \
@@ -22,7 +23,7 @@ HEADERS += ../../include/ITransport.h \
            ClientEntry.h \
            ClientHandler.h \
            TestServerConfig.h \
-    TestServerRunner.h
+           TestServerRunner.h
 
 
 SOURCES += main.cpp \
@@ -37,4 +38,4 @@ SOURCES += main.cpp \
            TestServer.cpp \
            TransportFunctionalTests.cpp \
            ClientHandler.cpp \
-    TestServerRunner.cpp
+           TestServerRunner.cpp
