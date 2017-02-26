@@ -3,9 +3,9 @@
 
 #include "gtest/gtest.h"
 
+#include "Common/Message.h"
 #include "ClientEntry.h"
 #include "ClientHandler.h"
-#include "Message.h"
 #include "MessageHelper.h"
 #include "TestServerRunner.h"
 #include "TestServerConfig.h"

@@ -7,7 +7,7 @@
 #include <QString>
 #include <QTcpSocket>
 
-#include "Message.h"
+#include "Common/Message.h"
 #include "TcpTransport.h"
 
 namespace CalcApp

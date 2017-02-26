@@ -1,8 +1,8 @@
 #include <QObject>
 
+#include "Common/ITransport.h"
 #include "LowLevel/TransportLowLevel.h"
 #include "IMessageCheckStrategy.h"
-#include "ITransport.h"
 #include "SimpleMessageCheckStrategy.h"
 #include "Transport.h"
 #include "TransportConfig.h"

@@ -2,11 +2,12 @@
 
 #include <QObject>
 
+#include "Common/ITransport.h"
+#include "Common/Message.h"
 #include "DelayedMessagesProcessor.h"
 #include "IMessageCheckStrategy.h"
-#include "ITransport.h"
 #include "MessageInfo.h"
-#include "Message.h"
+
 
 namespace CalcApp
 {

@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Message.h"
+#include "Common/Message.h"
 
 namespace CalcApp
 {

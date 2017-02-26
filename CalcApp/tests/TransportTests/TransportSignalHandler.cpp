@@ -1,8 +1,8 @@
 #include <QList>
 #include <QObject>
 
-#include "ITransport.h"
-#include "Message.h"
+#include "Common/ITransport.h"
+#include "Common/Message.h"
 #include "TransportSignalHandler.h"
 
 namespace CalcApp

@@ -11,7 +11,7 @@
 
 #include <stdexcept>
 
-#include "Message.h"
+#include "Common/Message.h"
 #include "TestServer.h"
 #include "TestServerConfig.h"
 

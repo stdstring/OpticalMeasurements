@@ -2,8 +2,8 @@ TEMPLATE = subdirs
 
 # projects
 SUBDIRS += src/Transport \
-           src/TestServerApp \
-           src/TestServerCore
+           src/TestServerCore \
+           src/TestServerApp
 
 # tests
 SUBDIRS += tests/TransportTests

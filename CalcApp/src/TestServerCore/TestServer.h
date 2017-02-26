@@ -7,7 +7,7 @@
 #include <QTcpSocket>
 #include <QUdpSocket>
 
-#include "Message.h"
+#include "Common/Message.h"
 #include "TestServerConfig.h"
 
 namespace CalcApp

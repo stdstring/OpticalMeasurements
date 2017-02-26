@@ -1,5 +1,6 @@
+#include "Common/Message.h"
+
 #include "EqualityOperators.h"
-#include "Message.h"
 #include "MessageInfo.h"
 
 namespace CalcApp

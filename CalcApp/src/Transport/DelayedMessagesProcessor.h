@@ -2,9 +2,9 @@
 
 #include <QList>
 
+#include "Common/Message.h"
 #include "IMessageCheckStrategy.h"
 #include "MessageInfo.h"
-#include "Message.h"
 
 namespace CalcApp
 {

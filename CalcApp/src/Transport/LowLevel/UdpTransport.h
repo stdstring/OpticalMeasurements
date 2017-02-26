@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QUdpSocket>
 
-#include "Message.h"
+#include "Common/Message.h"
 
 namespace CalcApp
 {

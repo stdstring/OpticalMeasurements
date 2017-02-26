@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#include "Message.h"
+#include "Common/Message.h"
 #include "MessageInfo.h"
 
 namespace CalcApp

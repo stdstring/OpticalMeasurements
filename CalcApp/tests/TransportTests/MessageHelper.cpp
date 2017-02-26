@@ -6,7 +6,7 @@
 
 #include <memory>
 
-#include "Message.h"
+#include "Common/Message.h"
 #include "MessageHelper.h"
 #include "MessageInfo.h"
 #include "MessageInfoFactory.h"

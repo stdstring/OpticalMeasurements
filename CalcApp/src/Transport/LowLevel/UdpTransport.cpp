@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QUdpSocket>
 
-#include "Message.h"
+#include "Common/Message.h"
 #include "UdpTransport.h"
 
 namespace CalcApp

@@ -2,7 +2,7 @@
 
 #include <QPair>
 
-#include "Message.h"
+#include "Common/Message.h"
 
 namespace CalcApp
 {

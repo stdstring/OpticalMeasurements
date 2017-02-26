@@ -1,17 +1,17 @@
+#include <QByteArray>
+#include <QObject>
+
 #include <memory>
 #include <stdexcept>
 #include <vector>
 
-#include <QByteArray>
-#include <QObject>
-
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
+#include "Common/ITransport.h"
+#include "Common/Message.h"
 #include "EqualityOperators.h"
 #include "IMessageCheckStrategy.h"
-#include "ITransport.h"
-#include "Message.h"
 #include "MessageHelper.h"
 #include "SimpleMessageCheckStrategy.h"
 #include "Transport.h"

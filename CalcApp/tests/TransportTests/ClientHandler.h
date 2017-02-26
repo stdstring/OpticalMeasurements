@@ -4,9 +4,9 @@
 #include <QObject>
 #include <QThread>
 
+#include "Common/ITransport.h"
+#include "Common/Message.h"
 #include "ClientEntry.h"
-#include "ITransport.h"
-#include "Message.h"
 #include "TransportConfig.h"
 
 namespace CalcApp

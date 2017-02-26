@@ -21,9 +21,9 @@ SOURCES += LowLevel/TransportLowLevel.cpp \
            DelayedMessagesProcessor.cpp \
            MessageValidation.cpp
 
-HEADERS += ../../include/ITransport.h \
-           ../../include/ITransportFactory.h \
-           ../../include/Message.h \
+HEADERS += ../../include/Common/ITransport.h \
+           ../../include/Common/ITransportFactory.h \
+           ../../include/Common/Message.h \
            LowLevel/TransportLowLevel.h \
            LowLevel/TcpTransport.h \
            LowLevel/UdpTransport.h \

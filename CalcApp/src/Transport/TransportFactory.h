@@ -2,8 +2,8 @@
 
 #include <QObject>
 
-#include "ITransport.h"
-#include "ITransportFactory.h"
+#include "Common/ITransport.h"
+#include "Common/ITransportFactory.h"
 
 namespace CalcApp
 {

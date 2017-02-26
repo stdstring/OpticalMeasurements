@@ -1,11 +1,11 @@
 #include <QObject>
 
-#include "ITransport.h"
+#include "Common/ITransport.h"
+#include "Common/Message.h"
 #include "TcpTransport.h"
-#include "UdpTransport.h"
-#include "Message.h"
 #include "TransportConfig.h"
 #include "TransportLowLevel.h"
+#include "UdpTransport.h"
 
 namespace CalcApp
 {

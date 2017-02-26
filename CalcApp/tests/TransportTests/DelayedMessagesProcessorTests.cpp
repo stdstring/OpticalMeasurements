@@ -5,10 +5,10 @@
 
 #include "gtest/gtest.h"
 
+#include "Common/Message.h"
 #include "DelayedMessagesProcessor.h"
 #include "EqualityOperators.h"
 #include "IMessageCheckStrategy.h"
-#include "Message.h"
 #include "MessageHelper.h"
 #include "MessageInfo.h"
 #include "SimpleMessageCheckStrategy.h"

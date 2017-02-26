@@ -1,8 +1,8 @@
 #include <QObject>
 #include <stdexcept>
 
-#include "ITransport.h"
-#include "Message.h"
+#include "Common/ITransport.h"
+#include "Common/Message.h"
 #include "MessageInfo.h"
 #include "MessageInfoFactory.h"
 #include "MessageValidation.h"
