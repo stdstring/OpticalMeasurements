@@ -11,9 +11,13 @@ namespace CalcApp
 TransportSignalHandler::TransportSignalHandler(ITransport *transport, QObject *parent) :
     QObject(parent)
 {
-    QObject::connect(transport, &ITransport::ResponseReceived, this, &TransportSignalHandler::ProcessResponse);
-    QObject::connect(transport, &ITransport::EventReceived, this, &TransportSignalHandler::ProcessEvent);
-    QObject::connect(transport, &ITransport::DataReceived, this, &TransportSignalHandler::ProcessData);
+    // TODO (std_string) : think about using new syntax
+    //QObject::connect(transport, &ITransport::ResponseReceived, this, &TransportSignalHandler::ProcessResponse);
+    //QObject::connect(transport, &ITransport::EventReceived, this, &TransportSignalHandler::ProcessEvent);
+    //QObject::connect(transport, &ITransport::DataReceived, this, &TransportSignalHandler::ProcessData);
+    QObject::connect(transport, SIGNAL(ResponseReceived(Message const&)), this, SLOT(ProcessResponse(Message const&)));
+    QObject::connect(transport, SIGNAL(EventReceived(Message const&)), this, SLOT(ProcessEvent(Message const&)));
+    QObject::connect(transport, SIGNAL(DataReceived(Message const&)), this, SLOT(ProcessData(Message const&)));
 }
 
 void TransportSignalHandler::ProcessResponse(Message const &message)
