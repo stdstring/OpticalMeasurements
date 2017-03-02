@@ -4,11 +4,11 @@
 #include "gtest/gtest.h"
 
 #include "Common/Message.h"
+#include "TestServerCore/TestServerRunner.h"
+#include "TestServerCore/TestServerConfig.h"
 #include "ClientEntry.h"
 #include "ClientHandler.h"
 #include "MessageHelper.h"
-#include "TestServerRunner.h"
-#include "TestServerConfig.h"
 #include "TransportConfig.h"
 
 namespace CalcApp

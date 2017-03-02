@@ -7,12 +7,14 @@ TARGET = TestServerCore
 TEMPLATE = lib
 CONFIG += staticlib
 
+INCLUDEPATH += ../../include/TestServerCore
+
 SOURCES += TestServer.cpp \
            TestServerRunner.cpp
 
-HEADERS += TestServerConfig.h \
-           TestServer.h \
-           TestServerRunner.h
+HEADERS += ../../include/TestServerCore/TestServerConfig.h \
+           ../../include/TestServerCore/TestServer.h \
+           ../../include/TestServerCore/TestServerRunner.h
 
 unix {
     target.path = /usr/lib

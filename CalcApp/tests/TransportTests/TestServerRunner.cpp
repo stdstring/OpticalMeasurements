@@ -1,4 +1,4 @@
-#include <QList>
+/*#include <QList>
 #include <QObject>
 #include <QThread>
 
@@ -35,4 +35,4 @@ void TestServerRunner::Stop()
     _server.reset();
 }
 
-}
+}*/

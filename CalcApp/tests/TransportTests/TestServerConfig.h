@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QString>
+/*#include <QString>
 #include <QtGlobal>
 
 namespace CalcApp
@@ -23,4 +23,4 @@ public:
     quint16 UdpPortNumber;
 };
 
-}
+}*/

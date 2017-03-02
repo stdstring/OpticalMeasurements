@@ -60,6 +60,7 @@ void ClientHandler::ProcessStart()
     IMessageCheckStrategy *messageCheckStrategy = new SimpleMessageCheckStrategy(_config.MaxDelayedCount, this);
     _transport = new Transport(transportLowLevel, messageCheckStrategy, this);
     QObject::connect(_transport, &ITransport::DataReceived, this, &ClientHandler::ProcessMessage);
+    //QObject::connect(_transport, SIGNAL(DataReceived(Message const&)), this, SLOT(ProcessMessage(Message const&)));
     QObject::connect(_transport, &ITransport::EventReceived, this, &ClientHandler::ProcessMessage);
     QObject::connect(_transport, &ITransport::ResponseReceived, this, &ClientHandler::ProcessMessage);
     _transport->Connect();

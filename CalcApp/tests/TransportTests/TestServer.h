@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QList>
+/*#include <QList>
 #include <QObject>
 #include <QTimer>
 #include <QTcpServer>
@@ -43,4 +43,4 @@ private slots:
     void TcpClientDisconnected();
 };
 
-}
+}*/

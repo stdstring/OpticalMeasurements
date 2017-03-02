@@ -1,4 +1,4 @@
-#include <QByteArray>
+/*#include <QByteArray>
 #include <QDataStream>
 #include <QHostAddress>
 #include <QIODevice>
@@ -177,4 +177,4 @@ void TestServer::TcpClientDisconnected()
     QObject::disconnect(_tcpSocket, &QTcpSocket::readyRead, this, &TestServer::ProcessClientRead);
 }
 
-}
+}*/

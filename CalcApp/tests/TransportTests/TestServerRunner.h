@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QList>
+/*#include <QList>
 #include <QObject>
 #include <QThread>
 
@@ -27,4 +27,4 @@ private:
     QThread *_thread;
 };
 
-}
+}*/
