@@ -14,7 +14,7 @@ class TransportFactory : public QObject, public ITransportFactory
 public:
     explicit TransportFactory(QObject *parent = 0);
 
-    virtual ITransport* Create(QObject *parent) override;
+    virtual ITransport* Create(TransportConfig const &transportConfig, QObject *parent) override;
 };
 
 }

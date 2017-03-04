@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QtPlugin>
 
+#include "Common/TransportConfig.h"
 #include "ITransport.h"
 
 namespace CalcApp
@@ -11,7 +12,7 @@ namespace CalcApp
 class ITransportFactory
 {
 public:
-    virtual ITransport* Create(QObject *parent) = 0;
+    virtual ITransport* Create(TransportConfig const &transportConfig, QObject *parent) = 0;
 };
 
 }
