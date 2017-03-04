@@ -13,6 +13,7 @@ HEADERS += ../../include/Common/ActionsConfig.h \
            ../../include/Common/IConfigReader.h \
            ../../include/Common/ITransport.h \
            ../../include/Common/ITransportFactory.h \
+           ../../include/Common/MainConfig.h \
            ../../include/Common/Message.h \
            ../../include/Common/TransportConfig.h
 

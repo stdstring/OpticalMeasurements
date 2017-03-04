@@ -27,6 +27,4 @@ INCLUDEPATH += $${IMPORT_PATH}/
 
 linux-g++: QMAKE_CXXFLAGS += -std=c++11
 
-DISTFILES +=
-
 CONFIG += C++11
