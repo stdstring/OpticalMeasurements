@@ -24,6 +24,7 @@ SOURCES += LowLevel/TransportLowLevel.cpp \
 HEADERS += ../../include/Common/ITransport.h \
            ../../include/Common/ITransportFactory.h \
            ../../include/Common/Message.h \
+           ../../include/Common/TransportConfig.h \
            LowLevel/TransportLowLevel.h \
            LowLevel/TcpTransport.h \
            LowLevel/UdpTransport.h \

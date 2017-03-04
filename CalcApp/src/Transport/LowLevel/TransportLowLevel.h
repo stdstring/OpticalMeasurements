@@ -4,8 +4,8 @@
 
 #include "Common/ITransport.h"
 #include "Common/Message.h"
+#include "Common/TransportConfig.h"
 #include "TcpTransport.h"
-#include "TransportConfig.h"
 #include "UdpTransport.h"
 
 namespace CalcApp

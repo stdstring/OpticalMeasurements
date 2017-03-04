@@ -2,8 +2,8 @@
 
 #include "Common/ITransport.h"
 #include "Common/Message.h"
+#include "Common/TransportConfig.h"
 #include "TcpTransport.h"
-#include "TransportConfig.h"
 #include "TransportLowLevel.h"
 #include "UdpTransport.h"
 

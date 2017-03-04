@@ -12,31 +12,10 @@ TEMPLATE = app
 
 LIBS += -L../../lib.$${OS_SUFFIX} -lTestServerCore -lTransport$${LIB_SUFFIX}
 
-#INCLUDEPATH += ../../include/Common
-#INCLUDEPATH += ../../include/TestServerCore
 INCLUDEPATH += ../../src/Transport
 
-#HEADERS += ../../include/Common/ITransport.h \
-#           ../../include/Common/Message.h \
-#           EqualityOperators.h \
-#           MessageHelper.h \
-#           TransportSignalHandler.h \
-#           TestServer.h \
-#           ClientEntry.h \
-#           ClientHandler.h \
-#           TestServerConfig.h \
-#           TestServerRunner.h
-
-#HEADERS += EqualityOperators.h \
-#           MessageHelper.h \
-#           TransportSignalHandler.h \
-#           TestServer.h \
-#           ClientEntry.h \
-#           ClientHandler.h \
-#           TestServerConfig.h \
-#           TestServerRunner.h
-
-HEADERS += ../../include/TestServerCore/TestServerConfig.h \
+HEADERS += ../../include/Common/TransportConfig.h \
+           ../../include/TestServerCore/TestServerConfig.h \
            ../../include/TestServerCore/TestServer.h \
            ../../include/TestServerCore/TestServerRunner.h \
            EqualityOperators.h \

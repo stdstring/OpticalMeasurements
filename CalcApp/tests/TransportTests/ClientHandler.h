@@ -6,8 +6,8 @@
 
 #include "Common/ITransport.h"
 #include "Common/Message.h"
+#include "Common/TransportConfig.h"
 #include "ClientEntry.h"
-#include "TransportConfig.h"
 
 namespace CalcApp
 {

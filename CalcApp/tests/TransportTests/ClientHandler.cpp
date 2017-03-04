@@ -7,13 +7,13 @@
 #include "gtest/gtest.h"
 
 #include "Common/ITransport.h"
+#include "Common/TransportConfig.h"
 #include "LowLevel/TransportLowLevel.h"
 #include "ClientEntry.h"
 #include "ClientHandler.h"
 #include "EqualityOperators.h"
 #include "IMessageCheckStrategy.h"
 #include "SimpleMessageCheckStrategy.h"
-#include "TransportConfig.h"
 #include "Transport.h"
 
 namespace CalcApp
