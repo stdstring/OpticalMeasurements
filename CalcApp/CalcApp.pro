@@ -1,7 +1,8 @@
 TEMPLATE = subdirs
 
 # projects
-SUBDIRS += src/Transport \
+SUBDIRS += src/Common \
+           src/Transport \
            src/TestServerCore \
            src/TestServerApp
 
