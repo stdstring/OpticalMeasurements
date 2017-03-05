@@ -8,6 +8,7 @@
 #include <QTcpSocket>
 
 #include "Common/Message.h"
+#include "Common/TransportConfig.h"
 #include "TcpTransport.h"
 
 namespace CalcApp
@@ -71,10 +72,10 @@ QPair<quint32, QByteArray> ReadData(QTcpSocket *socket, quint32 size)
 
 }
 
-TcpTransport::TcpTransport(QString const &address, quint16 port, QObject *parent) :
+TcpTransport::TcpTransport(TransportConfig const &transportConfig, QObject *parent) :
     QObject(parent),
-    _address(address),
-    _port(port),
+    _address(transportConfig.TcpAddress),
+    _port(transportConfig.TcpPort),
     _socket(new QTcpSocket(this)),
     _messageSize(0),
     _state(TcpTransportState::WAITING_EVENT)

@@ -4,6 +4,7 @@
 #include <QUdpSocket>
 
 #include "Common/Message.h"
+#include "Common/TransportConfig.h"
 
 namespace CalcApp
 {
@@ -12,7 +13,7 @@ class UdpTransport : public QObject
 {
     Q_OBJECT
 public:
-    UdpTransport(quint16 port, QObject *parent);
+    UdpTransport(TransportConfig const &transportConfig, QObject *parent);
     void Connect();
 
 signals:

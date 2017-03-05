@@ -12,8 +12,8 @@ namespace CalcApp
 
 TransportLowLevel::TransportLowLevel(TransportConfig const &config, QObject *parent) :
     ITransport(parent),
-    _tcpTransport(new TcpTransport(config.TcpAddress, config.TcpPort, this)),
-    _udpTransport(new UdpTransport(config.UdpPort, this))
+    _tcpTransport(new TcpTransport(config, this)),
+    _udpTransport(new UdpTransport(config, this))
 {
     QObject::connect(_tcpTransport, &TcpTransport::ResponseReceived, this, &TransportLowLevel::ResponseReceived);
     QObject::connect(_tcpTransport, &TcpTransport::EventReceived, this, &TransportLowLevel::EventReceived);

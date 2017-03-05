@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 
 #include "Common/Message.h"
+#include "Common/TransportConfig.h"
 
 namespace CalcApp
 {
@@ -15,7 +16,7 @@ class TcpTransport : public QObject
 {
     Q_OBJECT
 public:
-    TcpTransport(QString const &address, quint16 port, QObject *parent);
+    TcpTransport(TransportConfig const &transportConfig, QObject *parent);
     void Connect();
     void Send(Message const &message);
 

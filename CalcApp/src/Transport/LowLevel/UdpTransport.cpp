@@ -5,6 +5,7 @@
 #include <QUdpSocket>
 
 #include "Common/Message.h"
+#include "Common/TransportConfig.h"
 #include "UdpTransport.h"
 
 namespace CalcApp
@@ -47,9 +48,9 @@ QList<QByteArray> ReadData(QUdpSocket *socket)
 
 }
 
-UdpTransport::UdpTransport(quint16 port, QObject *parent) :
+UdpTransport::UdpTransport(TransportConfig const &transportConfig, QObject *parent) :
     QObject(parent),
-    _port(port),
+    _port(transportConfig.UdpPort),
     _socket(new QUdpSocket(this))
 {
     QObject::connect(_socket, &QUdpSocket::readyRead, this, &UdpTransport::ProcessRead);
