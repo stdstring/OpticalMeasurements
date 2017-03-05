@@ -11,7 +11,7 @@ class ITransport : public QObject
 {
     Q_OBJECT
 public:
-    ITransport(QObject *parent = nullptr) : QObject(parent) {}
+    explicit ITransport(QObject *parent = nullptr) : QObject(parent) {}
     virtual void Connect() = 0;
     virtual void Send(Message const &message) = 0;
 

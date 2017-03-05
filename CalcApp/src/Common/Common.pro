@@ -7,9 +7,12 @@ TARGET = Common
 TEMPLATE = lib
 CONFIG += staticlib
 
-SOURCES +=
+INCLUDEPATH += ../../include/Common
+
+SOURCES += DefaultConfigReader.cpp
 
 HEADERS += ../../include/Common/ActionsConfig.h \
+           ../../include/Common/DefaultConfigReader.h \
            ../../include/Common/IConfigReader.h \
            ../../include/Common/ITransport.h \
            ../../include/Common/ITransportFactory.h \

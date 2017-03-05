@@ -35,7 +35,7 @@ public:
 struct ActionsConfig
 {
 public:
-    ActionsConfig(QList<ActionChainDef> const &chains) :
+    explicit ActionsConfig(QList<ActionChainDef> const &chains) :
         Chains(chains)
     {
     }

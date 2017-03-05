@@ -8,10 +8,6 @@ namespace CalcApp
 struct TransportConfig
 {
 public:
-    TransportConfig()
-    {
-    }
-
     TransportConfig(quint32 maxDelayedCount, QString const &tcpAddress, quint16 tcpPort, quint16 udpPort) :
         MaxDelayedCount(maxDelayedCount),
         TcpAddress(tcpAddress),
