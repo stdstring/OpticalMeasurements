@@ -1,11 +1,13 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 
 namespace Ui {
 class MainWindow;
 }
+
+namespace CalcApp
+{
 
 class MainWindow : public QMainWindow
 {
@@ -19,4 +21,4 @@ private:
     Ui::MainWindow *ui;
 };
 
-#endif // MAINWINDOW_H
+}
