@@ -9,6 +9,8 @@ CONFIG += plugin
 
 DEFINES += TRANSPORT_LIBRARY
 
+LIBS += -lCommon
+
 #DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
 SOURCES += LowLevel/TransportLowLevel.cpp \

@@ -7,6 +7,8 @@ TARGET = TestServerCore
 TEMPLATE = lib
 CONFIG += staticlib
 
+LIBS += -lCommon
+
 INCLUDEPATH += ../../include/TestServerCore
 
 SOURCES += TestServer.cpp \

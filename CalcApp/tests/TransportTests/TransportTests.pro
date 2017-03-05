@@ -10,7 +10,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-LIBS += -L../../lib.$${OS_SUFFIX} -lTestServerCore -lTransport$${LIB_SUFFIX}
+LIBS += -lCommon -lTestServerCore -lTransport$${LIB_SUFFIX}
 
 INCLUDEPATH += ../../src/Transport
 
