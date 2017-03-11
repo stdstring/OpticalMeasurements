@@ -3,8 +3,8 @@
 #include <QObject>
 #include <QtPlugin>
 
-#include "Common/TransportConfig.h"
 #include "ITransport.h"
+#include "TransportConfig.h"
 
 namespace CalcApp
 {

@@ -15,6 +15,7 @@ SOURCES += DefaultConfigReader.cpp \
 HEADERS += ../../include/Common/ActionsConfig.h \
            ../../include/Common/ComponentLoader.h \
            ../../include/Common/DefaultConfigReader.h \
+           ../../include/Common/IComponentInfo.h \
            ../../include/Common/IConfigReader.h \
            ../../include/Common/ITransport.h \
            ../../include/Common/ITransportFactory.h \
