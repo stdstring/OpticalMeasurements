@@ -22,15 +22,12 @@ void ComponentStorage::AddComponent(IComponentInfo *component)
     {
         case ComponentType::ACTION:
         {
-            IActionFactory *action = qobject_cast<IActionFactory*>(component);
-            _actions.append(action);
+            AddAction(qobject_cast<IActionFactory*>(component));
             break;
         }
         case ComponentType::TRANSPORT:
         {
-            // TODO (std_string) : think about processing of situation with several transport's module
-            delete _transport;
-            _transport = qobject_cast<ITransportFactory*>(component);
+            SetTransport(qobject_cast<ITransportFactory*>(component));
             break;
         }
         default:
@@ -45,6 +42,37 @@ void ComponentStorage::AddComponents(QList<IComponentInfo*> components)
     {
         AddComponent(component);
     }
+}
+
+IActionFactory* ComponentStorage::FindAction(QString const &id) const
+{
+    QList<IActionFactory*>::const_iterator iterator = std::find_if(_actions.cbegin(),
+                                                                   _actions.cend(),
+                                                                   [&id](IActionFactory* factory){ return factory->GetId() == id; });
+    return iterator == _actions.cend() ? nullptr : *iterator;
+}
+
+ITransportFactory* ComponentStorage::GetTransport() const
+{
+    return _transport;
+}
+
+void ComponentStorage::AddAction(IActionFactory *action)
+{
+    // TODO (std_string) : think about processing of situation with several actions modules with the same id
+    if (FindAction(action->GetId()) == nullptr)
+        _actions.append(action);
+    else
+        delete action;
+}
+
+void ComponentStorage::SetTransport(ITransportFactory *transport)
+{
+    // TODO (std_string) : think about processing of situation with several transport's module
+    if (_transport == nullptr)
+        _transport = transport;
+    else
+        delete transport;
 }
 
 }

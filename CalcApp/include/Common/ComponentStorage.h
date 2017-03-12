@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QList>
+#include <QString>
 
 #include "IActionFactory.h"
 #include "IComponentInfo.h"
@@ -15,6 +16,8 @@ public:
     ComponentStorage();
     void AddComponent(IComponentInfo *component);
     void AddComponents(QList<IComponentInfo*> components);
+    IActionFactory* FindAction(QString const &id) const;
+    ITransportFactory* GetTransport() const;
 
     ComponentStorage(ComponentStorage const&) = delete;
     ComponentStorage(ComponentStorage&&) = delete;
@@ -22,6 +25,9 @@ public:
     ComponentStorage& operator=(ComponentStorage&&) = delete;
 
 private:
+    void AddAction(IActionFactory *action);
+    void SetTransport(ITransportFactory *transport);
+
     QList<IActionFactory*> _actions;
     ITransportFactory *_transport;
 };
