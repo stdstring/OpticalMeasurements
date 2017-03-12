@@ -1,6 +1,7 @@
 #include <QObject>
 
 #include "Common/ITransport.h"
+#include "Common/ITransportFactory.h"
 #include "Common/TransportConfig.h"
 #include "LowLevel/TransportLowLevel.h"
 #include "IMessageCheckStrategy.h"
@@ -11,7 +12,7 @@
 namespace CalcApp
 {
 
-TransportFactory::TransportFactory(QObject *parent) : QObject(parent)
+TransportFactory::TransportFactory(QObject *parent) : ITransportFactory(parent)
 {
 }
 

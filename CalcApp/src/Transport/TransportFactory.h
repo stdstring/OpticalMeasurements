@@ -11,11 +11,11 @@
 namespace CalcApp
 {
 
-class TransportFactory : public QObject, public ITransportFactory
+class TransportFactory : public ITransportFactory
 {
     Q_OBJECT
 public:
-    explicit TransportFactory(QObject *parent = 0);
+    explicit TransportFactory(QObject *parent = nullptr);
 
     // TODO (std_string) : think about using project name
     // TODO (std_string) : think about moving this into global defs

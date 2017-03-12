@@ -11,11 +11,13 @@ INCLUDEPATH += ../../include/Common
 
 SOURCES += DefaultConfigReader.cpp \
            ComponentLoader.cpp \
-           Context.cpp
+           Context.cpp \
+           ComponentStorage.cpp
 
 HEADERS += ../../include/Common/IAction.h \
            ../../include/Common/ActionsConfig.h \
            ../../include/Common/ComponentLoader.h \
+           ../../include/Common/ComponentStorage.h \
            ../../include/Common/Context.h \
            ../../include/Common/DefaultConfigReader.h \
            ../../include/Common/IComponentInfo.h \

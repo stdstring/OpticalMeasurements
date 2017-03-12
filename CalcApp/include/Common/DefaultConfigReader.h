@@ -10,8 +10,9 @@ namespace CalcApp
 
 class DefaultConfigReader : public IConfigReader
 {
+    Q_OBJECT
 public:
-    explicit DefaultConfigReader(QObject *parent = 0);
+    explicit DefaultConfigReader(QObject *parent = nullptr);
     virtual MainConfig Read(int argc, char *argv[]) override;
 };
 
