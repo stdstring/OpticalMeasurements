@@ -5,6 +5,7 @@
 #include <QtPlugin>
 
 #include "IComponentInfo.h"
+#include "Context.h"
 #include "MainConfig.h"
 
 namespace CalcApp
@@ -14,10 +15,10 @@ class IAction : public QObject
 {
     Q_OBJECT
 public:
-    explicit ITransport(QObject *parent = nullptr) : QObject(parent) {}
+    explicit IAction(QObject *parent = nullptr) : QObject(parent) {}
 
     virtual QString GetName() = 0;
-    virtual void StartAction() = 0;
+    virtual void StartAction(Context &context) = 0;
 
 signals:
     void ActionFinished();

@@ -10,11 +10,13 @@ CONFIG += staticlib
 INCLUDEPATH += ../../include/Common
 
 SOURCES += DefaultConfigReader.cpp \
-           ComponentLoader.cpp
+           ComponentLoader.cpp \
+    Context.cpp
 
 HEADERS += ../../include/Common/IAction.h \
            ../../include/Common/ActionsConfig.h \
            ../../include/Common/ComponentLoader.h \
+           ../../include/Common/Context.h \
            ../../include/Common/DefaultConfigReader.h \
            ../../include/Common/IComponentInfo.h \
            ../../include/Common/IConfigReader.h \
