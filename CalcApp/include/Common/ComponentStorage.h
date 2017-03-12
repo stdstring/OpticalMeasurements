@@ -2,7 +2,7 @@
 
 #include <QList>
 
-#include "IAction.h"
+#include "IActionFactory.h"
 #include "IComponentInfo.h"
 #include "ITransportFactory.h"
 

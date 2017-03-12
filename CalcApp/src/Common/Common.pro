@@ -15,6 +15,7 @@ SOURCES += DefaultConfigReader.cpp \
            ComponentStorage.cpp
 
 HEADERS += ../../include/Common/IAction.h \
+           ../../include/Common/IActionFactory.h \
            ../../include/Common/ActionsConfig.h \
            ../../include/Common/ComponentLoader.h \
            ../../include/Common/ComponentStorage.h \
@@ -26,7 +27,7 @@ HEADERS += ../../include/Common/IAction.h \
            ../../include/Common/ITransportFactory.h \
            ../../include/Common/MainConfig.h \
            ../../include/Common/Message.h \
-           ../../include/Common/TransportConfig.h
+           ../../include/Common/TransportConfig.h \
 
 unix {
     target.path = /usr/lib
