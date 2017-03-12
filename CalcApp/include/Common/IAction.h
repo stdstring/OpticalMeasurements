@@ -10,17 +10,23 @@
 namespace CalcApp
 {
 
-class IAction
+class IAction : public QObject
 {
+    Q_OBJECT
 public:
+    explicit ITransport(QObject *parent = nullptr) : QObject(parent) {}
+
     virtual QString GetName() = 0;
-    virtual void Process() = 0;
+    virtual void StartAction() = 0;
+
+signals:
+    void ActionFinished();
 };
 
 class IActionFactory : public IComponentInfo
 {
 public:
-    virtual IAction* Create(MainConfig const &config, QObject *parent) = 0;
+    virtual IAction* Create(QString const &name, MainConfig const &config, QObject *parent) = 0;
     virtual ComponentType GetComponentType() override { return ComponentType::ACTION; }
 };
 

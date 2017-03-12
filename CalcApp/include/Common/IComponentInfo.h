@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QString>
 #include <QtPlugin>
 
 namespace CalcApp
@@ -10,6 +11,7 @@ enum ComponentType { ACTION, TRANSPORT };
 class IComponentInfo
 {
 public:
+    virtual QString GetId() = 0;
     virtual ComponentType GetComponentType() = 0;
 };
 
