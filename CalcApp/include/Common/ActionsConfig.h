@@ -9,16 +9,16 @@ namespace CalcApp
 struct ActionDef
 {
 public:
-    ActionDef(QString const &id, QString const &name, QString const &argsString) :
+    ActionDef(QString const &id, QString const &name, QString const &args) :
         Id(id),
         Name(name),
-        ArgsString(argsString)
+        Args(args)
     {
     }
 
     QString Id;
     QString Name;
-    QString ArgsString;
+    QString Args;
 };
 
 struct ActionChainDef
