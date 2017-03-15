@@ -14,6 +14,11 @@ TestActionBFactory::TestActionBFactory(QObject *parent) : IActionFactory(parent)
 {
 }
 
+QString TestActionBFactory::GetId()
+{
+    return "TestActionB";
+}
+
 IAction* TestActionBFactory::Create(QString const &name, QString const &args, MainConfig const &config, QObject *parent)
 {
     Q_UNUSED(config);

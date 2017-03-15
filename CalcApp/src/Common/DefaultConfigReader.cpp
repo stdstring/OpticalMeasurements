@@ -30,7 +30,15 @@ MainConfig DefaultConfigReader::Read(int argc, char *argv[])
     Q_UNUSED(argc);
     Q_UNUSED(argv);
     TransportConfig transportConfig(MaxDelayedCount, ServerAddress, TcpPortNumber, UdpPortNumber);
-    ActionsConfig actionsConfig({});
+    ActionChainDef shortChain("Short command chain", {ActionDef("TestActionA", "ActionA", "3000"),
+                                                      ActionDef("TestActionB", "ActionB", "5000")});
+    ActionChainDef longChain("Short command chain", {ActionDef("TestActionA", "First ActionA", "2000"),
+                                                     ActionDef("TestActionB", "First ActionB", "3000"),
+                                                     ActionDef("TestActionA", "Second ActionA", "5000"),
+                                                     ActionDef("TestActionB", "Second ActionB", "6000"),
+                                                     ActionDef("TestActionA", "Final ActionA", "10000"),
+                                                     ActionDef("TestActionB", "Final ActionB", "12000")});
+    ActionsConfig actionsConfig({shortChain, longChain});
     QString pluginsCommonDir = "";
     return MainConfig(pluginsCommonDir, actionsConfig, transportConfig);
 }

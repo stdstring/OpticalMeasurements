@@ -15,6 +15,7 @@ class TestActionBFactory : IActionFactory
 public:
     explicit TestActionBFactory(QObject *parent = nullptr);
 
+    virtual QString GetId() override;
     virtual IAction* Create(QString const &name, QString const &args, MainConfig const &config, QObject *parent) override;
 };
 

@@ -8,6 +8,7 @@
 namespace CalcApp
 {
 
+// TODO (std_string) : think about moving this into MainApp project
 class DefaultConfigReader : public IConfigReader
 {
     Q_OBJECT
