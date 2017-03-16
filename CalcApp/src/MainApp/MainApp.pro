@@ -11,8 +11,10 @@ TEMPLATE = app
 LIBS += -lCommon
 
 SOURCES += main.cpp \
-           MainWindow.cpp
+           MainWindow.cpp \
+           StateManager.cpp
 
-HEADERS  += MainWindow.h
+HEADERS  += MainWindow.h \
+            StateManager.h
 
 FORMS    += MainWindow.ui

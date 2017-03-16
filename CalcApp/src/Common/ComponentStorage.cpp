@@ -18,6 +18,7 @@ ComponentStorage::ComponentStorage() :
 
 void ComponentStorage::AddComponent(IComponentInfo *component)
 {
+    // TODO (std_string) : use more functional style
     switch (component->GetComponentType())
     {
         case ComponentType::ACTION:

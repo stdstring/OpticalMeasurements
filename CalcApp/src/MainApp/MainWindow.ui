@@ -98,7 +98,7 @@
        </widget>
       </item>
       <item>
-       <spacer name="StopShowResultslSpacer">
+       <spacer name="StopResultSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -111,14 +111,14 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="ShowResultsButton">
+       <widget class="QPushButton" name="ResultButton">
         <property name="text">
          <string>Show results</string>
         </property>
        </widget>
       </item>
       <item>
-       <spacer name="ShowResultsRightSpacer">
+       <spacer name="ResultRightSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
