@@ -1,7 +1,7 @@
 #pragma once
 
+#include <QList>
 #include <QObject>
-#include <QQueue>
 
 #include "ActionsConfig.h"
 #include "ComponentStorage.h"
@@ -14,7 +14,7 @@ namespace CalcApp
 class ActionChainFactory
 {
 public:
-    static QQueue<IAction*> Create(ActionChainDef const &chainDef, ComponentStorage const &storage, MainConfig const &config, QObject *parent);
+    static QList<IAction*> Create(ActionChainDef const &chainDef, ComponentStorage const &storage, MainConfig const &config, QObject *parent);
 
     ActionChainFactory() = delete;
     ActionChainFactory(ActionChainFactory const&) = delete;

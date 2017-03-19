@@ -1,7 +1,7 @@
 #include <QObject>
 #include <QString>
 #include <QtGlobal>
-#include <QTimer>
+#include <QThread>
 
 #include "Common/Context.h"
 #include "Common/IAction.h"
@@ -22,10 +22,16 @@ QString TestActionA::GetName()
     return _name;
 }
 
-void TestActionA::StartAction(Context &context)
+/*void TestActionA::StartAction(Context &context)
 {
     Q_UNUSED(context);
     QTimer::singleShot(_time, this, [this](){ emit ActionFinished(); });
+}*/
+
+void TestActionA::Run(Context &context)
+{
+    Q_UNUSED(context);
+    QThread::msleep(_time);
 }
 
 }

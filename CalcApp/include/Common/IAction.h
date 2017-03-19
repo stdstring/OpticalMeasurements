@@ -15,10 +15,11 @@ public:
     explicit IAction(QObject *parent = nullptr) : QObject(parent) {}
 
     virtual QString GetName() = 0;
-    virtual void StartAction(Context &context) = 0;
+    virtual void Run(Context &context) = 0;
+    /*virtual void StartAction(Context &context) = 0;*/
 
-signals:
-    void ActionFinished();
+/*signals:
+    void ActionFinished();*/
 };
 
 }

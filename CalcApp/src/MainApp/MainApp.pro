@@ -12,9 +12,11 @@ LIBS += -lCommon
 
 SOURCES += main.cpp \
            MainWindow.cpp \
-           StateManager.cpp
+           StateManager.cpp \
+           ActionManager.cpp
 
 HEADERS  += MainWindow.h \
-            StateManager.h
+            StateManager.h \
+            ActionManager.h
 
 FORMS    += MainWindow.ui
