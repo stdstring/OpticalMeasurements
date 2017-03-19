@@ -64,8 +64,7 @@ void ActionManager::Create(QString const &chainName, QObject *parent)
     if (!_chain.isEmpty())
         throw std::logic_error("Action's chain isn't empty");
     ActionChainDef const &chain = FindActionChain(_config.Actions, chainName);
-    /*_chain = ActionChainFactory::Create(chain, _storage, _config, parent);
-    _index = 0;*/
+    _chain = ActionChainFactory::Create(chain, _storage, _config, parent);
 }
 
 void ActionManager::Run()
@@ -86,13 +85,8 @@ void ActionManager::Stop()
 
 void ActionManager::Clear()
 {
-    /*std::for_each(_chain.begin(), _chain.end(), [](IAction *action){ delete action; });
+    std::for_each(_chain.begin(), _chain.end(), [](IAction *action){ delete action; });
     _chain.clear();
-    _index = -1;*/
 }
-
-/*void ActionManager::ProcessFinishAction()
-{
-}*/
 
 }
