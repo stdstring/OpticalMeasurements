@@ -2,8 +2,8 @@
 
 #include <QList>
 #include <QObject>
-#include <QRunnable>
 #include <QString>
+#include <QThread>
 
 #include "Common/ComponentStorage.h"
 #include "Common/Context.h"
@@ -13,12 +13,13 @@
 namespace CalcApp
 {
 
-class ActionExecuter : public QObject, public QRunnable
+class ActionExecuter : public QThread
 {
     Q_OBJECT
 public:
     ActionExecuter(Context &context, QList<IAction*> const &chain, QObject *parent = nullptr);
 
+protected:
     virtual void run() override;
 
 private:
@@ -43,6 +44,9 @@ public:
     void Clear();
 
 private:
+    void ExecuterCreate();
+    void ExecuterCleanup();
+
     MainConfig const& _config;
     ComponentStorage const& _storage;
     Context _context;
@@ -54,8 +58,8 @@ signals:
     void ActionFinished(int index, QString const &name);
     void ActionChainFinished();
 
-/*private slots:
-    void ProcessFinishAction();*/
+private slots:
+    void ProcessActionChainExecutionFinish();
 };
 
 }
