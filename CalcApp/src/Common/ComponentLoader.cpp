@@ -14,7 +14,8 @@ QObject* ComponentLoader::Load(QString const &location, QObject *parent)
 {
     QPluginLoader loader(location);
     QObject *component = loader.instance();
-    component->setParent(parent);
+    if (component != nullptr)
+        component->setParent(parent);
     return component;
 }
 

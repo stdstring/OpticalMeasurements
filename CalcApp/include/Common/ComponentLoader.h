@@ -14,7 +14,9 @@ public:
     template<typename TComponent> static TComponent* Load(QString const &location, QObject *parent)
     {
         QObject *obj = Load(location, parent);
-        TComponent *component = qobject_cast<TComponent*>(obj);
+        // TODO (std_string) : investigate why this don't work
+        //TComponent *component = qobject_cast<TComponent*>(obj);
+        TComponent *component = dynamic_cast<TComponent*>(obj);
         if (component == nullptr && obj != nullptr)
             delete obj;
         return component;

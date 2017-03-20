@@ -10,4 +10,4 @@ SUBDIRS += src/Common \
            src/MainApp
 
 # tests
-SUBDIRS += tests/TransportTests
+#SUBDIRS += tests/TransportTests

@@ -39,7 +39,7 @@ MainConfig DefaultConfigReader::Read(int argc, char *argv[])
                                                      ActionDef("TestActionA", "Final ActionA", "10000"),
                                                      ActionDef("TestActionB", "Final ActionB", "12000")});
     ActionsConfig actionsConfig({shortChain, longChain});
-    QString pluginsCommonDir = "";
+    QString pluginsCommonDir = ".";
     return MainConfig(pluginsCommonDir, actionsConfig, transportConfig);
 }
 

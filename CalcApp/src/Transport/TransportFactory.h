@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QtPlugin>
 
 #include "Common/IComponentInfo.h"
 #include "Common/ITransport.h"
@@ -14,6 +15,8 @@ namespace CalcApp
 class TransportFactory : public ITransportFactory
 {
     Q_OBJECT
+    Q_INTERFACES(CalcApp::ITransportFactory)
+    Q_PLUGIN_METADATA(IID "com.stdstring.CalcApp.ITransportFactory" FILE "Transport.json")
 public:
     explicit TransportFactory(QObject *parent = nullptr);
 

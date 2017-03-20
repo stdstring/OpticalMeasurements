@@ -13,6 +13,7 @@ namespace CalcApp
 
 class IActionFactory : public IComponentInfo
 {
+    Q_OBJECT
 public:
     explicit IActionFactory(QObject *parent = nullptr) : IComponentInfo(parent) {}
 
@@ -23,4 +24,3 @@ public:
 }
 
 Q_DECLARE_INTERFACE(CalcApp::IActionFactory, "com.stdstring.CalcApp.IActionFactory")
-
