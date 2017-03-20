@@ -13,10 +13,12 @@ LIBS += -lCommon
 SOURCES += main.cpp \
            MainWindow.cpp \
            StateManager.cpp \
-           ActionManager.cpp
+           ActionManager.cpp \
+           DefaultConfigReader.cpp
 
 HEADERS  += MainWindow.h \
             StateManager.h \
-            ActionManager.h
+            ActionManager.h \
+            DefaultConfigReader.h
 
 FORMS    += MainWindow.ui

@@ -9,8 +9,7 @@ CONFIG += staticlib
 
 INCLUDEPATH += ../../include/Common
 
-SOURCES += DefaultConfigReader.cpp \
-           ComponentLoader.cpp \
+SOURCES += ComponentLoader.cpp \
            Context.cpp \
            ComponentStorage.cpp \
            ActionChainFactory.cpp
@@ -20,7 +19,6 @@ HEADERS += ../../include/Common/ActionChainFactory.h \
            ../../include/Common/ComponentLoader.h \
            ../../include/Common/ComponentStorage.h \
            ../../include/Common/Context.h \
-           ../../include/Common/DefaultConfigReader.h \
            ../../include/Common/IAction.h \
            ../../include/Common/IActionFactory.h \
            ../../include/Common/IComponentInfo.h \

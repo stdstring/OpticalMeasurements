@@ -2,13 +2,12 @@
 
 #include <QObject>
 
-#include "IConfigReader.h"
-#include "MainConfig.h"
+#include "Common/IConfigReader.h"
+#include "Common/MainConfig.h"
 
 namespace CalcApp
 {
 
-// TODO (std_string) : think about moving this into MainApp project
 class DefaultConfigReader : public IConfigReader
 {
     Q_OBJECT

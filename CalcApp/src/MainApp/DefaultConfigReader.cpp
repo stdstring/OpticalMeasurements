@@ -2,11 +2,11 @@
 #include <QString>
 #include <QtGlobal>
 
-#include "ActionsConfig.h"
+#include "Common/ActionsConfig.h"
+#include "Common/IConfigReader.h"
+#include "Common/MainConfig.h"
+#include "Common/TransportConfig.h"
 #include "DefaultConfigReader.h"
-#include "IConfigReader.h"
-#include "MainConfig.h"
-#include "TransportConfig.h"
 
 namespace CalcApp
 {
@@ -32,7 +32,7 @@ MainConfig DefaultConfigReader::Read(int argc, char *argv[])
     TransportConfig transportConfig(MaxDelayedCount, ServerAddress, TcpPortNumber, UdpPortNumber);
     ActionChainDef shortChain("Short command chain", {ActionDef("TestActionA", "ActionA", "3000"),
                                                       ActionDef("TestActionB", "ActionB", "5000")});
-    ActionChainDef longChain("Short command chain", {ActionDef("TestActionA", "First ActionA", "2000"),
+    ActionChainDef longChain("Long command chain", {ActionDef("TestActionA", "First ActionA", "2000"),
                                                      ActionDef("TestActionB", "First ActionB", "3000"),
                                                      ActionDef("TestActionA", "Second ActionA", "5000"),
                                                      ActionDef("TestActionB", "Second ActionB", "6000"),
