@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     QList<CalcApp::IComponentInfo*> components = CalcApp::ComponentsDirLoader::Load<CalcApp::IComponentInfo>(config.PluginsCommonDir, &app, true);
     CalcApp::ComponentStorage componentStorage;
     componentStorage.AddComponents(components);
-    CalcApp::MainWindow w;
+    CalcApp::MainWindow w(config, componentStorage);
     w.show();
     return app.exec();
 }

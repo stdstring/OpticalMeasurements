@@ -8,7 +8,9 @@ namespace CalcApp
 StateManager::StateManager(QAbstractButton *createButton,
                            QAbstractButton *runButton,
                            QAbstractButton *stopButton,
-                           QAbstractButton *resultButton) :
+                           QAbstractButton *resultButton,
+                           QObject *parent) :
+    QObject(parent),
     _createButton(createButton),
     _runButton(runButton),
     _stopButton(stopButton),
