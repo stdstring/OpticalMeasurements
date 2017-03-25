@@ -25,7 +25,7 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *_ui;
     ActionManager *_actionManager;
     StateManager *_stateManager;
     int _currentActionIndex;
@@ -36,6 +36,7 @@ private slots:
     void RunButtonClick();
     void StopButtonClick();
     void ResultButtonClick();
+    void ClearButtonClick();
     void ProcessActionRunning(int index);
     void ProcessActionFinished(int index);
     void ProcessActionChainCompleted();

@@ -31,24 +31,30 @@ QString CreateItemText(QString const &name, QString const &suffix)
 
 MainWindow::MainWindow(MainConfig const &config, ComponentStorage const &storage, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
+    _ui(new Ui::MainWindow),
     _actionManager(new ActionManager(config, storage, this)),
     _stateManager(nullptr),
     _currentActionIndex(-1)
 {
-    ui->setupUi(this);
-    _stateManager = new StateManager(ui->CreateButton, ui->RunButton, ui->StopButton, ui->ResultButton, this);
+    _ui->setupUi(this);
+    _stateManager = new StateManager(_ui->CreateButton,
+                                     _ui->RunButton,
+                                     _ui->StopButton,
+                                     _ui->ResultButton,
+                                     _ui->ClearButton,
+                                     this);
     QStringList actionChainList;
     std::transform(config.Actions.Chains.cbegin(),
                    config.Actions.Chains.cend(),
                    std::back_inserter(actionChainList),
                    [](ActionChainDef const &chain){ return chain.Name; });
-    ui->ActionChainsComboBox->addItems(actionChainList);
+    _ui->ActionChainsComboBox->addItems(actionChainList);
     // signals
-    QObject::connect(ui->CreateButton, &QPushButton::clicked, this, &MainWindow::CreateButtonClick);
-    QObject::connect(ui->RunButton, &QPushButton::clicked, this, &MainWindow::RunButtonClick);
-    QObject::connect(ui->StopButton, &QPushButton::clicked, this, &MainWindow::StopButtonClick);
-    QObject::connect(ui->ResultButton, &QPushButton::clicked, this, &MainWindow::ResultButtonClick);
+    QObject::connect(_ui->CreateButton, &QPushButton::clicked, this, &MainWindow::CreateButtonClick);
+    QObject::connect(_ui->RunButton, &QPushButton::clicked, this, &MainWindow::RunButtonClick);
+    QObject::connect(_ui->StopButton, &QPushButton::clicked, this, &MainWindow::StopButtonClick);
+    QObject::connect(_ui->ResultButton, &QPushButton::clicked, this, &MainWindow::ResultButtonClick);
+    QObject::connect(_ui->ClearButton, &QPushButton::clicked, this, &MainWindow::ClearButtonClick);
     QObject::connect(_actionManager, &ActionManager::ActionRunning, this, &MainWindow::ProcessActionRunning);
     QObject::connect(_actionManager, &ActionManager::ActionFinished, this, &MainWindow::ProcessActionFinished);
     QObject::connect(_actionManager, &ActionManager::ActionChainCompleted, this, &MainWindow::ProcessActionChainCompleted);
@@ -57,20 +63,18 @@ MainWindow::MainWindow(MainConfig const &config, ComponentStorage const &storage
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete _ui;
 }
 
 void MainWindow::CreateButtonClick()
 {
-    _actionManager->Clear();
-    QString chainName = ui->ActionChainsComboBox->currentText();
+    QString chainName = _ui->ActionChainsComboBox->currentText();
     QStringList actions = _actionManager->Create(chainName, this);
     _currentActionIndex = 0;
     _actions = actions;
     QStringList dest;
     std::transform(actions.cbegin(), actions.cend(), std::back_inserter(dest), [](QString const &name) { return CreateItemText(name, "[not started]"); });
-    ui->ActionsListWidget->clear();
-    ui->ActionsListWidget->addItems(dest);
+    _ui->ActionsListWidget->addItems(dest);
     _stateManager->ChangeState(MainAppState::CHAIN_CREATED);
 }
 
@@ -85,6 +89,15 @@ void MainWindow::StopButtonClick()
     _actionManager->Stop();
 }
 
+void MainWindow::ClearButtonClick()
+{
+    _actionManager->Clear();
+    _actions.clear();
+    _currentActionIndex = -1;
+    _ui->ActionsListWidget->clear();
+    _stateManager->ChangeState(MainAppState::INIT);
+}
+
 void MainWindow::ResultButtonClick()
 {
     // TODO (std_string) : extract data from context
@@ -95,13 +108,13 @@ void MainWindow::ResultButtonClick()
 
 void MainWindow::ProcessActionRunning(int index)
 {
-    ui->ActionsListWidget->item(index)->setText(CreateItemText(_actions[index], "[running]"));
+    _ui->ActionsListWidget->item(index)->setText(CreateItemText(_actions[index], "[running]"));
     _currentActionIndex = index;
 }
 
 void MainWindow::ProcessActionFinished(int index)
 {
-    ui->ActionsListWidget->item(index)->setText(CreateItemText(_actions[index], "[completed]"));
+    _ui->ActionsListWidget->item(index)->setText(CreateItemText(_actions[index], "[completed]"));
     _currentActionIndex = index + 1;
 }
 
@@ -116,7 +129,7 @@ void MainWindow::ProcessActionChainAborted()
     // TODO (std_string) : think about using some of algorithms
     for (int index = _currentActionIndex; index < _actions.size(); ++index)
     {
-        ui->ActionsListWidget->item(index)->setText(CreateItemText(_actions[index], "[aborted]"));
+        _ui->ActionsListWidget->item(index)->setText(CreateItemText(_actions[index], "[aborted]"));
     }
 }
 

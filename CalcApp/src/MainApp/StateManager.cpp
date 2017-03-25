@@ -9,12 +9,14 @@ StateManager::StateManager(QAbstractButton *createButton,
                            QAbstractButton *runButton,
                            QAbstractButton *stopButton,
                            QAbstractButton *resultButton,
+                           QAbstractButton *clearButton,
                            QObject *parent) :
     QObject(parent),
     _createButton(createButton),
     _runButton(runButton),
     _stopButton(stopButton),
-    _resultButton(resultButton)
+    _resultButton(resultButton),
+    _clearButton(clearButton)
 {
     ChangeState(MainAppState::INIT);
 }
@@ -49,14 +51,16 @@ void StateManager::Init()
     _runButton->setEnabled(false);
     _stopButton->setEnabled(false);
     _resultButton->setEnabled(false);
+    _clearButton->setEnabled(false);
 }
 
 void StateManager::ChainCreated()
 {
-    _createButton->setEnabled(true);
+    _createButton->setEnabled(false);
     _runButton->setEnabled(true);
     _stopButton->setEnabled(false);
     _resultButton->setEnabled(false);
+    _clearButton->setEnabled(true);
 }
 
 void StateManager::ChainRunning()
@@ -65,24 +69,25 @@ void StateManager::ChainRunning()
     _runButton->setEnabled(false);
     _stopButton->setEnabled(true);
     _resultButton->setEnabled(false);
+    _clearButton->setEnabled(false);
 }
 
 void StateManager::ChainCompleted()
 {
-    _createButton->setEnabled(true);
+    _createButton->setEnabled(false);
     _runButton->setEnabled(false);
     _stopButton->setEnabled(false);
     _resultButton->setEnabled(true);
-
+    _clearButton->setEnabled(true);
 }
 
 void StateManager::ChainAborted()
 {
-    _createButton->setEnabled(true);
+    _createButton->setEnabled(false);
     _runButton->setEnabled(false);
     _stopButton->setEnabled(false);
     _resultButton->setEnabled(false);
-
+    _clearButton->setEnabled(true);
 }
 
 }

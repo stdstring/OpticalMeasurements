@@ -15,6 +15,7 @@ public:
                  QAbstractButton *runButton,
                  QAbstractButton *stopButton,
                  QAbstractButton *resultButton,
+                 QAbstractButton *clearButton,
                  QObject *parent = nullptr);
     void ChangeState(MainAppState state);
 
@@ -30,6 +31,7 @@ private:
     QAbstractButton *_runButton;
     QAbstractButton *_stopButton;
     QAbstractButton *_resultButton;
+    QAbstractButton *_clearButton;
 };
 
 }
