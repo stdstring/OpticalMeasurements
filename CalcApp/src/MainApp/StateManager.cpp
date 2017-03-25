@@ -5,13 +5,15 @@
 namespace CalcApp
 {
 
-StateManager::StateManager(QAbstractButton *createButton,
+StateManager::StateManager(QComboBox *actionChainsComboBox,
+                           QAbstractButton *createButton,
                            QAbstractButton *runButton,
                            QAbstractButton *stopButton,
                            QAbstractButton *resultButton,
                            QAbstractButton *clearButton,
                            QObject *parent) :
     QObject(parent),
+    _actionChainsComboBox(actionChainsComboBox),
     _createButton(createButton),
     _runButton(runButton),
     _stopButton(stopButton),
@@ -42,11 +44,12 @@ void StateManager::ChangeState(MainAppState state)
             ChainAborted();
             break;
     }
-    _state = state;
+    //_state = state;
 }
 
 void StateManager::Init()
 {
+    _actionChainsComboBox->setEnabled(true);
     _createButton->setEnabled(true);
     _runButton->setEnabled(false);
     _stopButton->setEnabled(false);
@@ -56,6 +59,7 @@ void StateManager::Init()
 
 void StateManager::ChainCreated()
 {
+    _actionChainsComboBox->setEnabled(false);
     _createButton->setEnabled(false);
     _runButton->setEnabled(true);
     _stopButton->setEnabled(false);
@@ -65,6 +69,7 @@ void StateManager::ChainCreated()
 
 void StateManager::ChainRunning()
 {
+    _actionChainsComboBox->setEnabled(false);
     _createButton->setEnabled(false);
     _runButton->setEnabled(false);
     _stopButton->setEnabled(true);
@@ -74,6 +79,7 @@ void StateManager::ChainRunning()
 
 void StateManager::ChainCompleted()
 {
+    _actionChainsComboBox->setEnabled(false);
     _createButton->setEnabled(false);
     _runButton->setEnabled(false);
     _stopButton->setEnabled(false);
@@ -83,6 +89,7 @@ void StateManager::ChainCompleted()
 
 void StateManager::ChainAborted()
 {
+    _actionChainsComboBox->setEnabled(false);
     _createButton->setEnabled(false);
     _runButton->setEnabled(false);
     _stopButton->setEnabled(false);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QAbstractButton>
+#include <QComboBox>
 #include <QObject>
 
 namespace CalcApp
@@ -11,7 +12,8 @@ enum MainAppState { INIT, CHAIN_CREATED, CHAIN_RUNNING, CHAIN_COMPLETED, CHAIN_A
 class StateManager : public QObject
 {
 public:
-    StateManager(QAbstractButton *createButton,
+    StateManager(QComboBox *actionChainsComboBox,
+                 QAbstractButton *createButton,
                  QAbstractButton *runButton,
                  QAbstractButton *stopButton,
                  QAbstractButton *resultButton,
@@ -26,7 +28,8 @@ private:
     void ChainCompleted();
     void ChainAborted();
 
-    MainAppState _state;
+    //MainAppState _state;
+    QComboBox *_actionChainsComboBox;
     QAbstractButton *_createButton;
     QAbstractButton *_runButton;
     QAbstractButton *_stopButton;

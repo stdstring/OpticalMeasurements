@@ -37,7 +37,8 @@ MainWindow::MainWindow(MainConfig const &config, ComponentStorage const &storage
     _currentActionIndex(-1)
 {
     _ui->setupUi(this);
-    _stateManager = new StateManager(_ui->CreateButton,
+    _stateManager = new StateManager(_ui->ActionChainsComboBox,
+                                     _ui->CreateButton,
                                      _ui->RunButton,
                                      _ui->StopButton,
                                      _ui->ResultButton,
