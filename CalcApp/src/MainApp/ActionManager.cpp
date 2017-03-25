@@ -4,6 +4,7 @@
 #include <QThread>
 
 #include <algorithm>
+#include <iterator>
 #include <stdexcept>
 
 #include "Common/ActionChainFactory.h"
@@ -60,12 +61,15 @@ ActionManager::ActionManager(MainConfig const &config, ComponentStorage const &s
 {
 }
 
-void ActionManager::Create(QString const &chainName, QObject *parent)
+QStringList ActionManager::Create(QString const &chainName, QObject *parent)
 {
     if (!_chain.isEmpty())
         throw std::logic_error("Action's chain isn't empty");
     ActionChainDef const &chain = FindActionChain(_config.Actions, chainName);
     _chain = ActionChainFactory::Create(chain, _storage, _config, parent);
+    QStringList dest;
+    std::transform(_chain.cbegin(), _chain.cend(), std::back_inserter(dest), [](IAction *action){ return action->GetName(); });
+    return dest;
 }
 
 void ActionManager::Run()
@@ -78,8 +82,10 @@ void ActionManager::Run()
 
 void ActionManager::Stop()
 {
+    /*if (_executer == nullptr)
+        throw std::logic_error("Action's executer is missing");*/
     if (_executer == nullptr)
-        throw std::logic_error("Action's executer is missing");
+        return;
     _executer->terminate();
     ExecuterCleanup();
 }
@@ -112,6 +118,7 @@ void ActionManager::ProcessActionChainExecutionFinish()
 {
     _executer->wait();
     ExecuterCleanup();
+    emit ActionChainFinished();
 }
 
 }

@@ -3,6 +3,7 @@
 #include <QList>
 #include <QObject>
 #include <QString>
+#include <QStringList>
 #include <QThread>
 
 #include "Common/ComponentStorage.h"
@@ -38,7 +39,7 @@ class ActionManager : public QObject
 public:
     ActionManager(MainConfig const &config, ComponentStorage const &storage, QObject *parent = nullptr);
 
-    void Create(QString const &chainName, QObject *parent);
+    QStringList Create(QString const &chainName, QObject *parent);
     void Run();
     void Stop();
     void Clear();

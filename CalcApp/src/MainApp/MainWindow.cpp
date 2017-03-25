@@ -1,5 +1,7 @@
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QStringList>
+#include <QTextStream>
 
 #include <algorithm>
 #include <iterator>
@@ -30,6 +32,7 @@ MainWindow::MainWindow(MainConfig const &config, ComponentStorage const &storage
                    [](ActionChainDef const &chain){ return chain.Name; });
     ui->ActionChainsComboBox->addItems(actionChainList);
     // signals
+    /*QObject::connect(ui->ActionChainsComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &MainWindow::ActionChainIndexChange);*/
     QObject::connect(ui->CreateButton, &QPushButton::clicked, this, &MainWindow::CreateButtonClick);
     QObject::connect(ui->RunButton, &QPushButton::clicked, this, &MainWindow::RunButtonClick);
     QObject::connect(ui->StopButton, &QPushButton::clicked, this, &MainWindow::StopButtonClick);
@@ -44,32 +47,64 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/*void MainWindow::ActionChainIndexChange(int index)
+{
+}*/
+
 void MainWindow::CreateButtonClick()
 {
+    QString chainName = ui->ActionChainsComboBox->currentText();
+    _actionManager->Clear();
+    QStringList actions = _actionManager->Create(chainName, this);
+    QStringList dest;
+    std::transform(actions.cbegin(), actions.cend(), std::back_inserter(dest), [](QString const &name)
+    {
+        QString descriptor;
+        QTextStream(&descriptor) << name << " [not started]";
+        return descriptor;
+    });
+    ui->ActionsListWidget->clear();
+    ui->ActionsListWidget->addItems(dest);
+    _stateManager->ChangeState(MainAppState::CHAIN_CREATED_STATE);
 }
 
 void MainWindow::RunButtonClick()
 {
+    _actionManager->Run();
+    _stateManager->ChangeState(MainAppState::CHAIN_RUNNING_STATE);
 }
 
 void MainWindow::StopButtonClick()
 {
+    _actionManager->Stop();
+    _stateManager->ChangeState(MainAppState::CHAIN_FINISHED_STATE);
 }
 
 void MainWindow::ResultButtonClick()
 {
+    // TODO (std_string) : extract data from context
+    QMessageBox resultInfo;
+    resultInfo.setText("There is the result of the execution");
+    resultInfo.exec();
 }
 
 void MainWindow::ProcessActionRunning(int index, QString const &name)
 {
+    QString descriptor;
+    QTextStream(&descriptor) << name << " [running]";
+    ui->ActionsListWidget->item(index)->setText(descriptor);
 }
 
 void MainWindow::ProcessActionFinished(int index, QString const &name)
 {
+    QString descriptor;
+    QTextStream(&descriptor) << name << " [completed]";
+    ui->ActionsListWidget->item(index)->setText(descriptor);
 }
 
 void MainWindow::ProcessActionChainFinished()
 {
+    _stateManager->ChangeState(MainAppState::CHAIN_FINISHED_STATE);
 }
 
 }

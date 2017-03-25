@@ -22,7 +22,7 @@ StateManager::StateManager(QAbstractButton *createButton,
 void StateManager::ChangeState(MainAppState state)
 {
     // TODO (std_string) : use more functional style
-    switch (_state)
+    switch (state)
     {
         case MainAppState::INIT_STATE:
             SetInitState();

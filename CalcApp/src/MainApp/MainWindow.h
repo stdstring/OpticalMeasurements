@@ -29,6 +29,8 @@ private:
     StateManager *_stateManager;
 
 private slots:
+    /*// TODO (std_string) : think about name
+    void ActionChainIndexChange(int index);*/
     void CreateButtonClick();
     void RunButtonClick();
     void StopButtonClick();
