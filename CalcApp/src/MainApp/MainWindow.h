@@ -38,7 +38,8 @@ private slots:
     void ResultButtonClick();
     void ClearButtonClick();
     void ProcessActionRunning(int index);
-    void ProcessActionFinished(int index);
+    void ProcessActionCompleted(int index);
+    void ProcessActionFailed(int index);
     void ProcessActionChainCompleted();
     void ProcessActionChainAborted();
 };

@@ -29,7 +29,8 @@ private:
 
 signals:
     void ActionRunning(int index);
-    void ActionFinished(int index);
+    void ActionCompleted(int index);
+    void ActionFailed(int index);
     void ActionChainFinished();
 };
 
@@ -56,11 +57,13 @@ private:
 
 signals:
     void ActionRunning(int index);
-    void ActionFinished(int index);
+    void ActionCompleted(int index);
+    void ActionFailed(int index);
     void ActionChainCompleted();
     void ActionChainAborted();
 
 private slots:
+    void ProcessActionFailed(int index);
     void ProcessActionChainFinish();
 };
 

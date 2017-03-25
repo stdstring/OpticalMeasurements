@@ -46,8 +46,17 @@ void ActionExecuter::run()
     {
         IAction *action = _chain.at(index);
         emit ActionRunning(index);
-        action->Run(_context);
-        emit ActionFinished(index);
+        try
+        {
+            action->Run(_context);
+            emit ActionCompleted(index);
+        }
+        catch (...)
+        {
+            // TODO (std_string) : think about logging
+            emit ActionFailed(index);
+            return;
+        }
     }
     emit ActionChainFinished();
 }
@@ -98,23 +107,31 @@ void ActionManager::ExecuterCreate()
 {
     _executer = new ActionExecuter(_context, _chain, this);
     QObject::connect(_executer, &ActionExecuter::ActionRunning, this, &ActionManager::ActionRunning);
-    QObject::connect(_executer, &ActionExecuter::ActionFinished, this, &ActionManager::ActionFinished);
+    QObject::connect(_executer, &ActionExecuter::ActionCompleted, this, &ActionManager::ActionCompleted);
+    QObject::connect(_executer, &ActionExecuter::ActionFailed, this, &ActionManager::ProcessActionFailed);
     QObject::connect(_executer, &ActionExecuter::ActionChainFinished, this, &ActionManager::ProcessActionChainFinish);
 }
 
 void ActionManager::ExecuterCleanup()
 {
-    QObject::disconnect(_executer, &ActionExecuter::ActionRunning, this, &ActionManager::ActionRunning);
-    QObject::disconnect(_executer, &ActionExecuter::ActionFinished, this, &ActionManager::ActionFinished);
-    QObject::disconnect(_executer, &ActionExecuter::ActionChainFinished, this, &ActionManager::ProcessActionChainFinish);
     _executer->wait();
+    QObject::disconnect(_executer, &ActionExecuter::ActionRunning, this, &ActionManager::ActionRunning);
+    QObject::disconnect(_executer, &ActionExecuter::ActionCompleted, this, &ActionManager::ActionCompleted);
+    QObject::disconnect(_executer, &ActionExecuter::ActionFailed, this, &ActionManager::ProcessActionFailed);
+    QObject::disconnect(_executer, &ActionExecuter::ActionChainFinished, this, &ActionManager::ProcessActionChainFinish);
     delete _executer;
     _executer = nullptr;
 }
 
+void ActionManager::ProcessActionFailed(int index)
+{
+    emit ActionFailed(index);
+    ExecuterCleanup();
+    emit ActionChainAborted();
+}
+
 void ActionManager::ProcessActionChainFinish()
 {
-    _executer->wait();
     ExecuterCleanup();
     emit ActionChainCompleted();
 }

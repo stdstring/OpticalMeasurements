@@ -56,7 +56,8 @@ MainWindow::MainWindow(MainConfig const &config, ComponentStorage const &storage
     QObject::connect(_ui->ResultButton, &QPushButton::clicked, this, &MainWindow::ResultButtonClick);
     QObject::connect(_ui->ClearButton, &QPushButton::clicked, this, &MainWindow::ClearButtonClick);
     QObject::connect(_actionManager, &ActionManager::ActionRunning, this, &MainWindow::ProcessActionRunning);
-    QObject::connect(_actionManager, &ActionManager::ActionFinished, this, &MainWindow::ProcessActionFinished);
+    QObject::connect(_actionManager, &ActionManager::ActionCompleted, this, &MainWindow::ProcessActionCompleted);
+    QObject::connect(_actionManager, &ActionManager::ActionFailed, this, &MainWindow::ProcessActionFailed);
     QObject::connect(_actionManager, &ActionManager::ActionChainCompleted, this, &MainWindow::ProcessActionChainCompleted);
     QObject::connect(_actionManager, &ActionManager::ActionChainAborted, this, &MainWindow::ProcessActionChainAborted);
 }
@@ -112,9 +113,15 @@ void MainWindow::ProcessActionRunning(int index)
     _currentActionIndex = index;
 }
 
-void MainWindow::ProcessActionFinished(int index)
+void MainWindow::ProcessActionCompleted(int index)
 {
     _ui->ActionsListWidget->item(index)->setText(CreateItemText(_actions[index], "[completed]"));
+    _currentActionIndex = index + 1;
+}
+
+void MainWindow::ProcessActionFailed(int index)
+{
+    _ui->ActionsListWidget->item(index)->setText(CreateItemText(_actions[index], "[failed]"));
     _currentActionIndex = index + 1;
 }
 
