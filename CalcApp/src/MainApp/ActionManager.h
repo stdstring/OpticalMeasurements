@@ -28,8 +28,8 @@ private:
     QList<IAction*> _chain;
 
 signals:
-    void ActionRunning(int index, QString const &name);
-    void ActionFinished(int index, QString const &name);
+    void ActionRunning(int index);
+    void ActionFinished(int index);
     void ActionChainFinished();
 };
 
@@ -55,12 +55,13 @@ private:
     ActionExecuter *_executer;
 
 signals:
-    void ActionRunning(int index, QString const &name);
-    void ActionFinished(int index, QString const &name);
-    void ActionChainFinished();
+    void ActionRunning(int index);
+    void ActionFinished(int index);
+    void ActionChainCompleted();
+    void ActionChainAborted();
 
 private slots:
-    void ProcessActionChainExecutionFinish();
+    void ProcessActionChainFinish();
 };
 
 }

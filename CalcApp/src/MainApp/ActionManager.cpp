@@ -45,10 +45,9 @@ void ActionExecuter::run()
     for (int index = 0; index < _chain.size(); ++index)
     {
         IAction *action = _chain.at(index);
-        QString name = action->GetName();
-        emit ActionRunning(index, name);
+        emit ActionRunning(index);
         action->Run(_context);
-        emit ActionFinished(index, name);
+        emit ActionFinished(index);
     }
     emit ActionChainFinished();
 }
@@ -82,12 +81,11 @@ void ActionManager::Run()
 
 void ActionManager::Stop()
 {
-    /*if (_executer == nullptr)
-        throw std::logic_error("Action's executer is missing");*/
     if (_executer == nullptr)
         return;
     _executer->terminate();
     ExecuterCleanup();
+    emit ActionChainAborted();
 }
 
 void ActionManager::Clear()
@@ -101,24 +99,24 @@ void ActionManager::ExecuterCreate()
     _executer = new ActionExecuter(_context, _chain, this);
     QObject::connect(_executer, &ActionExecuter::ActionRunning, this, &ActionManager::ActionRunning);
     QObject::connect(_executer, &ActionExecuter::ActionFinished, this, &ActionManager::ActionFinished);
-    QObject::connect(_executer, &ActionExecuter::ActionChainFinished, this, &ActionManager::ProcessActionChainExecutionFinish);
+    QObject::connect(_executer, &ActionExecuter::ActionChainFinished, this, &ActionManager::ProcessActionChainFinish);
 }
 
 void ActionManager::ExecuterCleanup()
 {
     QObject::disconnect(_executer, &ActionExecuter::ActionRunning, this, &ActionManager::ActionRunning);
     QObject::disconnect(_executer, &ActionExecuter::ActionFinished, this, &ActionManager::ActionFinished);
-    QObject::disconnect(_executer, &ActionExecuter::ActionChainFinished, this, &ActionManager::ProcessActionChainExecutionFinish);
+    QObject::disconnect(_executer, &ActionExecuter::ActionChainFinished, this, &ActionManager::ProcessActionChainFinish);
     _executer->wait();
     delete _executer;
     _executer = nullptr;
 }
 
-void ActionManager::ProcessActionChainExecutionFinish()
+void ActionManager::ProcessActionChainFinish()
 {
     _executer->wait();
     ExecuterCleanup();
-    emit ActionChainFinished();
+    emit ActionChainCompleted();
 }
 
 }

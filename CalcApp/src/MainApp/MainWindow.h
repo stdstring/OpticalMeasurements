@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <QStringList>
 
 #include "Common/ComponentStorage.h"
 #include "Common/MainConfig.h"
@@ -27,17 +28,18 @@ private:
     Ui::MainWindow *ui;
     ActionManager *_actionManager;
     StateManager *_stateManager;
+    int _currentActionIndex;
+    QStringList _actions;
 
 private slots:
-    /*// TODO (std_string) : think about name
-    void ActionChainIndexChange(int index);*/
     void CreateButtonClick();
     void RunButtonClick();
     void StopButtonClick();
     void ResultButtonClick();
-    void ProcessActionRunning(int index, QString const &name);
-    void ProcessActionFinished(int index, QString const &name);
-    void ProcessActionChainFinished();
+    void ProcessActionRunning(int index);
+    void ProcessActionFinished(int index);
+    void ProcessActionChainCompleted();
+    void ProcessActionChainAborted();
 };
 
 }

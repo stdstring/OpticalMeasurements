@@ -6,7 +6,7 @@
 namespace CalcApp
 {
 
-enum MainAppState { INIT_STATE, CHAIN_CREATED_STATE, CHAIN_RUNNING_STATE, CHAIN_FINISHED_STATE };
+enum MainAppState { INIT, CHAIN_CREATED, CHAIN_RUNNING, CHAIN_COMPLETED, CHAIN_ABORTED };
 
 class StateManager : public QObject
 {
@@ -19,10 +19,11 @@ public:
     void ChangeState(MainAppState state);
 
 private:
-    void SetInitState();
-    void SetChainCreatedState();
-    void SetChainRunningState();
-    void SetChainFinishedState();
+    void Init();
+    void ChainCreated();
+    void ChainRunning();
+    void ChainCompleted();
+    void ChainAborted();
 
     MainAppState _state;
     QAbstractButton *_createButton;
