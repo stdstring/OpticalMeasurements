@@ -7,6 +7,7 @@ SUBDIRS += src/Common \
            src/TestServerApp \
            src/TestActionA \
            src/TestActionB \
+           src/TestFailedAction \
            src/MainApp
 
 # tests
