@@ -11,4 +11,7 @@ TEMPLATE = app
 
 LIBS += -lCommon
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+           ConfigReader.cpp
+
+HEADERS += ConfigReader.h
