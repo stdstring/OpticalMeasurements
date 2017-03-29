@@ -1,6 +1,7 @@
 include( ../../common.pri )
+include( ../../app.pri )
 
-QT += core
+QT += core network
 QT -= gui
 
 TARGET = TestServerApp
@@ -9,7 +10,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-LIBS += -lCommon
+LIBS += -lCommon -lTestServerCore
 
 SOURCES += main.cpp \
            ConfigReader.cpp
