@@ -11,10 +11,6 @@
 namespace CalcApp
 {
 
-class ConfigReader
-{
-public:
-    std::tuple<TestServerConfig, QList<Message>> Read(QString const &filename);
-};
+std::tuple<TestServerConfig, QList<Message>> ReadConfig(QString const &filename);
 
 }

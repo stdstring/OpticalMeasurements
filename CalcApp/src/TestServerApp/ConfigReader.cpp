@@ -28,7 +28,9 @@ const int ServerConfigLinesCount = 4;
 
 const int ExpectedMessageDefParts = 3;
 
-std::map<QString, MessageType> MessageTypeMap =
+typedef std::map<QString, MessageType> MessageTypeMapType;
+
+MessageTypeMapType MessageTypeMap =
 {
     {"REQUEST", MessageType::REQUEST},
     {"RESPONSE", MessageType::RESPONSE},
@@ -36,7 +38,9 @@ std::map<QString, MessageType> MessageTypeMap =
     {"EVENT", MessageType::EVENT}
 };
 
-std::map<QString, std::function<QByteArray(QString const&)>> MessageBodyConvertMap =
+typedef std::map<QString, std::function<QByteArray(QString const&)>> MessageBodyConvertMapType;
+
+MessageBodyConvertMapType MessageBodyConvertMap =
 {
     {"HEX", [](QString const &source){ return QByteArray::fromHex(source.toUtf8()); }},
     {"BASE64", [](QString const &source){ return QByteArray::fromBase64(source.toUtf8()); }}
@@ -94,7 +98,7 @@ void ProcessMessageLine(QList<Message> &messages, QString const &line)
     // TODO (std_string) : write some warning
     if (parts.size() != ExpectedMessageDefParts)
         return;
-    std::map<QString, MessageType>::const_iterator messageTypeIterator = MessageTypeMap.find(parts[0]);
+    MessageTypeMapType::const_iterator messageTypeIterator = MessageTypeMap.find(parts[0]);
     if (messageTypeIterator == MessageTypeMap.cend())
         return;
     MessageType messageType = messageTypeIterator->second;
@@ -103,7 +107,7 @@ void ProcessMessageLine(QList<Message> &messages, QString const &line)
         return;
     if (responseRequired && messageType != MessageType::RESPONSE)
         messages.append(Message(MessageType::RESPONSE, QByteArray()));
-    std::map<QString, std::function<QByteArray(QString const&)>>::const_iterator messageBodyIterator = MessageBodyConvertMap.find(parts[1]);
+    MessageBodyConvertMapType::const_iterator messageBodyIterator = MessageBodyConvertMap.find(parts[1]);
     if (messageBodyIterator == MessageBodyConvertMap.cend())
         return;
     QByteArray messageBody = messageBodyIterator->second(parts[2]);
@@ -112,7 +116,7 @@ void ProcessMessageLine(QList<Message> &messages, QString const &line)
 
 }
 
-std::tuple<TestServerConfig, QList<Message>> ConfigReader::Read(QString const &filename)
+std::tuple<TestServerConfig, QList<Message>> ReadConfig(QString const &filename)
 {
     QFile configFile(filename);
     QTextStream textStream(&configFile);
