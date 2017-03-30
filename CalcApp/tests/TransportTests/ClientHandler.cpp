@@ -46,7 +46,6 @@ void ClientHandler::Check(TransportConfig const &config, QList<Message> const &m
 ClientHandler::ClientHandler(TransportConfig const &config, QThread *initThread, QList<Message> const &messages) :
     QObject(nullptr),
     _config(config),
-    _transport(nullptr),
     _initThread(initThread),
     _messages(messages)
 {
@@ -54,26 +53,19 @@ ClientHandler::ClientHandler(TransportConfig const &config, QThread *initThread,
 
 void ClientHandler::ProcessStart()
 {
-    ITransport *transportLowLevel = new TransportLowLevel(_config, this);
     // TODO (std_string) : think about using factory for this
-    IMessageCheckStrategy *messageCheckStrategy = new SimpleMessageCheckStrategy(_config.MaxDelayedCount, this);
-    _transport = new Transport(transportLowLevel, messageCheckStrategy, this);
-    // TODO (std_string) : think about using new syntax
-    //QObject::connect(_transport, &ITransport::DataReceived, this, &ClientHandler::ProcessMessage);
-    //QObject::connect(_transport, &ITransport::EventReceived, this, &ClientHandler::ProcessMessage);
-    //QObject::connect(_transport, &ITransport::ResponseReceived, this, &ClientHandler::ProcessMessage);
-    QObject::connect(_transport, SIGNAL(DataReceived(Message const&)), this, SLOT(ProcessMessage(Message const&)));
-    QObject::connect(_transport, SIGNAL(EventReceived(Message const&)), this, SLOT(ProcessMessage(Message const&)));
-    QObject::connect(_transport, SIGNAL(ResponseReceived(Message const&)), this, SLOT(ProcessMessage(Message const&)));
+    _transport.reset(new Transport(new TransportLowLevel(_config, this),
+                                   new SimpleMessageCheckStrategy(_config.MaxDelayedCount, this)));
+    QObject::connect(_transport.get(), &ITransport::DataReceived, this, &ClientHandler::ProcessMessage);
+    QObject::connect(_transport.get(), &ITransport::EventReceived, this, &ClientHandler::ProcessMessage);
+    QObject::connect(_transport.get(), &ITransport::ResponseReceived, this, &ClientHandler::ProcessMessage);
     _transport->Connect();
-    SendOutgoingMessage(_transport, _messages);
+    SendOutgoingMessage(_transport.get(), _messages);
 }
 
 void ClientHandler::ProcessFinish()
 {
-    if (_transport != nullptr)
-        delete _transport;
-    _transport = nullptr;
+    _transport.reset();
     this->moveToThread(_initThread);
 }
 
@@ -84,7 +76,7 @@ void ClientHandler::ProcessMessage(Message const &message)
     if (_messages.isEmpty())
         QThread::currentThread()->exit();
     else
-        SendOutgoingMessage(_transport, _messages);
+        SendOutgoingMessage(_transport.get(), _messages);
 }
 
 }

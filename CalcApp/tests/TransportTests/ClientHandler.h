@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QThread>
 
+#include <memory>
+
 #include "Common/ITransport.h"
 #include "Common/Message.h"
 #include "Common/TransportConfig.h"
@@ -21,7 +23,7 @@ private:
     ClientHandler(TransportConfig const &config, QThread *initThread, QList<Message> const &messages);
 
     TransportConfig _config;
-    ITransport *_transport;
+    std::shared_ptr<ITransport> _transport;
     QThread *_initThread;
     QList<Message> _messages;
 
