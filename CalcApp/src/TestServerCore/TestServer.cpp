@@ -137,7 +137,7 @@ void TestServer::ProcessTimeout()
         SendUdpData(_udpSocket, _config.ServerAddress, _config.UdpPortNumber, _messages.takeFirst());
     else if (_messages.first().GetType() == MessageType::EVENT)
         SendTcpData(_tcpSocket, _messages.takeFirst());
-    if (!_messages.isEmpty() && _messages.first().GetType() != MessageType::RESPONSE)
+    if (!_messages.isEmpty() && _messages.first().GetType() != MessageType::REQUEST)
         _timer->start();
 }
 
@@ -146,7 +146,7 @@ void TestServer::TcpClientConnected()
     _tcpSocket = _server->nextPendingConnection();
     QObject::connect(_tcpSocket, &QTcpSocket::disconnected, this, &TestServer::TcpClientDisconnected);
     QObject::connect(_tcpSocket, &QTcpSocket::readyRead, this, &TestServer::ProcessClientRead);
-    if (!_messages.isEmpty() && _messages.first().GetType() != MessageType::RESPONSE)
+    if (!_messages.isEmpty() && _messages.first().GetType() != MessageType::REQUEST)
         _timer->start();
 }
 
@@ -162,11 +162,16 @@ void TestServer::ProcessClientRead()
         }
         emit RequestReceived(Message(MessageType::REQUEST, data.second));
         // TODO (std_string) : use more functional approach
-        if (!_messages.isEmpty() && _messages.first().GetType() == MessageType::RESPONSE)
-            SendTcpData(_tcpSocket, _messages.takeFirst());
-        else
+        if (_messages.isEmpty() || _messages.first().GetData() != data.second)
             SendTcpData(_tcpSocket, Message(MessageType::RESPONSE, QByteArray()));
-        if (!_messages.isEmpty() && _messages.first().GetType() != MessageType::RESPONSE)
+        else
+        {
+            // remove request
+            _messages.takeFirst();
+            // send and remove response
+            SendTcpData(_tcpSocket, _messages.takeFirst());
+        }
+        if (!_messages.isEmpty() && _messages.first().GetType() != MessageType::REQUEST)
             _timer->start();
     }
 }
