@@ -49,7 +49,8 @@ ClientEntry CreateClientDataEntry(quint8 packageNumber, quint8 calcNumber, QVect
 
 TEST(TransportFunctionalTests, RequestResponse)
 {
-    QList<Message> serverData = {CreateMessage(MessageType::RESPONSE, {11, 12, 13})};
+    QList<Message> serverData = {CreateMessage(MessageType::REQUEST, {66}),
+                                 CreateMessage(MessageType::RESPONSE, {11, 12, 13})};
     TestServerRunner server(serverConfig);
     QList<ClientEntry> clientData = {CreateClientEntry(MessageType::REQUEST, {66}, MessageType::RESPONSE, {11, 12, 13})};
     server.Start(serverData);
@@ -69,7 +70,8 @@ TEST(TransportFunctionalTests, Event)
 
 TEST(TransportFunctionalTests, RequestResponseEvent)
 {
-    QList<Message> serverData = {CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+    QList<Message> serverData = {CreateMessage(MessageType::REQUEST, {66}),
+                                 CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
                                  CreateMessage(MessageType::EVENT, {66, 13, 66})};
     TestServerRunner server(serverConfig);
     QList<ClientEntry> clientData = {CreateClientEntry(MessageType::REQUEST, {66}, MessageType::RESPONSE, {11, 12, 13}),
@@ -151,7 +153,8 @@ TEST(TransportFunctionalTests, SeveralDataWithGap)
 
 TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralData)
 {
-    QList<Message> serverData = {CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+    QList<Message> serverData = {CreateMessage(MessageType::REQUEST, {66}),
+                                 CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
                                  CreateMessage(MessageType::EVENT, {66, 13, 66}),
                                  CreateDataMessage(1, 0, {11, 10, 11}),
                                  CreateMessage(MessageType::EVENT, {99, 99}),
@@ -169,7 +172,8 @@ TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralData)
 
 TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataWithRepeats)
 {
-    QList<Message> serverData = {CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+    QList<Message> serverData = {CreateMessage(MessageType::REQUEST, {66}),
+                                 CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
                                  CreateMessage(MessageType::EVENT, {66, 13, 66}),
                                  CreateDataMessage(1, 0, {11, 10, 11}),
                                  CreateMessage(MessageType::EVENT, {99, 99}),
@@ -189,7 +193,8 @@ TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataWithRepeat
 
 TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataInWrongOrder)
 {
-    QList<Message> serverData = {CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+    QList<Message> serverData = {CreateMessage(MessageType::REQUEST, {66}),
+                                 CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
                                  CreateMessage(MessageType::EVENT, {66, 13, 66}),
                                  CreateDataMessage(2, 0, {13, 66}),
                                  CreateMessage(MessageType::EVENT, {99, 99}),
@@ -207,7 +212,8 @@ TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataInWrongOrd
 
 /*TEST(TransportFunctionalTests, RequestResponseSeveralEventsTooManyDataInWrongOrder)
 {
-    QList<Message> serverData = {CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+    QList<Message> serverData = {CreateMessage(MessageType::REQUEST, {66}),
+                                 CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
                                  CreateMessage(MessageType::EVENT, {66, 13, 66}),
                                  CreateDataMessage(2, 0, {11, 10, 11}),
                                  CreateDataMessage(3, 0, {13, 66}),

@@ -21,11 +21,8 @@ HEADERS += ../../include/Common/TransportConfig.h \
            EqualityOperators.h \
            MessageHelper.h \
            TransportSignalHandler.h \
-           TestServer.h \
            ClientEntry.h \
-           ClientHandler.h \
-           TestServerConfig.h \
-           TestServerRunner.h
+           ClientHandler.h
 
 SOURCES += main.cpp \
            MessageValidationTests.cpp \
@@ -36,7 +33,5 @@ SOURCES += main.cpp \
            MessageHelper.cpp \
            TransportTests.cpp \
            TransportSignalHandler.cpp \
-           TestServer.cpp \
            TransportFunctionalTests.cpp \
-           ClientHandler.cpp \
-           TestServerRunner.cpp
+           ClientHandler.cpp

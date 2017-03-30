@@ -5,6 +5,8 @@ QT += core network
 
 TARGET = Transport$${LIB_SUFFIX}
 TEMPLATE = lib
+# TODO (std_string) : deal with static linking with this plugin
+CONFIG += staticlib
 CONFIG += plugin
 
 DEFINES += TRANSPORT_LIBRARY
