@@ -9,7 +9,6 @@
 #include "Common/ITransport.h"
 #include "Common/TransportConfig.h"
 #include "LowLevel/TransportLowLevel.h"
-#include "ClientEntry.h"
 #include "ClientHandler.h"
 #include "EqualityOperators.h"
 #include "IMessageCheckStrategy.h"
@@ -22,20 +21,20 @@ namespace CalcApp
 namespace
 {
 
-void SendOutgoingMessage(ITransport *transport, ClientEntry const &entry)
+void SendOutgoingMessage(ITransport *transport, QList<Message> &messages)
 {
-    if (entry.OutgoingMessage)
-        transport->Send(*entry.OutgoingMessage.get());
+    if (!messages.isEmpty() && messages.first().GetType() == MessageType::REQUEST)
+        transport->Send(messages.takeFirst());
 }
 
 }
 
-void ClientHandler::Check(TransportConfig const &config, QList<ClientEntry> const &entries)
+void ClientHandler::Check(TransportConfig const &config, QList<Message> const &messages)
 {
     int argc = 0;
     QCoreApplication app(argc, {});
     Q_UNUSED(app);
-    ClientHandler handler(config, QThread::currentThread(), entries);
+    ClientHandler handler(config, QThread::currentThread(), messages);
     QThread thread;
     handler.moveToThread(&thread);
     QObject::connect(&thread, &QThread::started, &handler, &ClientHandler::ProcessStart);
@@ -44,12 +43,12 @@ void ClientHandler::Check(TransportConfig const &config, QList<ClientEntry> cons
     EXPECT_TRUE(thread.wait());
 }
 
-ClientHandler::ClientHandler(TransportConfig const &config, QThread *initThread, QList<ClientEntry> const &entries) :
+ClientHandler::ClientHandler(TransportConfig const &config, QThread *initThread, QList<Message> const &messages) :
     QObject(nullptr),
     _config(config),
     _transport(nullptr),
     _initThread(initThread),
-    _entries(entries)
+    _messages(messages)
 {
 }
 
@@ -67,8 +66,7 @@ void ClientHandler::ProcessStart()
     QObject::connect(_transport, SIGNAL(EventReceived(Message const&)), this, SLOT(ProcessMessage(Message const&)));
     QObject::connect(_transport, SIGNAL(ResponseReceived(Message const&)), this, SLOT(ProcessMessage(Message const&)));
     _transport->Connect();
-    if (!_entries.isEmpty())
-        SendOutgoingMessage(_transport, _entries.first());
+    SendOutgoingMessage(_transport, _messages);
 }
 
 void ClientHandler::ProcessFinish()
@@ -81,12 +79,12 @@ void ClientHandler::ProcessFinish()
 
 void ClientHandler::ProcessMessage(Message const &message)
 {
-    EXPECT_FALSE(_entries.isEmpty());
-    EXPECT_EQ(_entries.takeFirst().IncomingMessage ,message);
-    if (_entries.isEmpty())
+    EXPECT_FALSE(_messages.isEmpty());
+    EXPECT_EQ(_messages.takeFirst(), message);
+    if (_messages.isEmpty())
         QThread::currentThread()->exit();
     else
-        SendOutgoingMessage(_transport, _entries.first());
+        SendOutgoingMessage(_transport, _messages);
 }
 
 }

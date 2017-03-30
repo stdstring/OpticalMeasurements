@@ -7,7 +7,6 @@
 #include "Common/ITransport.h"
 #include "Common/Message.h"
 #include "Common/TransportConfig.h"
-#include "ClientEntry.h"
 
 namespace CalcApp
 {
@@ -16,15 +15,15 @@ class ClientHandler : public QObject
 {
     Q_OBJECT
 public:
-    static void Check(TransportConfig const &config, QList<ClientEntry> const &entries);
+    static void Check(TransportConfig const &config, QList<Message> const &messages);
 
 private:
-    ClientHandler(TransportConfig const &config, QThread *initThread, QList<ClientEntry> const &entries);
+    ClientHandler(TransportConfig const &config, QThread *initThread, QList<Message> const &messages);
 
     TransportConfig _config;
     ITransport *_transport;
     QThread *_initThread;
-    QList<ClientEntry> _entries;
+    QList<Message> _messages;
 
 private slots:
     void ProcessStart();

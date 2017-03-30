@@ -21,7 +21,6 @@ HEADERS += ../../include/Common/TransportConfig.h \
            EqualityOperators.h \
            MessageHelper.h \
            TransportSignalHandler.h \
-           ClientEntry.h \
            ClientHandler.h
 
 SOURCES += main.cpp \
