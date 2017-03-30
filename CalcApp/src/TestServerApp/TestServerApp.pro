@@ -16,3 +16,5 @@ SOURCES += main.cpp \
            ConfigReader.cpp
 
 HEADERS += ConfigReader.h
+
+DISTFILES += TestServer.config

@@ -119,6 +119,7 @@ void ProcessMessageLine(QList<Message> &messages, QString const &line)
 std::tuple<TestServerConfig, QList<Message>> ReadConfig(QString const &filename)
 {
     QFile configFile(filename);
+    configFile.open(QIODevice::ReadOnly);
     QTextStream textStream(&configFile);
     QStringList serverConfigLines = ReadLines(textStream, ServerConfigLinesCount);
     if (serverConfigLines.size() < ServerConfigLinesCount)
