@@ -21,7 +21,7 @@ QList<IAction*> ActionChainFactory::Create(ActionChainDef const &chainDef, Compo
         IActionFactory *factory = storage.FindAction(actionDef.Id);
         if (factory == nullptr)
             throw std::invalid_argument(actionDef.Id.toStdString());
-        return factory->Create(actionDef.Name, actionDef.Args, config, parent);
+        return factory->Create(actionDef.Name, actionDef.Args, config, storage.GetTransport(), parent);
     });
     return dest;
 }

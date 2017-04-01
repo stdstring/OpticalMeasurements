@@ -22,6 +22,7 @@ QString TestInteractionAction::GetName()
 
 void TestInteractionAction::Run(Context &context)
 {
+    Q_UNUSED(context);
 }
 
 }
