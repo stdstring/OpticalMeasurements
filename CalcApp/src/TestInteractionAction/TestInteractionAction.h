@@ -12,14 +12,15 @@ namespace CalcApp
 class TestInteractionAction : public IAction
 {
 public:
-    explicit TestInteractionAction(QString const &name, QObject *parent = nullptr);
+    explicit TestInteractionAction(QString const &actionName, QString const &contextKey, QObject *parent = nullptr);
 
     virtual QString GetName() override;
     /*virtual void StartAction(Context &context) override;*/
     virtual void Run(Context &context) override;
 
 private:
-    QString _name;
+    QString _actionName;
+    QString _contextKey;
 };
 
 }

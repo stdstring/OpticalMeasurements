@@ -8,15 +8,16 @@
 namespace CalcApp
 {
 
-TestInteractionAction::TestInteractionAction(QString const &name, QObject *parent) :
+TestInteractionAction::TestInteractionAction(QString const &actionName, QString const &contextKey, QObject *parent) :
     IAction(parent),
-    _name(name)
+    _actionName(actionName),
+    _contextKey(contextKey)
 {
 }
 
 QString TestInteractionAction::GetName()
 {
-    return _name;
+    return _actionName;
 }
 
 void TestInteractionAction::Run(Context &context)
