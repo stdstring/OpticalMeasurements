@@ -3,15 +3,21 @@ include( ../../lib.pri )
 
 QT += core
 
-TARGET = TestSaveDataAction
+TARGET = TestSaveDataAction$${LIB_SUFFIX}
 TEMPLATE = lib
 CONFIG += plugin
 
+DEFINES += TEST_SAVE_DATA_ACTION_LIBRARY
+
+LIBS += -lCommon
+
 #DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
-SOURCES +=
+SOURCES += TestSaveDataAction.cpp \
+           TestSaveDataActionFactory.cpp
 
-HEADERS +=
+HEADERS += TestSaveDataAction.h \
+           TestSaveDataActionFactory.h
 
 DISTFILES += TestSaveDataAction.json
 
