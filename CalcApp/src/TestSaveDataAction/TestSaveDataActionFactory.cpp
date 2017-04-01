@@ -1,6 +1,10 @@
 #include <QObject>
+#include <QRegExp>
 #include <QString>
+#include <QList>
 #include <QtGlobal>
+
+#include <stdexcept>
 
 #include "Common/IActionFactory.h"
 #include "Common/MainConfig.h"
@@ -21,7 +25,15 @@ QString TestSaveDataActionFactory::GetId()
 
 IAction* TestSaveDataActionFactory::Create(QString const &name, QString const &args, MainConfig const &config, QObject *parent)
 {
-    return nullptr;
+    Q_UNUSED(config);
+    // TODO (std_string) : this code isn't correct in case of presence of space characters inside of any parameters
+    const int argsCount = 2;
+    QStringList argsList = args.split(QRegExp("\\s+"));
+    if (argsList.size() != argsCount)
+        throw std::invalid_argument("args");
+    QString const &contextKey = argsList[0];
+    QString const &destFilename = argsList[1];
+    return new TestSaveDataAction(name, contextKey, destFilename, parent);
 }
 
 }
