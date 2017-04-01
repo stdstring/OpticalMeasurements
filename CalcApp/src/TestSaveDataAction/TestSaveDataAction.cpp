@@ -27,14 +27,13 @@ QString TestSaveDataAction::GetName()
 
 void TestSaveDataAction::Run(Context &context)
 {
-    Q_UNUSED(context);
     QFile destFile(_destFilename);
     destFile.open(QIODevice::WriteOnly);
     QTextStream stream(&destFile);
-    QStringList data; // read from context by key
-    foreach (QString item, data)
+    QStringListContextItem *item = context.GetValue<QStringListContextItem>(_contextKey);
+    foreach (QString const &str, item->Data)
     {
-        stream << item;
+        stream << str;
     }
 }
 
