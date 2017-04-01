@@ -3,11 +3,42 @@
 #include <QObject>
 #include <QString>
 
+#include <memory>
+
 #include "Common/Context.h"
 #include "Common/IAction.h"
+#include "Common/ITransport.h"
+#include "Common/ITransportFactory.h"
+#include "Common/Message.h"
+#include "Common/TransportConfig.h"
 
 namespace CalcApp
 {
+
+class TransportInteractionHandler : public QObject
+{
+    Q_OBJECT
+public:
+    TransportInteractionHandler(ITransportFactory *transportFactory, TransportConfig const &config, QStringListContextItem *contextItem);
+
+private:
+    enum ExecutionState {STARTED, FINISHED};
+
+    ITransportFactory *_transportFactory;
+    ITransport *_transport;
+    TransportConfig const &_config;
+    QStringListContextItem *_contextItem;
+    ExecutionState _state;
+
+public slots:
+    void Start();
+    void Stop();
+
+private slots:
+    void ProcessResponse(Message const &message);
+    void ProcessData(Message const &message);
+    void ProcessEvent(Message const &message);
+};
 
 class TestInteractionAction : public IAction
 {
@@ -21,6 +52,7 @@ public:
 private:
     QString _actionName;
     QString _contextKey;
+    std::shared_ptr<TransportInteractionHandler*> _handler;
 };
 
 }
