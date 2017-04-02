@@ -22,12 +22,7 @@ QString TestInteractionActionFactory::GetId()
 
 IAction* TestInteractionActionFactory::Create(QString const &name, QString const &args, MainConfig const &config, ITransportFactory *transportFactory, QObject *parent)
 {
-    Q_UNUSED(name);
-    Q_UNUSED(args);
-    Q_UNUSED(config);
-    Q_UNUSED(transportFactory);
-    Q_UNUSED(parent);
-    return nullptr;
+    return new TestInteractionAction(name, args, transportFactory, config.Transport, parent);
 }
 
 }
