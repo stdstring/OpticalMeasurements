@@ -104,9 +104,10 @@ void TcpTransport::ProcessRead()
             _messageSize = data.first;
             return;
         }
+        // TODO (std_string) : use more functional style
         if (_state == TcpTransportState::WAITING_EVENT)
             emit EventReceived(Message(MessageType::EVENT, data.second));
-        if (_state == TcpTransportState::WAITING_RESPONSE)
+        else if (_state == TcpTransportState::WAITING_RESPONSE)
         {
             emit ResponseReceived(Message(MessageType::RESPONSE, data.second));
             _state = TcpTransportState::WAITING_EVENT;

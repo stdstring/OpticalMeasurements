@@ -33,7 +33,7 @@ void TestSaveDataAction::Run(Context &context)
     QStringListContextItem *item = context.GetValue<QStringListContextItem>(_contextKey);
     foreach (QString const &str, item->Data)
     {
-        stream << str;
+        stream << str << "\r\n";
     }
 }
 

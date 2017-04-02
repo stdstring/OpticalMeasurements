@@ -13,4 +13,4 @@ SUBDIRS += src/Common \
            src/TestInteractionAction
 
 # tests
-SUBDIRS += tests/TransportTests
+#SUBDIRS += tests/TransportTests

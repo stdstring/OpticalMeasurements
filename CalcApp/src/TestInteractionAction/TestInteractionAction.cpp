@@ -1,4 +1,5 @@
 #include <QByteArray>
+#include <QDataStream>
 #include <QObject>
 #include <QString>
 #include <QThread>
@@ -39,19 +40,31 @@ TransportInteractionHandler::TransportInteractionHandler(ITransportFactory *tran
 void TransportInteractionHandler::Start()
 {
     _transport = _transportFactory->Create(_config, this);
+    //QObject::connect(_transport, &ITransport::ResponseReceived, this, &TransportInteractionHandler::ProcessResponse);
+    //QObject::connect(_transport, &ITransport::DataReceived, this, &TransportInteractionHandler::ProcessData);
+    //QObject::connect(_transport, &ITransport::EventReceived, this, &TransportInteractionHandler::ProcessEvent);
+    QObject::connect(_transport, SIGNAL(ResponseReceived(Message const&)), this, SLOT(ProcessResponse(Message const&)));
+    QObject::connect(_transport, SIGNAL(DataReceived(Message const&)), this, SLOT(ProcessData(Message const&)));
+    QObject::connect(_transport, SIGNAL(EventReceived(Message const&)), this, SLOT(ProcessEvent(Message const&)));
     _transport->Connect();
     _transport->Send(Message(MessageType::REQUEST, StartCommand.toUtf8()));
 }
 
 void TransportInteractionHandler::Stop()
 {
+    //QObject::disconnect(_transport, &ITransport::ResponseReceived, this, &TransportInteractionHandler::ProcessResponse);
+    //QObject::disconnect(_transport, &ITransport::DataReceived, this, &TransportInteractionHandler::ProcessData);
+    //QObject::disconnect(_transport, &ITransport::EventReceived, this, &TransportInteractionHandler::ProcessEvent);
+    QObject::disconnect(_transport, SIGNAL(ResponseReceived(Message const&)), this, SLOT(ProcessResponse(Message const&)));
+    QObject::disconnect(_transport, SIGNAL(DataReceived(Message const&)), this, SLOT(ProcessData(Message const&)));
+    QObject::disconnect(_transport, SIGNAL(EventReceived(Message const&)), this, SLOT(ProcessEvent(Message const&)));
     //_transport->Disconnect();
 }
 
 void TransportInteractionHandler::ProcessResponse(Message const &message)
 {
     QString response(QString::fromUtf8(message.GetData()));
-    if (ExecutionState::STARTED == _state && SuccessResponse != response)
+    if (SuccessResponse != response)
         throw std::logic_error("bad response");
     if (ExecutionState::FINISHED == _state)
         emit Finished();
@@ -59,7 +72,11 @@ void TransportInteractionHandler::ProcessResponse(Message const &message)
 
 void TransportInteractionHandler::ProcessData(Message const &message)
 {
-    QString data(QString::fromUtf8(message.GetData()));
+    QDataStream stream(message.GetData());
+    stream.setVersion(QDataStream::Qt_5_5);
+    quint32 packageNumber, calcNumber;
+    QString data;
+    stream >> packageNumber >> calcNumber >> data;
     _contextItem->Data.append(data);
 }
 
@@ -99,12 +116,15 @@ void TestInteractionAction::Run(Context &context)
     std::shared_ptr<TransportInteractionHandler> handler(new TransportInteractionHandler(_transportFactory, _config, contextItem));
     std::shared_ptr<QThread> thread(new QThread());
     handler.get()->moveToThread(thread.get());
+    thread.get()->moveToThread(thread.get());
     QObject::connect(thread.get(), &QThread::started, handler.get(), &TransportInteractionHandler::Start);
     QObject::connect(thread.get(), &QThread::finished, handler.get(), &TransportInteractionHandler::Stop);
+    QObject::connect(handler.get(), &TransportInteractionHandler::Finished, thread.get(), &QThread::quit);
     thread.get()->start();
     thread.get()->wait();
     QObject::disconnect(thread.get(), &QThread::started, handler.get(), &TransportInteractionHandler::Start);
     QObject::disconnect(thread.get(), &QThread::finished, handler.get(), &TransportInteractionHandler::Stop);
+    QObject::disconnect(handler.get(), &TransportInteractionHandler::Finished, thread.get(), &QThread::quit);
 }
 
 }
