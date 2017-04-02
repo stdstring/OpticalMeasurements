@@ -3,8 +3,6 @@
 #include <QObject>
 #include <QString>
 
-#include <memory>
-
 #include "Common/Context.h"
 #include "Common/IAction.h"
 #include "Common/ITransport.h"
@@ -30,6 +28,9 @@ private:
     QStringListContextItem *_contextItem;
     ExecutionState _state;
 
+signals:
+    void Finished();
+
 public slots:
     void Start();
     void Stop();
@@ -43,7 +44,11 @@ private slots:
 class TestInteractionAction : public IAction
 {
 public:
-    explicit TestInteractionAction(QString const &actionName, QString const &contextKey, QObject *parent = nullptr);
+    TestInteractionAction(QString const &actionName,
+                          QString const &contextKey,
+                          ITransportFactory *transportFactory,
+                          TransportConfig const &config,
+                          QObject *parent = nullptr);
 
     virtual QString GetName() override;
     /*virtual void StartAction(Context &context) override;*/
@@ -52,7 +57,8 @@ public:
 private:
     QString _actionName;
     QString _contextKey;
-    std::shared_ptr<TransportInteractionHandler*> _handler;
+    ITransportFactory *_transportFactory;
+    TransportConfig const &_config;
 };
 
 }

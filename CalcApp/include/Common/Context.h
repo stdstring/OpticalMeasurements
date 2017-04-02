@@ -16,7 +16,7 @@ public:
 };
 
 // TODO (std_string) : probably we need some encapsulation here
-class QStringListContextItem : IContextItem
+class QStringListContextItem : public IContextItem
 {
 public:
     QStringList Data;

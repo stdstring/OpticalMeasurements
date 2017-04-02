@@ -1,7 +1,9 @@
 #include <QByteArray>
 #include <QObject>
 #include <QString>
+#include <QThread>
 
+#include <memory>
 #include <stdexcept>
 
 #include "Common/Context.h"
@@ -43,6 +45,7 @@ void TransportInteractionHandler::Start()
 
 void TransportInteractionHandler::Stop()
 {
+    //_transport->Disconnect();
 }
 
 void TransportInteractionHandler::ProcessResponse(Message const &message)
@@ -51,9 +54,7 @@ void TransportInteractionHandler::ProcessResponse(Message const &message)
     if (ExecutionState::STARTED == _state && SuccessResponse != response)
         throw std::logic_error("bad response");
     if (ExecutionState::FINISHED == _state)
-    {
-        // ???
-    }
+        emit Finished();
 }
 
 void TransportInteractionHandler::ProcessData(Message const &message)
@@ -72,10 +73,16 @@ void TransportInteractionHandler::ProcessEvent(Message const &message)
     }
 }
 
-TestInteractionAction::TestInteractionAction(QString const &actionName, QString const &contextKey, QObject *parent) :
+TestInteractionAction::TestInteractionAction(QString const &actionName,
+                                             QString const &contextKey,
+                                             ITransportFactory *transportFactory,
+                                             TransportConfig const &config,
+                                             QObject *parent) :
     IAction(parent),
     _actionName(actionName),
-    _contextKey(contextKey)
+    _contextKey(contextKey),
+    _transportFactory(transportFactory),
+    _config(config)
 {
 }
 
@@ -86,7 +93,18 @@ QString TestInteractionAction::GetName()
 
 void TestInteractionAction::Run(Context &context)
 {
-    Q_UNUSED(context);
+    if (!context.HasKey(_contextKey))
+        context.Set(_contextKey, std::shared_ptr<IContextItem>(new QStringListContextItem()));
+    QStringListContextItem *contextItem = context.GetValue<QStringListContextItem>(_contextKey);
+    std::shared_ptr<TransportInteractionHandler> handler(new TransportInteractionHandler(_transportFactory, _config, contextItem));
+    std::shared_ptr<QThread> thread(new QThread());
+    handler.get()->moveToThread(thread.get());
+    QObject::connect(thread.get(), &QThread::started, handler.get(), &TransportInteractionHandler::Start);
+    QObject::connect(thread.get(), &QThread::finished, handler.get(), &TransportInteractionHandler::Stop);
+    thread.get()->start();
+    thread.get()->wait();
+    QObject::disconnect(thread.get(), &QThread::started, handler.get(), &TransportInteractionHandler::Start);
+    QObject::disconnect(thread.get(), &QThread::finished, handler.get(), &TransportInteractionHandler::Stop);
 }
 
 }
