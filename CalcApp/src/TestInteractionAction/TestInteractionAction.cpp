@@ -40,24 +40,18 @@ TransportInteractionHandler::TransportInteractionHandler(ITransportFactory *tran
 void TransportInteractionHandler::Start()
 {
     _transport = _transportFactory->Create(_config, this);
-    //QObject::connect(_transport, &ITransport::ResponseReceived, this, &TransportInteractionHandler::ProcessResponse);
-    //QObject::connect(_transport, &ITransport::DataReceived, this, &TransportInteractionHandler::ProcessData);
-    //QObject::connect(_transport, &ITransport::EventReceived, this, &TransportInteractionHandler::ProcessEvent);
-    QObject::connect(_transport, SIGNAL(ResponseReceived(Message const&)), this, SLOT(ProcessResponse(Message const&)));
-    QObject::connect(_transport, SIGNAL(DataReceived(Message const&)), this, SLOT(ProcessData(Message const&)));
-    QObject::connect(_transport, SIGNAL(EventReceived(Message const&)), this, SLOT(ProcessEvent(Message const&)));
+    QObject::connect(_transport, &ITransport::ResponseReceived, this, &TransportInteractionHandler::ProcessResponse);
+    QObject::connect(_transport, &ITransport::DataReceived, this, &TransportInteractionHandler::ProcessData);
+    QObject::connect(_transport, &ITransport::EventReceived, this, &TransportInteractionHandler::ProcessEvent);
     _transport->Connect();
     _transport->Send(Message(MessageType::REQUEST, StartCommand.toUtf8()));
 }
 
 void TransportInteractionHandler::Stop()
 {
-    //QObject::disconnect(_transport, &ITransport::ResponseReceived, this, &TransportInteractionHandler::ProcessResponse);
-    //QObject::disconnect(_transport, &ITransport::DataReceived, this, &TransportInteractionHandler::ProcessData);
-    //QObject::disconnect(_transport, &ITransport::EventReceived, this, &TransportInteractionHandler::ProcessEvent);
-    QObject::disconnect(_transport, SIGNAL(ResponseReceived(Message const&)), this, SLOT(ProcessResponse(Message const&)));
-    QObject::disconnect(_transport, SIGNAL(DataReceived(Message const&)), this, SLOT(ProcessData(Message const&)));
-    QObject::disconnect(_transport, SIGNAL(EventReceived(Message const&)), this, SLOT(ProcessEvent(Message const&)));
+    QObject::disconnect(_transport, &ITransport::ResponseReceived, this, &TransportInteractionHandler::ProcessResponse);
+    QObject::disconnect(_transport, &ITransport::DataReceived, this, &TransportInteractionHandler::ProcessData);
+    QObject::disconnect(_transport, &ITransport::EventReceived, this, &TransportInteractionHandler::ProcessEvent);
     //_transport->Disconnect();
 }
 
@@ -75,9 +69,9 @@ void TransportInteractionHandler::ProcessData(Message const &message)
     QDataStream stream(message.GetData());
     stream.setVersion(QDataStream::Qt_5_5);
     quint32 packageNumber, calcNumber;
-    QString data;
+    QByteArray data;
     stream >> packageNumber >> calcNumber >> data;
-    _contextItem->Data.append(data);
+    _contextItem->Data.append(QString::fromUtf8(data));
 }
 
 void TransportInteractionHandler::ProcessEvent(Message const &message)
