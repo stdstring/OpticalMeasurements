@@ -5,7 +5,7 @@
 namespace CalcApp
 {
 
-enum MessageType { REQUEST, RESPONSE, DATA, EVENT };
+enum MessageType { REQUEST = 1, RESPONSE = 2, DATA = 3, EVENT = 4 };
 
 class Message
 {

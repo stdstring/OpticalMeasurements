@@ -12,7 +12,8 @@ INCLUDEPATH += ../../include/Common
 SOURCES += ComponentLoader.cpp \
            Context.cpp \
            ComponentStorage.cpp \
-           ActionChainFactory.cpp
+           ActionChainFactory.cpp \
+           TransportSerialization.cpp
 
 HEADERS += ../../include/Common/ActionChainFactory.h \
            ../../include/Common/ActionsConfig.h \
@@ -27,7 +28,8 @@ HEADERS += ../../include/Common/ActionChainFactory.h \
            ../../include/Common/ITransportFactory.h \
            ../../include/Common/MainConfig.h \
            ../../include/Common/Message.h \
-           ../../include/Common/TransportConfig.h
+           ../../include/Common/TransportConfig.h \
+           ../../include/Common/TransportSerialization.h
 
 unix {
     target.path = /usr/lib

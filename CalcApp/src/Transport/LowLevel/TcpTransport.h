@@ -6,11 +6,10 @@
 
 #include "Common/Message.h"
 #include "Common/TransportConfig.h"
+#include "Common/TransportSerialization.h"
 
 namespace CalcApp
 {
-
-enum TcpTransportState { WAITING_EVENT, WAITING_RESPONSE };
 
 class TcpTransport : public QObject
 {
@@ -28,8 +27,7 @@ private:
     QString _address;
     quint16 _port;
     QTcpSocket *_socket;
-    quint32 _messageSize;
-    TcpTransportState _state;
+    MessageHeader _messageHeader;
 
 private slots:
     void ProcessRead();

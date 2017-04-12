@@ -8,6 +8,7 @@
 #include <QUdpSocket>
 
 #include "Common/Message.h"
+#include "Common/TransportSerialization.h"
 #include "TestServerConfig.h"
 
 namespace CalcApp
@@ -33,7 +34,7 @@ private:
     QTimer *_timer;
     QTcpServer *_server;
     QTcpSocket *_tcpSocket;
-    quint32 _tcpMessageSize;
+    MessageHeader _tcpMessageHeader;
     QUdpSocket *_udpSocket;
 
 private slots:
