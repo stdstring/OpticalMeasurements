@@ -1,4 +1,4 @@
-PROJECT_ROOT_PATH = $${PWD}/
+PROJECT_ROOT_PATH = $${PWD}
 
 win32: OS_SUFFIX = win32
 linux-g++: OS_SUFFIX = linux
@@ -10,7 +10,7 @@ CONFIG(debug, debug|release) {
     BUILD_FLAG = release
 }
 
-LIBS_PATH = $${PROJECT_ROOT_PATH}/lib.$${OS_SUFFIX}/
+LIBS_PATH = $${PROJECT_ROOT_PATH}/lib.$${OS_SUFFIX}
 INCLUDE_PATH = $${PROJECT_ROOT_PATH}/include/
 IMPORT_PATH = $${PROJECT_ROOT_PATH}/import/
 BIN_PATH = $${PROJECT_ROOT_PATH}/bin/$${BUILD_FLAG}/

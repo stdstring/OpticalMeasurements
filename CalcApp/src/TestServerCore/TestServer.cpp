@@ -12,6 +12,7 @@
 #include <stdexcept>
 
 #include "Common/Message.h"
+#include "Common/TransportSerialization.h"
 #include "TestServer.h"
 #include "TestServerConfig.h"
 
@@ -21,23 +22,12 @@ namespace CalcApp
 namespace
 {
 
-// TODO (std_string) : move into some common place
-
-// format of all incoming/outgoing messages:
-// tag (quint32) - probably added in future
-// size (quint32)
-// byte array
-
 void SendUdpData(QUdpSocket *socket, QString const &serverAddress, quint16 udpPortNumber, Message const &message)
 {
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
     output.setVersion(QDataStream::Qt_5_5);
-    // tag (quint32) - probably added in future
-    // size (quint32)
-    output << static_cast<quint32>(message.GetData().size());
-    // byte array
-    output << message.GetData();
+    TransportSerializer::Serialize(message, output);
     socket->writeDatagram(buffer, QHostAddress(serverAddress), udpPortNumber);
 }
 
@@ -46,45 +36,34 @@ void SendTcpData(QTcpSocket *socket, Message const &message)
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
     output.setVersion(QDataStream::Qt_5_5);
-    // tag (quint32) - probably added in future
-    // size (quint32)
-    output << static_cast<quint32>(message.GetData().size());
-    // byte array
-    output << message.GetData();
+    TransportSerializer::Serialize(message, output);
     socket->write(buffer);
 }
 
-QPair<quint32, QByteArray> StartReadTcpData(QTcpSocket *socket)
+QPair<MessageHeader, QByteArray> StartReadTcpData(QTcpSocket *socket)
 {
-    // tag (quint32) - probably added in future
-    // size (quint32)
-    if (socket->bytesAvailable() < sizeof(quint32))
-        return qMakePair(0, QByteArray());
+    if (socket->bytesAvailable() < TransportSerializer::GetMessageHeaderSize())
+        return qMakePair(MessageHeader(), QByteArray());
     QDataStream input(socket);
-    quint32 size = 0;
-    input >> size;
-    if (socket->bytesAvailable() < size)
-        return qMakePair(size, QByteArray());
-    // byte array
-    QByteArray data;
-    input >> data;
-    return qMakePair(size, data);
+    input.setVersion(QDataStream::Qt_5_5);
+    MessageHeader header = TransportSerializer::DeserializeHeader(input);
+    if (socket->bytesAvailable() < header.Size)
+        return qMakePair(header, QByteArray());
+    return qMakePair(header, TransportSerializer::DeserializeBody(header, input));
 }
 
-QByteArray ContinueReadTcpData(QTcpSocket *socket, quint32 size)
+QByteArray ContinueReadTcpData(QTcpSocket *socket, MessageHeader const &header)
 {
-    if (socket->bytesAvailable() < size)
+    if (socket->bytesAvailable() < header.Size)
         return QByteArray();
-    // byte array
-    QByteArray data;
     QDataStream input(socket);
-    input >> data;
-    return data;
+    input.setVersion(QDataStream::Qt_5_5);
+    return TransportSerializer::DeserializeBody(header, input);
 }
 
-QPair<quint32, QByteArray> ReadTcpData(QTcpSocket *socket, quint32 size)
+QPair<MessageHeader, QByteArray> ReadTcpData(QTcpSocket *socket, MessageHeader const &header)
 {
-    return size == 0 ? StartReadTcpData(socket) : qMakePair(size, ContinueReadTcpData(socket, size));
+    return header.Size == 0 ? StartReadTcpData(socket) : qMakePair(header, ContinueReadTcpData(socket, header));
 }
 
 }
@@ -96,7 +75,6 @@ TestServer::TestServer(TestServerConfig const &config, QList<Message> const &mes
     _timer(nullptr),
     _server(nullptr),
     _tcpSocket(nullptr),
-    _tcpMessageSize(0),
     _udpSocket(nullptr)
 {
 }
@@ -154,10 +132,10 @@ void TestServer::ProcessClientRead()
 {
     forever
     {
-        QPair<quint16, QByteArray> data = ReadTcpData(_tcpSocket, _tcpMessageSize);
+        QPair<MessageHeader, QByteArray> data = ReadTcpData(_tcpSocket, _tcpMessageHeader);
         if (data.second.isEmpty())
         {
-            _tcpMessageSize = data.first;
+            _tcpMessageHeader = data.first;
             return;
         }
         emit RequestReceived(Message(MessageType::REQUEST, data.second));

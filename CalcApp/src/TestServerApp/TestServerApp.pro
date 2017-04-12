@@ -10,7 +10,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-LIBS += -lCommon -lTestServerCore
+LIBS += -lTestServerCore -lCommon
 
 SOURCES += main.cpp \
            ConfigReader.cpp

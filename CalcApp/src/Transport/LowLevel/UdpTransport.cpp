@@ -6,6 +6,7 @@
 
 #include "Common/Message.h"
 #include "Common/TransportConfig.h"
+#include "Common/TransportSerialization.h"
 #include "UdpTransport.h"
 
 namespace CalcApp
@@ -14,25 +15,15 @@ namespace CalcApp
 namespace
 {
 
-// format of all incoming/outgoing messages:
-// tag (quint32) - probably added in future
-// size (quint32)
-// byte array
-
 QByteArray ReadSingleData(QUdpSocket *socket)
 {
     QByteArray buffer;
     buffer.resize(socket->pendingDatagramSize());
     socket->readDatagram(buffer.data(), buffer.size());
     QDataStream input(&buffer, QIODevice::ReadOnly);
-    // tag (quint32) - probably added in future
-    // size (quint32)
-    quint32 size = 0;
-    input >> size;
-    // byte array
-    QByteArray data;
-    input >> data;
-    return data;
+    input.setVersion(QDataStream::Qt_5_5);
+    MessageHeader header = TransportSerializer::DeserializeHeader(input);
+    return TransportSerializer::DeserializeBody(header, input);
 }
 
 QList<QByteArray> ReadData(QUdpSocket *socket)

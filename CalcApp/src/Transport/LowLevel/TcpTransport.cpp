@@ -9,6 +9,7 @@
 
 #include "Common/Message.h"
 #include "Common/TransportConfig.h"
+#include "Common/TransportSerialization.h"
 #include "TcpTransport.h"
 
 namespace CalcApp
@@ -17,57 +18,39 @@ namespace CalcApp
 namespace
 {
 
-// TODO (std_string) : move into some common place
-
-// format of all incoming/outgoing messages:
-// tag (quint32) - probably added in future
-// size (quint32)
-// byte array
-
 void SendData(QTcpSocket *socket, Message const &message)
 {
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
     output.setVersion(QDataStream::Qt_5_5);
-    // tag (quint32) - probably added in future
-    // size (quint32)
-    output << static_cast<quint32>(message.GetData().size());
-    // byte array
-    output << message.GetData();
+    TransportSerializer::Serialize(message, output);
     socket->write(buffer);
 }
 
-QPair<quint32, QByteArray> StartReadData(QTcpSocket *socket)
+QPair<MessageHeader, QByteArray> StartReadData(QTcpSocket *socket)
 {
-    // tag (quint32) - probably added in future
-    // size (quint32)
-    if (socket->bytesAvailable() < sizeof(quint32))
-        return qMakePair(0, QByteArray());
+    if (socket->bytesAvailable() < TransportSerializer::GetMessageHeaderSize())
+            return qMakePair(MessageHeader(), QByteArray());
     QDataStream input(socket);
-    quint32 size = 0;
-    input >> size;
-    if (socket->bytesAvailable() < size)
-        return qMakePair(size, QByteArray());
-    // byte array
-    QByteArray data;
-    input >> data;
-    return qMakePair(size, data);
+    input.setVersion(QDataStream::Qt_5_5);
+    MessageHeader header = TransportSerializer::DeserializeHeader(input);
+    if (socket->bytesAvailable() < header.Size)
+        return qMakePair(header, QByteArray());
+    return qMakePair(header, TransportSerializer::DeserializeBody(header, input));
 }
 
-QByteArray ContinueReadData(QTcpSocket *socket, quint32 size)
+QByteArray ContinueReadData(QTcpSocket *socket, MessageHeader const &header)
 {
-    if (socket->bytesAvailable() < size)
+    if (socket->bytesAvailable() < header.Size)
         return QByteArray();
-    // byte array
-    QByteArray data;
     QDataStream input(socket);
-    input >> data;
-    return data;
+    input.setVersion(QDataStream::Qt_5_5);
+    return TransportSerializer::DeserializeBody(header, input);
 }
 
-QPair<quint32, QByteArray> ReadData(QTcpSocket *socket, quint32 size)
+QPair<MessageHeader, QByteArray> ReadData(QTcpSocket *socket, MessageHeader const &header)
 {
-    return size == 0 ? StartReadData(socket) : qMakePair(size, ContinueReadData(socket, size));
+    return header.Size == 0 ? StartReadData(socket) : qMakePair(header, ContinueReadData(socket, header));
 }
 
 }
@@ -76,9 +59,7 @@ TcpTransport::TcpTransport(TransportConfig const &transportConfig, QObject *pare
     QObject(parent),
     _address(transportConfig.TcpAddress),
     _port(transportConfig.TcpPort),
-    _socket(new QTcpSocket(this)),
-    _messageSize(0),
-    _state(TcpTransportState::WAITING_EVENT)
+    _socket(new QTcpSocket(this))
 {
     QObject::connect(_socket, &QTcpSocket::readyRead, this, &TcpTransport::ProcessRead);
 }
@@ -91,27 +72,23 @@ void TcpTransport::Connect()
 void TcpTransport::Send(Message const &message)
 {
     SendData(_socket, message);
-    _state = TcpTransportState::WAITING_RESPONSE;
 }
 
 void TcpTransport::ProcessRead()
 {
     forever
     {
-        QPair<quint32, QByteArray> data = ReadData(_socket, _messageSize);
+        QPair<MessageHeader, QByteArray> data = ReadData(_socket, _messageHeader);
         if (data.second.isEmpty())
         {
-            _messageSize = data.first;
+            _messageHeader = data.first;
             return;
         }
         // TODO (std_string) : use more functional style
-        if (_state == TcpTransportState::WAITING_EVENT)
+        if (data.first.Type == MessageType::EVENT)
             emit EventReceived(Message(MessageType::EVENT, data.second));
-        else if (_state == TcpTransportState::WAITING_RESPONSE)
-        {
+        else if (data.first.Type == MessageType::RESPONSE)
             emit ResponseReceived(Message(MessageType::RESPONSE, data.second));
-            _state = TcpTransportState::WAITING_EVENT;
-        }
     }
 }
 
