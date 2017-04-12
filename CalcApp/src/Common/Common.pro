@@ -29,7 +29,8 @@ HEADERS += ../../include/Common/ActionChainFactory.h \
            ../../include/Common/MainConfig.h \
            ../../include/Common/Message.h \
            ../../include/Common/TransportConfig.h \
-           ../../include/Common/TransportSerialization.h
+           ../../include/Common/TransportSerialization.h \
+           ../../include/Common/Logger/ILogger.h
 
 unix {
     target.path = /usr/lib
