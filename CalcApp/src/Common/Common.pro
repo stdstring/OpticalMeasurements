@@ -30,7 +30,8 @@ HEADERS += ../../include/Common/ActionChainFactory.h \
            ../../include/Common/Message.h \
            ../../include/Common/TransportConfig.h \
            ../../include/Common/TransportSerialization.h \
-           ../../include/Common/Logger/ILogger.h
+           ../../include/Common/Logger/ILogger.h \
+           ../../include/Common/Logger/NullLogger.h
 
 unix {
     target.path = /usr/lib
