@@ -1,3 +1,4 @@
+#include <QByteArray>
 #include <QLoggingCategory>
 #include <QMessageLogger>
 #include <QObject>
@@ -17,16 +18,21 @@ QMessageLoggerWrapper::QMessageLoggerWrapper(LogLevel level, QObject *parent) : 
 
 void QMessageLoggerWrapper::WriteDebug(QString const &message)
 {
+    if (GetLogLevel() > LogLevel::DEBUG)
+        return;
     QMessageLogger().debug(message.toUtf8().constData());
 }
 
 void QMessageLoggerWrapper::WriteDebug(LoggerCategory const &category, QString const &message)
 {
-    QLoggingCategory loggingCategory(category.Category.toUtf8().constData());
+    if (GetLogLevel() > LogLevel::DEBUG)
+        return;
+    QByteArray categoryData = category.Category.toUtf8();
+    QLoggingCategory loggingCategory(categoryData.constData());
     QMessageLogger().debug(loggingCategory, message.toUtf8().constData());
 }
 
-void QMessageLoggerWrapper::WriteDebugFormat(QString const &format, ...)
+/*void QMessageLoggerWrapper::WriteDebugFormat(QString const &format, ...)
 {
     va_list ap;
     va_start(ap, format);
@@ -41,20 +47,25 @@ void QMessageLoggerWrapper::WriteDebugFormat(LoggerCategory const &category, QSt
     va_start(ap, format);
     QMessageLogger().debug(loggingCategory, format.toUtf8().constData(), ap);
     va_end(ap);
-}
+}*/
 
 void QMessageLoggerWrapper::WriteInfo(QString const &message)
 {
+    if (GetLogLevel() > LogLevel::INFO)
+        return;
     QMessageLogger().info(message.toUtf8().constData());
 }
 
 void QMessageLoggerWrapper::WriteInfo(LoggerCategory const &category, QString const &message)
 {
-    QLoggingCategory loggingCategory(category.Category.toUtf8().constData());
+    if (GetLogLevel() > LogLevel::INFO)
+        return;
+    QByteArray categoryData = category.Category.toUtf8();
+    QLoggingCategory loggingCategory(categoryData.constData());
     QMessageLogger().info(loggingCategory, message.toUtf8().constData());
 }
 
-void QMessageLoggerWrapper::WriteInfoFormat(QString const &format, ...)
+/*void QMessageLoggerWrapper::WriteInfoFormat(QString const &format, ...)
 {
     va_list ap;
     va_start(ap, format);
@@ -69,20 +80,25 @@ void QMessageLoggerWrapper::WriteInfoFormat(LoggerCategory const &category, QStr
     va_start(ap, format);
     QMessageLogger().info(loggingCategory, format.toUtf8().constData(), ap);
     va_end(ap);
-}
+}*/
 
 void QMessageLoggerWrapper::WriteWarning(QString const &message)
 {
+    if (GetLogLevel() > LogLevel::WARNING)
+        return;
     QMessageLogger().warning(message.toUtf8().constData());
 }
 
 void QMessageLoggerWrapper::WriteWarning(LoggerCategory const &category, QString const &message)
 {
-    QLoggingCategory loggingCategory(category.Category.toUtf8().constData());
+    if (GetLogLevel() > LogLevel::WARNING)
+        return;
+    QByteArray categoryData = category.Category.toUtf8();
+    QLoggingCategory loggingCategory(categoryData.constData());
     QMessageLogger().warning(loggingCategory, message.toUtf8().constData());
 }
 
-void QMessageLoggerWrapper::WriteWarningFormat(QString const &format, ...)
+/*void QMessageLoggerWrapper::WriteWarningFormat(QString const &format, ...)
 {
     va_list ap;
     va_start(ap, format);
@@ -97,20 +113,25 @@ void QMessageLoggerWrapper::WriteWarningFormat(LoggerCategory const &category, Q
     va_start(ap, format);
     QMessageLogger().warning(loggingCategory, format.toUtf8().constData(), ap);
     va_end(ap);
-}
+}*/
 
 void QMessageLoggerWrapper::WriteError(QString const &message)
 {
+    if (GetLogLevel() > LogLevel::ERROR)
+        return;
     QMessageLogger().critical(message.toUtf8().constData());
 }
 
 void QMessageLoggerWrapper::WriteError(LoggerCategory const &category, QString const &message)
 {
-    QLoggingCategory loggingCategory(category.Category.toUtf8().constData());
+    if (GetLogLevel() > LogLevel::ERROR)
+        return;
+    QByteArray categoryData = category.Category.toUtf8();
+    QLoggingCategory loggingCategory(categoryData.constData());
     QMessageLogger().critical(loggingCategory, message.toUtf8().constData());
 }
 
-void QMessageLoggerWrapper::WriteErrorFormat(QString const &format, ...)
+/*void QMessageLoggerWrapper::WriteErrorFormat(QString const &format, ...)
 {
     va_list ap;
     va_start(ap, format);
@@ -125,7 +146,7 @@ void QMessageLoggerWrapper::WriteErrorFormat(LoggerCategory const &category, QSt
     va_start(ap, format);
     QMessageLogger().critical(loggingCategory, format.toUtf8().constData(), ap);
     va_end(ap);
-}
+}*/
 
 /*void QMessageLoggerWrapper::WriteCritical(QString const &message)
 {
