@@ -15,9 +15,13 @@ SOURCES += ComponentLoader.cpp \
            ComponentStorage.cpp \
            ActionChainFactory.cpp \
            TransportSerialization.cpp \
-           Logger/QMessageLoggerWrapper.cpp
+           Logger/QMessageLoggerWrapper.cpp \
+           ServiceLocator.cpp
 
-HEADERS += ../../include/Common/ActionChainFactory.h \
+HEADERS += ../../include/Common/Logger/ILogger.h \
+           ../../include/Common/Logger/NullLogger.h \
+           ../../include/Common/Logger/QMessageLoggerWrapper.h \
+           ../../include/Common/ActionChainFactory.h \
            ../../include/Common/ActionsConfig.h \
            ../../include/Common/ComponentLoader.h \
            ../../include/Common/ComponentStorage.h \
@@ -32,9 +36,7 @@ HEADERS += ../../include/Common/ActionChainFactory.h \
            ../../include/Common/Message.h \
            ../../include/Common/TransportConfig.h \
            ../../include/Common/TransportSerialization.h \
-           ../../include/Common/Logger/ILogger.h \
-           ../../include/Common/Logger/NullLogger.h \
-           ../../include/Common/Logger/QMessageLoggerWrapper.h
+           ../../include/Common/ServiceLocator.h
 
 unix {
     target.path = /usr/lib
