@@ -10,15 +10,17 @@ CONFIG += staticlib
 INCLUDEPATH += ../../include/Common
 INCLUDEPATH += ../../include/Common/Logger
 
-SOURCES += ComponentLoader.cpp \
+SOURCES += Logger/LoggerService.cpp \
+           Logger/QMessageLoggerWrapper.cpp \
+           ComponentLoader.cpp \
            Context.cpp \
            ComponentStorage.cpp \
            ActionChainFactory.cpp \
            TransportSerialization.cpp \
-           Logger/QMessageLoggerWrapper.cpp \
            ServiceLocator.cpp
 
 HEADERS += ../../include/Common/Logger/ILogger.h \
+           ../../include/Common/Logger/LoggerService.h \
            ../../include/Common/Logger/NullLogger.h \
            ../../include/Common/Logger/QMessageLoggerWrapper.h \
            ../../include/Common/ActionChainFactory.h \
