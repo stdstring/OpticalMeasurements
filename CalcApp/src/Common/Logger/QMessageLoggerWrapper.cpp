@@ -12,20 +12,30 @@
 namespace CalcApp
 {
 
-QMessageLoggerWrapper::QMessageLoggerWrapper(LogLevel level, QObject *parent) : ILogger(level, parent)
+QMessageLoggerWrapper::QMessageLoggerWrapper(LogLevel level, QObject *parent) : ILogger(parent), _level(level)
 {
+}
+
+LogLevel QMessageLoggerWrapper::GetLogLevel() const
+{
+    return _level;
+}
+
+void QMessageLoggerWrapper::SetLogLevel(LogLevel level)
+{
+    _level = level;
 }
 
 void QMessageLoggerWrapper::WriteDebug(QString const &message)
 {
-    if (GetLogLevel() > LogLevel::DEBUG)
+    if (_level > LogLevel::DEBUG)
         return;
     QMessageLogger().debug(message.toUtf8().constData());
 }
 
 void QMessageLoggerWrapper::WriteDebug(LoggerCategory const &category, QString const &message)
 {
-    if (GetLogLevel() > LogLevel::DEBUG)
+    if (_level > LogLevel::DEBUG)
         return;
     QByteArray categoryData = category.Category.toUtf8();
     QLoggingCategory loggingCategory(categoryData.constData());
@@ -51,14 +61,14 @@ void QMessageLoggerWrapper::WriteDebugFormat(LoggerCategory const &category, QSt
 
 void QMessageLoggerWrapper::WriteInfo(QString const &message)
 {
-    if (GetLogLevel() > LogLevel::INFO)
+    if (_level > LogLevel::INFO)
         return;
     QMessageLogger().info(message.toUtf8().constData());
 }
 
 void QMessageLoggerWrapper::WriteInfo(LoggerCategory const &category, QString const &message)
 {
-    if (GetLogLevel() > LogLevel::INFO)
+    if (_level > LogLevel::INFO)
         return;
     QByteArray categoryData = category.Category.toUtf8();
     QLoggingCategory loggingCategory(categoryData.constData());
@@ -84,14 +94,14 @@ void QMessageLoggerWrapper::WriteInfoFormat(LoggerCategory const &category, QStr
 
 void QMessageLoggerWrapper::WriteWarning(QString const &message)
 {
-    if (GetLogLevel() > LogLevel::WARNING)
+    if (_level > LogLevel::WARNING)
         return;
     QMessageLogger().warning(message.toUtf8().constData());
 }
 
 void QMessageLoggerWrapper::WriteWarning(LoggerCategory const &category, QString const &message)
 {
-    if (GetLogLevel() > LogLevel::WARNING)
+    if (_level > LogLevel::WARNING)
         return;
     QByteArray categoryData = category.Category.toUtf8();
     QLoggingCategory loggingCategory(categoryData.constData());
@@ -117,14 +127,14 @@ void QMessageLoggerWrapper::WriteWarningFormat(LoggerCategory const &category, Q
 
 void QMessageLoggerWrapper::WriteError(QString const &message)
 {
-    if (GetLogLevel() > LogLevel::ERROR)
+    if (_level > LogLevel::ERROR)
         return;
     QMessageLogger().critical(message.toUtf8().constData());
 }
 
 void QMessageLoggerWrapper::WriteError(LoggerCategory const &category, QString const &message)
 {
-    if (GetLogLevel() > LogLevel::ERROR)
+    if (_level > LogLevel::ERROR)
         return;
     QByteArray categoryData = category.Category.toUtf8();
     QLoggingCategory loggingCategory(categoryData.constData());

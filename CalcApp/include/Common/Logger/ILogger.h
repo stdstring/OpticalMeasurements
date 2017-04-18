@@ -6,8 +6,6 @@
 namespace CalcApp
 {
 
-enum LogLevel { DEBUG = 1, INFO = 2, WARNING = 3, ERROR = 4/*, CRITICAL*/ };
-
 struct LoggerCategory
 {
 public:
@@ -20,11 +18,9 @@ public:
 class ILogger : public QObject
 {
 public:
-    explicit ILogger(LogLevel level, QObject *parent = nullptr) : QObject(parent), _level(level) {}
+    explicit ILogger(QObject *parent = nullptr) : QObject(parent) {}
     virtual ~ILogger() {}
 
-    LogLevel GetLogLevel() const { return _level; }
-    void SetLogLevel(LogLevel level) { _level = level; }
     virtual void WriteDebug(QString const &message) = 0;
     virtual void WriteDebug(LoggerCategory const &category, QString const &message) = 0;
     /*virtual void WriteDebugFormat(QString const &format, ...) = 0;
@@ -45,8 +41,6 @@ public:
     virtual void WriteCritical(LoggerCategory const &category, QString const &message) = 0;
     virtual void WriteCriticalFormat(QString const &format, ...) = 0;
     virtual void WriteCriticalFormat(LoggerCategory const &category, QString const &format, ...) = 0;*/
-private:
-    LogLevel _level;
 };
 
 }

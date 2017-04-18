@@ -8,11 +8,15 @@
 namespace CalcApp
 {
 
+enum LogLevel { DEBUG = 1, INFO = 2, WARNING = 3, ERROR = 4/*, CRITICAL*/ };
+
 class QMessageLoggerWrapper : public ILogger
 {
 public:
     explicit QMessageLoggerWrapper(LogLevel level, QObject *parent = nullptr);
 
+    LogLevel GetLogLevel() const;
+    void SetLogLevel(LogLevel level);
     virtual void WriteDebug(QString const &message) override;
     virtual void WriteDebug(LoggerCategory const &category, QString const &message) override;
     /*virtual void WriteDebugFormat(QString const &format, ...) override;
@@ -33,6 +37,9 @@ public:
     virtual void WriteCritical(LoggerCategory const &category, QString const &message) override;
     virtual void WriteCriticalFormat(QString const &format, ...) override;
     virtual void WriteCriticalFormat(LoggerCategory const &category, QString const &format, ...) override;*/
+
+private:
+    LogLevel _level;
 };
 
 }

@@ -70,8 +70,8 @@ void LoggerServiceWorker::ProcessWriteError(const LoggerCategory &category, cons
     _logger.get()->WriteError(category, message);
 }
 
-LoggerService::LoggerService(std::shared_ptr<ILogger> logger) :
-    ILogger(LogLevel::DEBUG),
+LoggerService::LoggerService(std::shared_ptr<ILogger> logger, QObject *parent) :
+    ILogger(parent),
     _worker(new LoggerServiceWorker(logger)),
     _workerThread(new QThread())
 {
