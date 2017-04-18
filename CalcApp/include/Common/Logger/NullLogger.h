@@ -11,7 +11,7 @@ namespace CalcApp
 class NullLogger : public ILogger
 {
 public:
-    explicit NullLogger(LogLevel level, QObject *parent = nullptr) : ILogger(level, parent) {}
+    explicit NullLogger(QObject *parent = nullptr) : ILogger(parent) {}
 
     virtual void WriteDebug(QString const &message) override {}
     virtual void WriteDebug(LoggerCategory const &category, QString const &message) override {}
