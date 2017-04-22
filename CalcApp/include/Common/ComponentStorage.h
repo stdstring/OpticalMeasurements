@@ -10,6 +10,9 @@
 namespace CalcApp
 {
 
+// TODO (std_string) : think about this definition
+class IActionFactory;
+
 class ComponentStorage
 {
 public:

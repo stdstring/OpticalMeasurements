@@ -3,10 +3,10 @@
 
 #include <algorithm>
 
-#include "ComponentStorage.h"
 #include "IAction.h"
 #include "IComponentInfo.h"
 #include "ITransportFactory.h"
+#include "ComponentStorage.h"
 
 namespace CalcApp
 {

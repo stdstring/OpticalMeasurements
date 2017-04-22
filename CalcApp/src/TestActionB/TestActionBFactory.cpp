@@ -3,8 +3,7 @@
 #include <QtGlobal>
 
 #include "Common/IActionFactory.h"
-#include "Common/ITransportFactory.h"
-#include "Common/MainConfig.h"
+#include "Common/ServiceLocator.h"
 #include "TestActionB.h"
 #include "TestActionBFactory.h"
 
@@ -20,10 +19,9 @@ QString TestActionBFactory::GetId()
     return "TestActionB";
 }
 
-IAction* TestActionBFactory::Create(QString const &name, QString const &args, MainConfig const &config, ITransportFactory *transportFactory, QObject *parent)
+IAction* TestActionBFactory::Create(QString const &name, QString const &args, const ServiceLocator &serviceLocator, QObject *parent)
 {
-    Q_UNUSED(config);
-    Q_UNUSED(transportFactory);
+    Q_UNUSED(serviceLocator);
     int time = args.toInt();
     return new TestActionB(name, time, parent);
 }

@@ -9,10 +9,8 @@
 
 #include "Common/ActionChainFactory.h"
 #include "Common/ActionsConfig.h"
-#include "Common/ComponentStorage.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
-#include "Common/MainConfig.h"
 #include "ActionManager.h"
 
 namespace CalcApp
@@ -61,10 +59,9 @@ void ActionExecuter::run()
     emit ActionChainFinished();
 }
 
-ActionManager::ActionManager(MainConfig const &config, ComponentStorage const &storage, QObject *parent) :
+ActionManager::ActionManager(ServiceLocator const &serviceLocator, QObject *parent) :
     QObject(parent),
-    _config(config),
-    _storage(storage),
+    _serviceLocator(serviceLocator),
     _executer(nullptr)
 {
 }
@@ -73,8 +70,8 @@ QStringList ActionManager::Create(QString const &chainName, QObject *parent)
 {
     if (!_chain.isEmpty())
         throw std::logic_error("Action's chain isn't empty");
-    ActionChainDef const &chain = FindActionChain(_config.Actions, chainName);
-    _chain = ActionChainFactory::Create(chain, _storage, _config, parent);
+    ActionChainDef const &chain = FindActionChain(_serviceLocator.GetConfig().get()->Actions, chainName);
+    _chain = ActionChainFactory::Create(chain, _serviceLocator, parent);
     QStringList dest;
     std::transform(_chain.cbegin(), _chain.cend(), std::back_inserter(dest), [](IAction *action){ return action->GetName(); });
     return dest;

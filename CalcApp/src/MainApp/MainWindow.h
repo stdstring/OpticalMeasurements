@@ -4,8 +4,7 @@
 #include <QString>
 #include <QStringList>
 
-#include "Common/ComponentStorage.h"
-#include "Common/MainConfig.h"
+#include "Common/ServiceLocator.h"
 #include "ActionManager.h"
 #include "StateManager.h"
 
@@ -21,7 +20,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    MainWindow(MainConfig const &config, ComponentStorage const &storage, QWidget *parent = nullptr);
+    MainWindow(ServiceLocator const &serviceLocator, QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
