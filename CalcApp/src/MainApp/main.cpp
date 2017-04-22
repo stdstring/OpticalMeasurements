@@ -22,7 +22,6 @@ int main(int argc, char *argv[])
     CalcApp::MainConfig config = reader.Read(argc, argv);
     // TODO (std_string) : configurate logger based on config info
     CalcApp::QMessageLoggerWrapper logger(CalcApp::LogLevel::DEBUG);
-    //CalcApp::LoggerService loggerService(std::shared_ptr<CalcApp::ILogger>(&logger, EmptyDelete<CalcApp::ILogger>));
     CalcApp::LoggerService loggerService(std::shared_ptr<CalcApp::ILogger>(&logger, [](CalcApp::ILogger*){}));
     QList<CalcApp::IComponentInfo*> components = CalcApp::ComponentsDirLoader::Load<CalcApp::IComponentInfo>(config.PluginsCommonDir, &app, true);
     CalcApp::ComponentStorage componentStorage;
