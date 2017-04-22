@@ -5,23 +5,22 @@
 #include <iterator>
 #include <stdexcept>
 
-#include "ActionChainFactory.h"
 #include "ActionsConfig.h"
-#include "ComponentStorage.h"
 #include "IAction.h"
-#include "MainConfig.h"
+#include "ServiceLocator.h"
+#include "ActionChainFactory.h"
 
 namespace CalcApp
 {
 
-QList<IAction*> ActionChainFactory::Create(ActionChainDef const &chainDef, ComponentStorage const &storage, MainConfig const &config, QObject *parent)
+QList<IAction*> ActionChainFactory::Create(ActionChainDef const &chainDef, ServiceLocator const &serviceLocator, QObject *parent)
 {
     QList<IAction*> dest;
-    std::transform(chainDef.Actions.cbegin(), chainDef.Actions.cend(), std::back_inserter(dest), [&storage, &config, parent](ActionDef const &actionDef){
-        IActionFactory *factory = storage.FindAction(actionDef.Id);
+    std::transform(chainDef.Actions.cbegin(), chainDef.Actions.cend(), std::back_inserter(dest), [&serviceLocator, parent](ActionDef const &actionDef){
+        IActionFactory *factory = serviceLocator.GetStorage()->FindAction(actionDef.Id);
         if (factory == nullptr)
             throw std::invalid_argument(actionDef.Id.toStdString());
-        return factory->Create(actionDef.Name, actionDef.Args, config, storage.GetTransport(), parent);
+        return factory->Create(actionDef.Name, actionDef.Args, serviceLocator, parent);
     });
     return dest;
 }

@@ -79,6 +79,12 @@ LoggerService::LoggerService(std::shared_ptr<ILogger> logger, QObject *parent) :
     _workerThread.get()->start();
 }
 
+LoggerService::~LoggerService()
+{
+    _workerThread.get()->exit();
+    _workerThread.get()->wait();
+}
+
 void LoggerService::WriteDebug(const QString &message)
 {
     emit _worker.get()->WriteDebug(message);

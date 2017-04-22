@@ -4,9 +4,8 @@
 #include <QObject>
 
 #include "ActionsConfig.h"
-#include "ComponentStorage.h"
 #include "IAction.h"
-#include "MainConfig.h"
+#include "ServiceLocator.h"
 
 namespace CalcApp
 {
@@ -14,7 +13,7 @@ namespace CalcApp
 class ActionChainFactory
 {
 public:
-    static QList<IAction*> Create(ActionChainDef const &chainDef, ComponentStorage const &storage, MainConfig const &config, QObject *parent);
+    static QList<IAction*> Create(ActionChainDef const &chainDef, ServiceLocator const &serviceLocator, QObject *parent);
 
     ActionChainFactory() = delete;
     ActionChainFactory(ActionChainFactory const&) = delete;

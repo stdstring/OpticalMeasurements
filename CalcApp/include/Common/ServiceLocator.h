@@ -2,12 +2,15 @@
 
 #include <memory>
 
+#include "Logger/ILogger.h"
 #include "ComponentStorage.h"
-#include "ILogger.h"
 #include "MainConfig.h"
 
 namespace CalcApp
 {
+
+// TODO (std_string) : think about this definition
+class ComponentStorage;
 
 class ServiceLocator
 {

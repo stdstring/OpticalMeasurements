@@ -45,6 +45,7 @@ class LoggerService : public ILogger
 {
 public:
     LoggerService(std::shared_ptr<ILogger> logger, QObject *parent = nullptr);
+    ~LoggerService();
 
     virtual void WriteDebug(const QString &message) override;
     virtual void WriteDebug(const LoggerCategory &category, const QString &message) override;

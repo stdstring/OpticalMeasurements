@@ -6,11 +6,13 @@
 
 #include "IAction.h"
 #include "IComponentInfo.h"
-#include "ITransportFactory.h"
-#include "MainConfig.h"
+#include "ServiceLocator.h"
 
 namespace CalcApp
 {
+
+// TODO (std_string) : think about this definition
+class ServiceLocator;
 
 class IActionFactory : public IComponentInfo
 {
@@ -19,7 +21,7 @@ public:
     explicit IActionFactory(QObject *parent = nullptr) : IComponentInfo(parent) {}
 
     // TODO (std_string) : using transportFactory here is temporary solution, only for stage 1. In future, we will create transport per action chain or something similiar.
-    virtual IAction* Create(QString const &name, QString const &args, MainConfig const &config, ITransportFactory *transportFactory, QObject *parent) = 0;
+    virtual IAction* Create(QString const &name, QString const &args, ServiceLocator const &serviceLocator, QObject *parent) = 0;
     virtual ComponentType GetComponentType() override { return ComponentType::ACTION; }
 };
 

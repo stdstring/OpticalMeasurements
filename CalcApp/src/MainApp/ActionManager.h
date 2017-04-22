@@ -6,10 +6,9 @@
 #include <QStringList>
 #include <QThread>
 
-#include "Common/ComponentStorage.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
-#include "Common/MainConfig.h"
+#include "Common/ServiceLocator.h"
 
 namespace CalcApp
 {
@@ -38,7 +37,7 @@ class ActionManager : public QObject
 {
     Q_OBJECT
 public:
-    ActionManager(MainConfig const &config, ComponentStorage const &storage, QObject *parent = nullptr);
+    ActionManager(ServiceLocator const &serviceLocator, QObject *parent = nullptr);
 
     QStringList Create(QString const &chainName, QObject *parent);
     void Run();
@@ -49,8 +48,7 @@ private:
     void ExecuterCreate();
     void ExecuterCleanup();
 
-    MainConfig const& _config;
-    ComponentStorage const& _storage;
+    ServiceLocator _serviceLocator;
     Context _context;
     QList<IAction*> _chain;
     ActionExecuter *_executer;

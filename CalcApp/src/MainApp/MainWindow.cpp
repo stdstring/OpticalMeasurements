@@ -5,10 +5,11 @@
 
 #include <algorithm>
 #include <iterator>
+#include <memory>
 
 #include "Common/ActionsConfig.h"
-#include "Common/ComponentStorage.h"
 #include "Common/MainConfig.h"
+#include "Common/ServiceLocator.h"
 #include "ActionManager.h"
 #include "StateManager.h"
 #include "MainWindow.h"
@@ -29,10 +30,10 @@ QString CreateItemText(QString const &name, QString const &suffix)
 
 }
 
-MainWindow::MainWindow(MainConfig const &config, ComponentStorage const &storage, QWidget *parent) :
+MainWindow::MainWindow(ServiceLocator const &serviceLocator, QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
-    _actionManager(new ActionManager(config, storage, this)),
+    _actionManager(new ActionManager(serviceLocator/*, storage*/, this)),
     _stateManager(nullptr),
     _currentActionIndex(-1)
 {
@@ -45,8 +46,9 @@ MainWindow::MainWindow(MainConfig const &config, ComponentStorage const &storage
                                      _ui->ClearButton,
                                      this);
     QStringList actionChainList;
-    std::transform(config.Actions.Chains.cbegin(),
-                   config.Actions.Chains.cend(),
+    std::shared_ptr<MainConfig> config = serviceLocator.GetConfig();
+    std::transform(config.get()->Actions.Chains.cbegin(),
+                   config.get()->Actions.Chains.cend(),
                    std::back_inserter(actionChainList),
                    [](ActionChainDef const &chain){ return chain.Name; });
     _ui->ActionChainsComboBox->addItems(actionChainList);
