@@ -23,13 +23,18 @@ int main(int argc, char *argv[])
     // TODO (std_string) : configurate logger based on config info
     CalcApp::QMessageLoggerWrapper logger(CalcApp::LogLevel::DEBUG);
     CalcApp::LoggerService loggerService(std::shared_ptr<CalcApp::ILogger>(&logger, [](CalcApp::ILogger*){}));
+    loggerService.WriteDebug("app is started");
+    loggerService.WriteDebug("loading of components is started");
     QList<CalcApp::IComponentInfo*> components = CalcApp::ComponentsDirLoader::Load<CalcApp::IComponentInfo>(config.PluginsCommonDir, &app, true);
     CalcApp::ComponentStorage componentStorage;
     componentStorage.AddComponents(components);
+    loggerService.WriteDebug("loading of components is finished");
     CalcApp::ServiceLocator serviceLocator(std::shared_ptr<CalcApp::MainConfig>(&config, [](CalcApp::MainConfig*){}),
                                            std::shared_ptr<CalcApp::ComponentStorage>(&componentStorage, [](CalcApp::ComponentStorage*){}),
                                            std::shared_ptr<CalcApp::ILogger>(&loggerService, [](CalcApp::ILogger*){}));
     CalcApp::MainWindow w(serviceLocator);
     w.show();
-    return app.exec();
+    int result = app.exec();
+    loggerService.WriteDebug("app is finished");
+    return result;
 }
