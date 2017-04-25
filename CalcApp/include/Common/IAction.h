@@ -3,6 +3,8 @@
 #include <QObject>
 #include <QString>
 
+#include <exception>
+
 #include "Context.h"
 
 namespace CalcApp
@@ -18,8 +20,10 @@ public:
     virtual void Run(Context &context) = 0;
     /*virtual void StartAction(Context &context) = 0;*/
 
-/*signals:
-    void ActionFinished();*/
+signals:
+    void DataCompleted(QString const &key);
+    void ErrorOccured(std::exception_ptr exception);
+    /*void ActionFinished();*/
 };
 
 }

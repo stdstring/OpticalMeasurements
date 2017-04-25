@@ -8,6 +8,10 @@
 namespace CalcApp
 {
 
+Context::Context(QObject *parent) : QObject(parent)
+{
+}
+
 bool Context::HasKey(QString const &key) const
 {
     return _storage.find(key) != _storage.cend();
