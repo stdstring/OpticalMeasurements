@@ -8,6 +8,10 @@
 namespace CalcApp
 {
 
+IContextItem::IContextItem(QObject *parent) : QObject(parent)
+{
+}
+
 Context::Context(QObject *parent) : QObject(parent)
 {
 }
@@ -28,6 +32,7 @@ std::shared_ptr<IContextItem> Context::Get(QString const &key) const
 void Context::Set(QString const &key, std::shared_ptr<IContextItem> item)
 {
     _storage.insert(key, item);
+    QObject::connect(item.get(), &IContextItem::DataChanged, this, [key, this](){ emit this->DataChanged(key); });
 }
 
 void Context::Clear()

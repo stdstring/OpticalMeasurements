@@ -10,10 +10,15 @@
 namespace CalcApp
 {
 
-class IContextItem
+class IContextItem : public QObject
 {
+    Q_OBJECT
 public:
+    explicit IContextItem(QObject *parent = nullptr);
     virtual ~IContextItem() {}
+
+signals:
+    void DataChanged();
 };
 
 // TODO (std_string) : probably we need some encapsulation here
