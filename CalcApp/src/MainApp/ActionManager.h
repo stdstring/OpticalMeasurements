@@ -1,19 +1,19 @@
 #pragma once
 
-#include <QList>
+//#include <QList>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QThread>
+//#include <QThread>
 
-#include "Common/Context.h"
-#include "Common/IAction.h"
+//#include "Common/Context.h"
+//#include "Common/IAction.h"
 #include "Common/ServiceLocator.h"
 
 namespace CalcApp
 {
 
-class ActionExecuter : public QThread
+/*class ActionExecuter : public QThread
 {
     Q_OBJECT
 public:
@@ -31,7 +31,7 @@ signals:
     void ActionCompleted(int index);
     void ActionFailed(int index);
     void ActionChainFinished();
-};
+};*/
 
 class ActionManager : public QObject
 {
@@ -44,14 +44,14 @@ public:
     void Stop();
     void Clear();
 
-private:
+/*private:
     void ExecuterCreate();
     void ExecuterCleanup();
 
     ServiceLocator _serviceLocator;
     Context _context;
     QList<IAction*> _chain;
-    ActionExecuter *_executer;
+    ActionExecuter *_executer;*/
 
 signals:
     void ActionRunning(int index);
@@ -60,9 +60,9 @@ signals:
     void ActionChainCompleted();
     void ActionChainAborted();
 
-private slots:
+/*private slots:
     void ProcessActionFailed(int index);
-    void ProcessActionChainFinish();
+    void ProcessActionChainFinish();*/
 };
 
 }

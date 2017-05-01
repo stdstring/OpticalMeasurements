@@ -1,22 +1,24 @@
-#include <QList>
+//#include <QList>
 #include <QObject>
 #include <QString>
-#include <QThread>
+#include <QStringList>
+//#include <QThread>
 
-#include <algorithm>
-#include <iterator>
-#include <stdexcept>
+//#include <algorithm>
+//#include <iterator>
+//#include <stdexcept>
 
-#include "Common/ActionChainFactory.h"
-#include "Common/ActionsConfig.h"
-#include "Common/Context.h"
-#include "Common/IAction.h"
+//#include "Common/ActionChainFactory.h"
+//#include "Common/ActionsConfig.h"
+//#include "Common/Context.h"
+//#include "Common/IAction.h"
+#include "Common/ServiceLocator.h"
 #include "ActionManager.h"
 
 namespace CalcApp
 {
 
-namespace
+/*namespace
 {
 
 ActionChainDef const& FindActionChain(ActionsConfig const &config, QString const &name)
@@ -57,50 +59,51 @@ void ActionExecuter::run()
         }
     }
     emit ActionChainFinished();
-}
+}*/
 
 ActionManager::ActionManager(ServiceLocator const &serviceLocator, QObject *parent) :
-    QObject(parent),
+    QObject(parent)/*,
     _serviceLocator(serviceLocator),
-    _executer(nullptr)
+    _executer(nullptr)*/
 {
 }
 
 QStringList ActionManager::Create(QString const &chainName, QObject *parent)
 {
-    if (!_chain.isEmpty())
+    /*if (!_chain.isEmpty())
         throw std::logic_error("Action's chain isn't empty");
     ActionChainDef const &chain = FindActionChain(_serviceLocator.GetConfig().get()->Actions, chainName);
     _chain = ActionChainFactory::Create(chain, _serviceLocator, parent);
     QStringList dest;
     std::transform(_chain.cbegin(), _chain.cend(), std::back_inserter(dest), [](IAction *action){ return action->GetName(); });
-    return dest;
+    return dest;*/
+    return QStringList();
 }
 
 void ActionManager::Run()
 {
-    if (_executer != nullptr)
+    /*if (_executer != nullptr)
         throw std::logic_error("Action's executer is already exist");
     ExecuterCreate();
-    _executer->start();
+    _executer->start();*/
 }
 
 void ActionManager::Stop()
 {
-    if (_executer == nullptr)
+    /*if (_executer == nullptr)
         return;
     _executer->terminate();
     ExecuterCleanup();
-    emit ActionChainAborted();
+    emit ActionChainAborted();*/
 }
 
 void ActionManager::Clear()
 {
-    std::for_each(_chain.begin(), _chain.end(), [](IAction *action){ delete action; });
-    _chain.clear();
+    /*std::for_each(_chain.begin(), _chain.end(), [](IAction *action){ delete action; });
+    _chain.clear();*/
 }
 
-void ActionManager::ExecuterCreate()
+/*void ActionManager::ExecuterCreate()
 {
     _executer = new ActionExecuter(_context, _chain, this);
     QObject::connect(_executer, &ActionExecuter::ActionRunning, this, &ActionManager::ActionRunning);
@@ -131,6 +134,6 @@ void ActionManager::ProcessActionChainFinish()
 {
     ExecuterCleanup();
     emit ActionChainCompleted();
-}
+}*/
 
 }
