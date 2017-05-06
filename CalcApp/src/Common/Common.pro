@@ -38,7 +38,8 @@ HEADERS += ../../include/Common/Logger/ILogger.h \
            ../../include/Common/Message.h \
            ../../include/Common/TransportConfig.h \
            ../../include/Common/TransportSerialization.h \
-           ../../include/Common/ServiceLocator.h
+           ../../include/Common/ServiceLocator.h \
+           ../../include/Common/NotImplementedException.h
 
 unix {
     target.path = /usr/lib

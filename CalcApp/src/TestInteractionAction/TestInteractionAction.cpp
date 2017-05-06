@@ -1,24 +1,24 @@
-#include <QByteArray>
-#include <QDataStream>
+//#include <QByteArray>
+//#include <QDataStream>
 #include <QObject>
 #include <QString>
-#include <QThread>
+//#include <QThread>
 
 #include <memory>
-#include <stdexcept>
+//#include <stdexcept>
 
 #include "Common/Context.h"
 #include "Common/IAction.h"
-#include "Common/ITransport.h"
+//#include "Common/ITransport.h"
 #include "Common/ITransportFactory.h"
-#include "Common/Message.h"
+//#include "Common/Message.h"
 #include "Common/TransportConfig.h"
 #include "TestInteractionAction.h"
 
 namespace CalcApp
 {
 
-namespace
+/*namespace
 {
 
 const QString StartCommand("START");
@@ -82,14 +82,14 @@ void TransportInteractionHandler::ProcessEvent(Message const &message)
         _state = ExecutionState::FINISHED;
         _transport->Send(Message(MessageType::REQUEST, StopCommand.toUtf8()));
     }
-}
+}*/
 
 TestInteractionAction::TestInteractionAction(QString const &actionName,
                                              QString const &contextKey,
                                              ITransportFactory *transportFactory,
                                              TransportConfig const &config,
-                                             QObject *parent) :
-    IAction(parent),
+                                             std::shared_ptr<Context> context/*QObject *parent = nullptr*/) :
+    IAction(context),
     _actionName(actionName),
     _contextKey(contextKey),
     _transportFactory(transportFactory),
@@ -102,7 +102,7 @@ QString TestInteractionAction::GetName()
     return _actionName;
 }
 
-void TestInteractionAction::Run(Context &context)
+/*void TestInteractionAction::Run(Context &context)
 {
     if (!context.HasKey(_contextKey))
         context.Set(_contextKey, std::shared_ptr<IContextItem>(new QStringListContextItem()));
@@ -119,6 +119,14 @@ void TestInteractionAction::Run(Context &context)
     QObject::disconnect(thread.get(), &QThread::started, handler.get(), &TransportInteractionHandler::Start);
     QObject::disconnect(thread.get(), &QThread::finished, handler.get(), &TransportInteractionHandler::Stop);
     QObject::disconnect(handler.get(), &TransportInteractionHandler::Finished, thread.get(), &QThread::quit);
+}*/
+
+void TestInteractionAction::ProcessStartImpl()
+{
+}
+
+void TestInteractionAction::ProcessStopImpl()
+{
 }
 
 }

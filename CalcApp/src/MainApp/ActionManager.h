@@ -13,6 +13,10 @@
 namespace CalcApp
 {
 
+class ActionExecuter : public QObject
+{
+};
+
 /*class ActionExecuter : public QThread
 {
     Q_OBJECT

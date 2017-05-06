@@ -1,12 +1,13 @@
 #include <QObject>
 #include <QString>
-#include <QtGlobal>
+//#include <QtGlobal>
 
 #include <memory>
 
 #include "Common/IActionFactory.h"
-#include "Common/ComponentStorage.h"
-#include "Common/MainConfig.h"
+//#include "Common/ComponentStorage.h"
+//#include "Common/MainConfig.h"
+#include "Common/NotImplementedException.h"
 #include "Common/ServiceLocator.h"
 #include "TestInteractionAction.h"
 #include "TestInteractionActionFactory.h"
@@ -23,11 +24,16 @@ QString TestInteractionActionFactory::GetId()
     return "TestInteractionAction";
 }
 
-IAction* TestInteractionActionFactory::Create(QString const &name, QString const &args, const ServiceLocator &serviceLocator, QObject *parent)
+std::shared_ptr<IAction> TestInteractionActionFactory::Create(QString const &name, QString const &args, ServiceLocator const &serviceLocator, std::shared_ptr<Context> context)
 {
-    std::shared_ptr<ComponentStorage> storage = serviceLocator.GetStorage();
+    Q_UNUSED(name);
+    Q_UNUSED(args);
+    Q_UNUSED(serviceLocator);
+    Q_UNUSED(context);
+    throw NotImplementedException();
+    /*std::shared_ptr<ComponentStorage> storage = serviceLocator.GetStorage();
     std::shared_ptr<MainConfig> config = serviceLocator.GetConfig();
-    return new TestInteractionAction(name, args, storage.get()->GetTransport(), config.get()->Transport, parent);
+    return new TestInteractionAction(name, args, storage.get()->GetTransport(), config.get()->Transport, parent);*/
 }
 
 }

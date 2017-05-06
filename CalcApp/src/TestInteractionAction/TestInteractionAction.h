@@ -3,17 +3,19 @@
 #include <QObject>
 #include <QString>
 
+#include <memory>
+
 #include "Common/Context.h"
 #include "Common/IAction.h"
-#include "Common/ITransport.h"
+//#include "Common/ITransport.h"
 #include "Common/ITransportFactory.h"
-#include "Common/Message.h"
+//#include "Common/Message.h"
 #include "Common/TransportConfig.h"
 
 namespace CalcApp
 {
 
-class TransportInteractionHandler : public QObject
+/*class TransportInteractionHandler : public QObject
 {
     Q_OBJECT
 public:
@@ -39,7 +41,7 @@ private slots:
     void ProcessResponse(Message const &message);
     void ProcessData(Message const &message);
     void ProcessEvent(Message const &message);
-};
+};*/
 
 class TestInteractionAction : public IAction
 {
@@ -48,11 +50,15 @@ public:
                           QString const &contextKey,
                           ITransportFactory *transportFactory,
                           TransportConfig const &config,
-                          QObject *parent = nullptr);
+                          std::shared_ptr<Context> context/*QObject *parent = nullptr*/);
 
     virtual QString GetName() override;
     /*virtual void StartAction(Context &context) override;*/
-    virtual void Run(Context &context) override;
+    /*virtual void Run(Context &context) override;*/
+
+protected:
+    virtual void ProcessStartImpl() override;
+    virtual void ProcessStopImpl() override;
 
 private:
     QString _actionName;

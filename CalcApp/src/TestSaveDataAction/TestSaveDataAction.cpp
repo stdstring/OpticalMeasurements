@@ -1,9 +1,11 @@
-#include <QFile>
-#include <QIODevice>
+//#include <QFile>
+//#include <QIODevice>
 #include <QObject>
 #include <QString>
-#include <QStringList>
-#include <QTextStream>
+//#include <QStringList>
+//#include <QTextStream>
+
+#include <memory>
 
 #include "Common/Context.h"
 #include "Common/IAction.h"
@@ -12,8 +14,8 @@
 namespace CalcApp
 {
 
-TestSaveDataAction::TestSaveDataAction(QString const &actionName, const QString &contextKey, const QString &destFilename, QObject *parent) :
-    IAction(parent),
+TestSaveDataAction::TestSaveDataAction(QString const &actionName, QString const &contextKey, QString const &destFilename,  std::shared_ptr<Context> context/*QObject *parent = nullptr*/) :
+    IAction(context),
     _actionName(actionName),
     _contextKey(contextKey),
     _destFilename(destFilename)
@@ -25,7 +27,7 @@ QString TestSaveDataAction::GetName()
     return _actionName;
 }
 
-void TestSaveDataAction::Run(Context &context)
+/*void TestSaveDataAction::Run(Context &context)
 {
     QFile destFile(_destFilename);
     destFile.open(QIODevice::WriteOnly);
@@ -35,6 +37,14 @@ void TestSaveDataAction::Run(Context &context)
     {
         stream << str << "\r\n";
     }
+}*/
+
+void TestSaveDataAction::ProcessStartImpl()
+{
+}
+
+void TestSaveDataAction::ProcessStopImpl()
+{
 }
 
 }

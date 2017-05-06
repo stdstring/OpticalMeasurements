@@ -3,7 +3,10 @@
 #include <QList>
 #include <QObject>
 
+#include <memory>
+
 #include "ActionsConfig.h"
+#include "Context.h"
 #include "IAction.h"
 #include "ServiceLocator.h"
 
@@ -13,7 +16,7 @@ namespace CalcApp
 class ActionChainFactory
 {
 public:
-    static QList<IAction*> Create(ActionChainDef const &chainDef, ServiceLocator const &serviceLocator, QObject *parent);
+    static QList<std::shared_ptr<IAction>> Create(ActionChainDef const &chainDef, ServiceLocator const &serviceLocator, std::shared_ptr<Context> context);
 
     ActionChainFactory() = delete;
     ActionChainFactory(ActionChainFactory const&) = delete;
