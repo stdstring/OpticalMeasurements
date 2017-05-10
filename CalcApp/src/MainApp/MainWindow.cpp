@@ -1,5 +1,6 @@
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QString>
 #include <QStringList>
 #include <QTextStream>
 
@@ -58,11 +59,12 @@ MainWindow::MainWindow(ServiceLocator const &serviceLocator, QWidget *parent) :
     QObject::connect(_ui->StopButton, &QPushButton::clicked, this, &MainWindow::StopButtonClick);
     QObject::connect(_ui->ResultButton, &QPushButton::clicked, this, &MainWindow::ResultButtonClick);
     QObject::connect(_ui->ClearButton, &QPushButton::clicked, this, &MainWindow::ClearButtonClick);
-    QObject::connect(_actionManager, &ActionManager::ActionRunning, this, &MainWindow::ProcessActionRunning);
-    QObject::connect(_actionManager, &ActionManager::ActionCompleted, this, &MainWindow::ProcessActionCompleted);
-    QObject::connect(_actionManager, &ActionManager::ActionFailed, this, &MainWindow::ProcessActionFailed);
-    QObject::connect(_actionManager, &ActionManager::ActionChainCompleted, this, &MainWindow::ProcessActionChainCompleted);
-    QObject::connect(_actionManager, &ActionManager::ActionChainAborted, this, &MainWindow::ProcessActionChainAborted);
+    //QObject::connect(_actionManager, &ActionManager::ActionRunning, this, &MainWindow::ProcessActionRunning);
+    //QObject::connect(_actionManager, &ActionManager::ActionCompleted, this, &MainWindow::ProcessActionCompleted);
+    //QObject::connect(_actionManager, &ActionManager::ActionFailed, this, &MainWindow::ProcessActionFailed);
+    //QObject::connect(_actionManager, &ActionManager::ActionAborted, this, &MainWindow::ProcessActionFailed);
+    //QObject::connect(_actionManager, &ActionManager::ActionChainCompleted, this, &MainWindow::ProcessActionChainCompleted);
+    //QObject::connect(_actionManager, &ActionManager::ActionChainAborted, this, &MainWindow::ProcessActionChainAborted);
 }
 
 MainWindow::~MainWindow()
@@ -73,7 +75,7 @@ MainWindow::~MainWindow()
 void MainWindow::CreateButtonClick()
 {
     QString chainName = _ui->ActionChainsComboBox->currentText();
-    QStringList actions = _actionManager->Create(chainName, this);
+    QStringList actions = _actionManager->Create(chainName/*, this*/);
     _currentActionIndex = 0;
     _actions = actions;
     QStringList dest;
@@ -110,7 +112,7 @@ void MainWindow::ResultButtonClick()
     resultInfo.exec();
 }
 
-void MainWindow::ProcessActionRunning(int index)
+/*void MainWindow::ProcessActionRunning(int index)
 {
     _ui->ActionsListWidget->item(index)->setText(CreateItemText(_actions[index], "[running]"));
     _currentActionIndex = index;
@@ -141,6 +143,35 @@ void MainWindow::ProcessActionChainAborted()
     {
         _ui->ActionsListWidget->item(index)->setText(CreateItemText(_actions[index], "[aborted]"));
     }
+}*/
+
+void MainWindow::ProcessActionRunning(QString name)
+{
+    Q_UNUSED(name)
+}
+
+void MainWindow::ProcessActionCompleted(QString name)
+{
+    Q_UNUSED(name)
+}
+
+void MainWindow::ProcessActionAborted(QString name)
+{
+    Q_UNUSED(name)
+}
+
+void MainWindow::ProcessActionFailed(QString name, std::exception_ptr exception)
+{
+    Q_UNUSED(name)
+    Q_UNUSED(exception)
+}
+
+void MainWindow::ProcessActionChainCompleted()
+{
+}
+
+void MainWindow::ProcessActionChainAborted()
+{
 }
 
 }

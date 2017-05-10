@@ -2,11 +2,11 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-//#include <QThread>
+#include <QThread>
 
 //#include <algorithm>
 //#include <iterator>
-//#include <stdexcept>
+#include <stdexcept>
 
 //#include "Common/ActionChainFactory.h"
 //#include "Common/ActionsConfig.h"
@@ -61,14 +61,45 @@ void ActionExecuter::run()
     emit ActionChainFinished();
 }*/
 
+ActionExecuter::ActionExecuter(std::shared_ptr<IAction> action, int index, QObject *parent) :
+    QObject(parent),
+    _action(action),
+    _thread(new QThread()),
+    _index(index)
+{
+    _action.get()->moveToThread(_thread.get());
+    //_thread.get()->moveToThread(_thread.get());
+    //QObject::connect(_thread.get(), &QThread::started, _action.get(), &IAction::ProcessStart);
+    //QObject::connect(_thread.get(), &QThread::finished, _action.get(), &IAction::ProcessStop);
+    //QObject::connect(_action.get(), &IAction::ActionFinished, _thread.get(), &QThread::quit);
+    QObject::connect(_action.get(), &IAction::ErrorOccured, this, [this](std::exception_ptr exception){ emit ActionFailed(_action.get()->GetName(), exception); });
+}
+
+void ActionExecuter::Start()
+{
+    _thread->start();
+}
+
+void ActionExecuter::Stop(bool hardStop)
+{
+    hardStop ? _thread->terminate() : _thread->quit();
+    _thread->wait();
+}
+
+ActionExecuter::~ActionExecuter()
+{
+    _thread.get()->quit();
+    _thread.get()->wait();
+}
+
 ActionManager::ActionManager(ServiceLocator const &serviceLocator, QObject *parent) :
-    QObject(parent)/*,
-    _serviceLocator(serviceLocator),
-    _executer(nullptr)*/
+    QObject(parent),
+    _serviceLocator(serviceLocator)
+    /*_executer(nullptr)*/
 {
 }
 
-QStringList ActionManager::Create(QString const &chainName, QObject *parent)
+QStringList ActionManager::Create(QString const &chainName/*, QObject *parent*/)
 {
     /*if (!_chain.isEmpty())
         throw std::logic_error("Action's chain isn't empty");
@@ -86,6 +117,9 @@ void ActionManager::Run()
         throw std::logic_error("Action's executer is already exist");
     ExecuterCreate();
     _executer->start();*/
+    for (std::shared_ptr<ActionExecuter> executer : _chain)
+    {
+    }
 }
 
 void ActionManager::Stop()
@@ -95,12 +129,16 @@ void ActionManager::Stop()
     _executer->terminate();
     ExecuterCleanup();
     emit ActionChainAborted();*/
+    for (std::shared_ptr<ActionExecuter> executer : _chain)
+    {
+    }
 }
 
 void ActionManager::Clear()
 {
     /*std::for_each(_chain.begin(), _chain.end(), [](IAction *action){ delete action; });
     _chain.clear();*/
+    _chain.clear();
 }
 
 /*void ActionManager::ExecuterCreate()

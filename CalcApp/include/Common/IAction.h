@@ -15,7 +15,10 @@ class IAction : public QObject
 {
     Q_OBJECT
 public:
-    explicit IAction(std::shared_ptr<Context> context/*, QObject *parent = nullptr*/) : QObject(/*parent*/) {}
+    explicit IAction(std::shared_ptr<Context> context/*, QObject *parent = nullptr*/) : QObject(/*parent*/)
+    {
+        Q_UNUSED(context)
+    }
 
     virtual QString GetName() = 0;
     /*virtual void Run(Context &context) = 0;*/
@@ -35,6 +38,7 @@ public slots:
     {
         ProcessStartImpl();
     }
+
     void ProcessStop()
     {
         ProcessStopImpl();
