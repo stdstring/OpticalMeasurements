@@ -27,7 +27,6 @@ private:
     Ui::MainWindow *_ui;
     ActionManager *_actionManager;
     StateManager *_stateManager;
-    int _currentActionIndex;
     QStringList _actions;
 
 private slots:
@@ -36,11 +35,6 @@ private slots:
     void StopButtonClick();
     void ResultButtonClick();
     void ClearButtonClick();
-    //void ProcessActionRunning(int index);
-    //void ProcessActionCompleted(int index);
-    //void ProcessActionFailed(int index);
-    //void ProcessActionChainCompleted();
-    //void ProcessActionChainAborted();
     void ProcessActionRunning(QString name);
     void ProcessActionCompleted(QString name);
     void ProcessActionAborted(QString name);

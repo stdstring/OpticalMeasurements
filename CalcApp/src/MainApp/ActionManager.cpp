@@ -101,6 +101,7 @@ ActionManager::ActionManager(ServiceLocator const &serviceLocator, QObject *pare
 
 QStringList ActionManager::Create(QString const &chainName/*, QObject *parent*/)
 {
+    Q_UNUSED(chainName);
     /*if (!_chain.isEmpty())
         throw std::logic_error("Action's chain isn't empty");
     ActionChainDef const &chain = FindActionChain(_serviceLocator.GetConfig().get()->Actions, chainName);
