@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "Common/Context.h"
+#include "Common/IAction.h"
 #include "Common/IActionFactory.h"
 #include "Common/ServiceLocator.h"
 

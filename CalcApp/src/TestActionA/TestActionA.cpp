@@ -1,7 +1,6 @@
 #include <QObject>
 #include <QString>
-//#include <QtGlobal>
-//#include <QThread>
+#include <QTimer>
 
 #include <memory>
 
@@ -12,7 +11,7 @@
 namespace CalcApp
 {
 
-TestActionA::TestActionA(QString const &name, int time, std::shared_ptr<Context> context/*QObject *parent = nullptr*/) :
+TestActionA::TestActionA(QString const &name, int time, std::shared_ptr<Context> context) :
     IAction(context),
     _name(name),
     _time(time)
@@ -38,10 +37,12 @@ QString TestActionA::GetName()
 
 void TestActionA::ProcessStartImpl()
 {
+    QTimer::singleShot(_time, this, [this](){ emit ActionFinished(); });
 }
 
 void TestActionA::ProcessStopImpl()
 {
+    // do nothing
 }
 
 }
