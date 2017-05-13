@@ -48,13 +48,13 @@ ActionExecuter::ActionExecuter(std::shared_ptr<IAction> action, QObject *parent)
     QObject::connect(_thread.get(), &QThread::finished, _action.get(), &IAction::ProcessStop);
     //QObject::connect(_action.get(), &IAction::ActionFinished, _thread.get(), &QThread::quit);
     QObject::connect(_action.get(), &IAction::ActionFinished, this, [this](){
-        _thread.get()->quit();
+        _thread.get()->exit();
         _thread.get()->wait();
         emit ActionCompleted(_actionName);
     });
     //QObject::connect(_action.get(), &IAction::ErrorOccured, this, [this](std::exception_ptr exception){ emit ActionFailed(_action.get()->GetName(), exception); });
     QObject::connect(_action.get(), &IAction::ErrorOccured, this, [this](std::exception_ptr exception){
-        _thread.get()->quit();
+        _thread.get()->exit();
         _thread.get()->wait();
         emit ActionFailed(_action.get()->GetName(), exception);
     });
@@ -67,16 +67,19 @@ void ActionExecuter::Start()
 
 void ActionExecuter::Stop(bool hardStop)
 {
+    Q_UNUSED(hardStop)
     if (!_thread.get()->isRunning())
         return;
-    hardStop ? _thread.get()->terminate() : _thread.get()->quit();
+    //hardStop ? _thread.get()->terminate() : _thread.get()->quit();
+    // TODO (std_string) : think about termination
+    _thread.get()->quit();
     _thread.get()->wait();
     emit ActionAborted(_actionName);
 }
 
 ActionExecuter::~ActionExecuter()
 {
-    _thread.get()->quit();
+    _thread.get()->exit();
     _thread.get()->wait();
 }
 
@@ -126,7 +129,7 @@ void ActionManager::Stop()
 {
     for (std::shared_ptr<ActionExecuter> executer : _chain)
     {
-        executer->Stop();
+        executer->Stop(false);
     }
 }
 
