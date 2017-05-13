@@ -16,20 +16,18 @@
 namespace CalcApp
 {
 
+//enum ExecuterState
+
 class ActionExecuter : public QObject
 {
     Q_OBJECT
 public:
-    ActionExecuter(std::shared_ptr<IAction> action, int index, QObject *parent = nullptr);
+    ActionExecuter(std::shared_ptr<IAction> action, QObject *parent = nullptr);
     void Start();
     void Stop(bool hardStop = true);
     virtual ~ActionExecuter() override;
 
 signals:
-    //void ActionRunning(int index);
-    //void ActionCompleted(int index);
-    //void ActionAborted(int index);
-    //void ActionFailed(int index, std::exception_ptr exception);
     void ActionRunning(QString name);
     void ActionCompleted(QString name);
     void ActionAborted(QString name);
@@ -38,7 +36,6 @@ signals:
 private:
     std::shared_ptr<IAction> _action;
     std::shared_ptr<QThread> _thread;
-    int _index;
 };
 
 /*class ActionExecuter : public QThread
@@ -85,19 +82,22 @@ private:
     ServiceLocator _serviceLocator;
     QList<std::shared_ptr<ActionExecuter>> _chain;
     std::shared_ptr<Context> _context;
+    int _runningCount;
+    bool _hasAborted;
 
 signals:
-    //void ActionRunning(int index);
-    //void ActionCompleted(int index);
-    //void ActionFailed(int index, std::exception_ptr exception);
-    //void ActionChainCompleted();
-    //void ActionChainAborted();
     void ActionRunning(QString name);
     void ActionCompleted(QString name);
     void ActionAborted(QString name);
     void ActionFailed(QString name, std::exception_ptr exception);
     void ActionChainCompleted();
     void ActionChainAborted();
+
+private slots:
+    void ProcessActionRunning(QString name);
+    void ProcessActionCompleted(QString name);
+    void ProcessActionAborted(QString name);
+    void ProcessActionFailed(QString name, std::exception_ptr exception);
 
 /*private slots:
     void ProcessActionFailed(int index);

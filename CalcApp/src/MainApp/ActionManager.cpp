@@ -1,24 +1,25 @@
-//#include <QList>
+#include <QList>
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QThread>
 
-//#include <algorithm>
-//#include <iterator>
+#include <algorithm>
+#include <iterator>
+#include <memory>
 #include <stdexcept>
 
-//#include "Common/ActionChainFactory.h"
-//#include "Common/ActionsConfig.h"
-//#include "Common/Context.h"
-//#include "Common/IAction.h"
+#include "Common/ActionChainFactory.h"
+#include "Common/ActionsConfig.h"
+#include "Common/Context.h"
+#include "Common/IAction.h"
 #include "Common/ServiceLocator.h"
 #include "ActionManager.h"
 
 namespace CalcApp
 {
 
-/*namespace
+namespace
 {
 
 ActionChainDef const& FindActionChain(ActionsConfig const &config, QString const &name)
@@ -33,7 +34,7 @@ ActionChainDef const& FindActionChain(ActionsConfig const &config, QString const
 
 }
 
-ActionExecuter::ActionExecuter(Context &context, QList<IAction*> const &chain, QObject *parent) :
+/*ActionExecuter::ActionExecuter(Context &context, QList<IAction*> const &chain, QObject *parent) :
     QThread(parent),
     _context(context),
     _chain(chain)
@@ -61,11 +62,10 @@ void ActionExecuter::run()
     emit ActionChainFinished();
 }*/
 
-ActionExecuter::ActionExecuter(std::shared_ptr<IAction> action, int index, QObject *parent) :
+ActionExecuter::ActionExecuter(std::shared_ptr<IAction> action/*, int index*/, QObject *parent) :
     QObject(parent),
     _action(action),
-    _thread(new QThread()),
-    _index(index)
+    _thread(new QThread())
 {
     _action.get()->moveToThread(_thread.get());
     //_thread.get()->moveToThread(_thread.get());
@@ -94,85 +94,84 @@ ActionExecuter::~ActionExecuter()
 
 ActionManager::ActionManager(ServiceLocator const &serviceLocator, QObject *parent) :
     QObject(parent),
-    _serviceLocator(serviceLocator)
-    /*_executer(nullptr)*/
+    _serviceLocator(serviceLocator),
+    _context(new Context()),
+    _runningCount(0),
+    _hasAborted(false)
 {
 }
 
-QStringList ActionManager::Create(QString const &chainName/*, QObject *parent*/)
+QStringList ActionManager::Create(QString const &chainName)
 {
-    Q_UNUSED(chainName);
-    /*if (!_chain.isEmpty())
-        throw std::logic_error("Action's chain isn't empty");
+    if (!_chain.isEmpty())
+            throw std::logic_error("Action's chain isn't empty");
+    _runningCount = 0;
+    _hasAborted = false;
     ActionChainDef const &chain = FindActionChain(_serviceLocator.GetConfig().get()->Actions, chainName);
-    _chain = ActionChainFactory::Create(chain, _serviceLocator, parent);
+    QList<std::shared_ptr<IAction>> actions = ActionChainFactory::Create(chain, _serviceLocator, _context);
+    std::transform(actions.cbegin(),
+                   actions.cend(),
+                   std::back_inserter(_chain),
+                   [](std::shared_ptr<IAction> action){ return std::shared_ptr<ActionExecuter>(new ActionExecuter(action)); });
     QStringList dest;
-    std::transform(_chain.cbegin(), _chain.cend(), std::back_inserter(dest), [](IAction *action){ return action->GetName(); });
-    return dest;*/
-    return QStringList();
+    std::transform(actions.cbegin(), actions.cend(), std::back_inserter(dest), [](std::shared_ptr<IAction> action){ return action.get()->GetName(); });
+    return dest;
 }
 
 void ActionManager::Run()
 {
-    /*if (_executer != nullptr)
-        throw std::logic_error("Action's executer is already exist");
-    ExecuterCreate();
-    _executer->start();*/
+    if (_runningCount != 0)
+        throw std::logic_error("There are running actions in the chain");
     for (std::shared_ptr<ActionExecuter> executer : _chain)
     {
+        executer->Start();
     }
 }
 
 void ActionManager::Stop()
 {
-    /*if (_executer == nullptr)
-        return;
-    _executer->terminate();
-    ExecuterCleanup();
-    emit ActionChainAborted();*/
     for (std::shared_ptr<ActionExecuter> executer : _chain)
     {
+        executer->Stop();
     }
 }
 
 void ActionManager::Clear()
 {
-    /*std::for_each(_chain.begin(), _chain.end(), [](IAction *action){ delete action; });
-    _chain.clear();*/
+    if (_runningCount != 0)
+        throw std::logic_error("There are running actions in the chain");
     _chain.clear();
 }
 
-/*void ActionManager::ExecuterCreate()
+void ActionManager::ProcessActionRunning(QString name)
 {
-    _executer = new ActionExecuter(_context, _chain, this);
-    QObject::connect(_executer, &ActionExecuter::ActionRunning, this, &ActionManager::ActionRunning);
-    QObject::connect(_executer, &ActionExecuter::ActionCompleted, this, &ActionManager::ActionCompleted);
-    QObject::connect(_executer, &ActionExecuter::ActionFailed, this, &ActionManager::ProcessActionFailed);
-    QObject::connect(_executer, &ActionExecuter::ActionChainFinished, this, &ActionManager::ProcessActionChainFinish);
+    _runningCount++;
+    emit ActionRunning(name);
 }
 
-void ActionManager::ExecuterCleanup()
+void ActionManager::ProcessActionCompleted(QString name)
 {
-    _executer->wait();
-    QObject::disconnect(_executer, &ActionExecuter::ActionRunning, this, &ActionManager::ActionRunning);
-    QObject::disconnect(_executer, &ActionExecuter::ActionCompleted, this, &ActionManager::ActionCompleted);
-    QObject::disconnect(_executer, &ActionExecuter::ActionFailed, this, &ActionManager::ProcessActionFailed);
-    QObject::disconnect(_executer, &ActionExecuter::ActionChainFinished, this, &ActionManager::ProcessActionChainFinish);
-    delete _executer;
-    _executer = nullptr;
+    emit ActionCompleted(name);
+    _runningCount--;
+    if (_runningCount == 0)
+        emit (_hasAborted ? ActionChainAborted() : ActionChainCompleted());
 }
 
-void ActionManager::ProcessActionFailed(int index)
+void ActionManager::ProcessActionAborted(QString name)
 {
-    emit ActionFailed(index);
-    ExecuterCleanup();
-    emit ActionChainAborted();
+    emit ActionAborted(name);
+    _hasAborted = true;
+    _runningCount--;
+    if (_runningCount == 0)
+        emit ActionChainAborted();
 }
 
-void ActionManager::ProcessActionChainFinish()
+void ActionManager::ProcessActionFailed(QString name, std::exception_ptr exception)
 {
-    ExecuterCleanup();
-    emit ActionChainCompleted();
-}*/
+    emit ActionFailed(name, exception);
+    _runningCount--;
+    if (_runningCount == 0)
+        emit ActionChainAborted();
+}
 
 }
