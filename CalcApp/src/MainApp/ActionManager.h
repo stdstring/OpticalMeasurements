@@ -9,14 +9,12 @@
 #include <exception>
 #include <memory>
 
-//#include "Common/Context.h"
+#include "Common/Context.h"
 #include "Common/IAction.h"
 #include "Common/ServiceLocator.h"
 
 namespace CalcApp
 {
-
-//enum ExecuterState
 
 class ActionExecuter : public QObject
 {
@@ -35,28 +33,9 @@ signals:
 
 private:
     std::shared_ptr<IAction> _action;
+    QString _actionName;
     std::shared_ptr<QThread> _thread;
 };
-
-/*class ActionExecuter : public QThread
-{
-    Q_OBJECT
-public:
-    ActionExecuter(Context &context, QList<IAction*> const &chain, QObject *parent = nullptr);
-
-protected:
-    virtual void run() override;
-
-private:
-    Context &_context;
-    QList<IAction*> _chain;
-
-signals:
-    void ActionRunning(int index);
-    void ActionCompleted(int index);
-    void ActionFailed(int index);
-    void ActionChainFinished();
-};*/
 
 class ActionManager : public QObject
 {
@@ -64,19 +43,10 @@ class ActionManager : public QObject
 public:
     ActionManager(ServiceLocator const &serviceLocator, QObject *parent = nullptr);
 
-    QStringList Create(QString const &chainName/*, QObject *parent*/);
+    QStringList Create(QString const &chainName);
     void Run();
     void Stop();
     void Clear();
-
-/*private:
-    void ExecuterCreate();
-    void ExecuterCleanup();
-
-    ServiceLocator _serviceLocator;
-    Context _context;
-    QList<IAction*> _chain;
-    ActionExecuter *_executer;*/
 
 private:
     ServiceLocator _serviceLocator;
@@ -98,10 +68,6 @@ private slots:
     void ProcessActionCompleted(QString name);
     void ProcessActionAborted(QString name);
     void ProcessActionFailed(QString name, std::exception_ptr exception);
-
-/*private slots:
-    void ProcessActionFailed(int index);
-    void ProcessActionChainFinish();*/
 };
 
 }

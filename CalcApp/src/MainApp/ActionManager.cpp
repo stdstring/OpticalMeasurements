@@ -34,45 +34,29 @@ ActionChainDef const& FindActionChain(ActionsConfig const &config, QString const
 
 }
 
-/*ActionExecuter::ActionExecuter(Context &context, QList<IAction*> const &chain, QObject *parent) :
-    QThread(parent),
-    _context(context),
-    _chain(chain)
-{
-}
-
-void ActionExecuter::run()
-{
-    for (int index = 0; index < _chain.size(); ++index)
-    {
-        IAction *action = _chain.at(index);
-        emit ActionRunning(index);
-        try
-        {
-            action->Run(_context);
-            emit ActionCompleted(index);
-        }
-        catch (...)
-        {
-            // TODO (std_string) : think about logging
-            emit ActionFailed(index);
-            return;
-        }
-    }
-    emit ActionChainFinished();
-}*/
-
-ActionExecuter::ActionExecuter(std::shared_ptr<IAction> action/*, int index*/, QObject *parent) :
+ActionExecuter::ActionExecuter(std::shared_ptr<IAction> action, QObject *parent) :
     QObject(parent),
     _action(action),
+    _actionName(action.get()->GetName()),
     _thread(new QThread())
 {
     _action.get()->moveToThread(_thread.get());
     //_thread.get()->moveToThread(_thread.get());
-    //QObject::connect(_thread.get(), &QThread::started, _action.get(), &IAction::ProcessStart);
-    //QObject::connect(_thread.get(), &QThread::finished, _action.get(), &IAction::ProcessStop);
+    QObject::connect(_thread.get(), &QThread::started, _action.get(), &IAction::ProcessStart);
+    QObject::connect(_thread.get(), &QThread::started, this, [this](){ emit ActionRunning(_actionName); });
+    QObject::connect(_thread.get(), &QThread::finished, _action.get(), &IAction::ProcessStop);
     //QObject::connect(_action.get(), &IAction::ActionFinished, _thread.get(), &QThread::quit);
-    QObject::connect(_action.get(), &IAction::ErrorOccured, this, [this](std::exception_ptr exception){ emit ActionFailed(_action.get()->GetName(), exception); });
+    QObject::connect(_action.get(), &IAction::ActionFinished, this, [this](){
+        _thread.get()->quit();
+        _thread.get()->wait();
+        emit ActionCompleted(_actionName);
+    });
+    //QObject::connect(_action.get(), &IAction::ErrorOccured, this, [this](std::exception_ptr exception){ emit ActionFailed(_action.get()->GetName(), exception); });
+    QObject::connect(_action.get(), &IAction::ErrorOccured, this, [this](std::exception_ptr exception){
+        _thread.get()->quit();
+        _thread.get()->wait();
+        emit ActionFailed(_action.get()->GetName(), exception);
+    });
 }
 
 void ActionExecuter::Start()
@@ -82,8 +66,11 @@ void ActionExecuter::Start()
 
 void ActionExecuter::Stop(bool hardStop)
 {
-    hardStop ? _thread->terminate() : _thread->quit();
-    _thread->wait();
+    if (!_thread.get()->isRunning())
+        return;
+    hardStop ? _thread.get()->terminate() : _thread.get()->quit();
+    _thread.get()->wait();
+    emit ActionAborted(_actionName);
 }
 
 ActionExecuter::~ActionExecuter()
