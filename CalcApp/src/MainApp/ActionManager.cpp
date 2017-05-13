@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <functional>
 #include <memory>
 #include <stdexcept>
 
@@ -96,10 +97,16 @@ QStringList ActionManager::Create(QString const &chainName)
     _hasAborted = false;
     ActionChainDef const &chain = FindActionChain(_serviceLocator.GetConfig().get()->Actions, chainName);
     QList<std::shared_ptr<IAction>> actions = ActionChainFactory::Create(chain, _serviceLocator, _context);
-    std::transform(actions.cbegin(),
-                   actions.cend(),
-                   std::back_inserter(_chain),
-                   [](std::shared_ptr<IAction> action){ return std::shared_ptr<ActionExecuter>(new ActionExecuter(action)); });
+    std::function<std::shared_ptr<ActionExecuter>(std::shared_ptr<IAction>)> executerFactory = [this](std::shared_ptr<IAction> action)
+    {
+        std::shared_ptr<ActionExecuter> executer(new ActionExecuter(action));
+        QObject::connect(executer.get(), &ActionExecuter::ActionRunning, this, &ActionManager::ProcessActionRunning);
+        QObject::connect(executer.get(), &ActionExecuter::ActionCompleted, this, &ActionManager::ProcessActionCompleted);
+        QObject::connect(executer.get(), &ActionExecuter::ActionAborted, this, &ActionManager::ProcessActionAborted);
+        QObject::connect(executer.get(), &ActionExecuter::ActionFailed, this, &ActionManager::ProcessActionFailed);
+        return executer;
+    };
+    std::transform(actions.cbegin(), actions.cend(), std::back_inserter(_chain), executerFactory);
     QStringList dest;
     std::transform(actions.cbegin(), actions.cend(), std::back_inserter(dest), [](std::shared_ptr<IAction> action){ return action.get()->GetName(); });
     return dest;
