@@ -15,18 +15,21 @@ class IAction : public QObject
 {
     Q_OBJECT
 public:
-    explicit IAction(std::shared_ptr<Context> context/*, QObject *parent = nullptr*/) : QObject(/*parent*/)
+    explicit IAction(std::shared_ptr<Context> context) : QObject(), _context(context)
     {
-        Q_UNUSED(context)
     }
 
     virtual QString GetName() = 0;
-    /*virtual void Run(Context &context) = 0;*/
-    /*virtual void StartAction(Context &context) = 0;*/
+    //virtual void Run(Context &context) = 0;
+    //virtual void StartAction(Context &context) = 0;
 
 protected:
     virtual void ProcessStartImpl() = 0;
     virtual void ProcessStopImpl() = 0;
+    std::shared_ptr<Context> GetContext() const { return _context; }
+
+private:
+    std::shared_ptr<Context> _context;
 
 signals:
     void DataCompleted(QString const &key);
@@ -44,15 +47,5 @@ public slots:
         ProcessStopImpl();
     }
 };
-
-/*void IAction::ProcessStart()
-{
-    ProcessStartImpl();
-}
-
-void IAction::ProcessStop()
-{
-    ProcessStopImpl();
-}*/
 
 }
