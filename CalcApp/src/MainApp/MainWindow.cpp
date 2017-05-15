@@ -6,11 +6,12 @@
 #include <QTextStream>
 
 #include <algorithm>
-#include <exception>
+//#include <exception>
 #include <iterator>
 #include <memory>
 
 #include "Common/ActionsConfig.h"
+#include "Common/IAction.h"
 #include "Common/MainConfig.h"
 #include "Common/ServiceLocator.h"
 #include "ActionManager.h"
@@ -132,7 +133,8 @@ void MainWindow::ProcessActionAborted(QString name)
     _ui->ActionsListWidget->item(actionIndex)->setText(CreateItemText(_actions[actionIndex], "[aborted]"));
 }
 
-void MainWindow::ProcessActionFailed(QString name, std::exception_ptr exception)
+//void MainWindow::ProcessActionFailed(QString name, std::exception_ptr exception)
+void MainWindow::ProcessActionFailed(QString name, ExceptionData exception)
 {
     Q_UNUSED(exception)
     // TODO (std_string) : move into common method

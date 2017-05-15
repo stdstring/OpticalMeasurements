@@ -11,6 +11,15 @@
 namespace CalcApp
 {
 
+class ExceptionData
+{
+public:
+    ExceptionData() {}
+    explicit ExceptionData(std::exception_ptr exception) : Exception(exception) {}
+
+    std::exception_ptr Exception;
+};
+
 class IAction : public QObject
 {
     Q_OBJECT
@@ -33,7 +42,8 @@ private:
 
 signals:
     void DataCompleted(QString const &key);
-    void ErrorOccured(std::exception_ptr exception);
+    //void ErrorOccured(std::exception_ptr exception);
+    void ErrorOccured(ExceptionData exception);
     void ActionFinished();
 
 public slots:
@@ -49,3 +59,5 @@ public slots:
 };
 
 }
+
+Q_DECLARE_METATYPE(CalcApp::ExceptionData);

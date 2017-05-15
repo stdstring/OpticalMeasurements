@@ -1,10 +1,11 @@
 #include <QObject>
 #include <QString>
-//#include <QtGlobal>
-//#include <QThread>
+#include <QTimer>
 
+#include <exception>
+#include <functional>
 #include <memory>
-//#include <stdexcept>
+#include <stdexcept>
 
 #include "Common/Context.h"
 #include "Common/IAction.h"
@@ -13,7 +14,7 @@
 namespace CalcApp
 {
 
-TestFailedAction::TestFailedAction(const QString &name, int time, std::shared_ptr<Context> context/*QObject *parent = nullptr*/) :
+TestFailedAction::TestFailedAction(const QString &name, int time, std::shared_ptr<Context> context) :
     IAction(context),
     _name(name),
     _time(time)
@@ -40,10 +41,24 @@ QString TestFailedAction::GetName()
 
 void TestFailedAction::ProcessStartImpl()
 {
+    std::function<void()> handler = [this]()
+    {
+        try
+        {
+            throw std::logic_error("Internal error: action is failed");
+        }
+        catch (...)
+        {
+            std::exception_ptr exception = std::current_exception();
+            emit ErrorOccured(ExceptionData(/*exception*/));
+        }
+    };
+    QTimer::singleShot(_time, this, handler);
 }
 
 void TestFailedAction::ProcessStopImpl()
 {
+    // do nothing
 }
 
 }

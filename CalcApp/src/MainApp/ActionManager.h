@@ -6,7 +6,7 @@
 #include <QStringList>
 #include <QThread>
 
-#include <exception>
+//#include <exception>
 #include <memory>
 
 #include "Common/Context.h"
@@ -29,7 +29,8 @@ signals:
     void ActionRunning(QString name);
     void ActionCompleted(QString name);
     void ActionAborted(QString name);
-    void ActionFailed(QString name, std::exception_ptr exception);
+    //void ActionFailed(QString name, std::exception_ptr exception);
+    void ActionFailed(QString name, ExceptionData exception);
 
 private:
     std::shared_ptr<IAction> _action;
@@ -59,7 +60,8 @@ signals:
     void ActionRunning(QString name);
     void ActionCompleted(QString name);
     void ActionAborted(QString name);
-    void ActionFailed(QString name, std::exception_ptr exception);
+    //void ActionFailed(QString name, std::exception_ptr exception);
+    void ActionFailed(QString name, ExceptionData exception);
     void ActionChainCompleted();
     void ActionChainAborted();
 
@@ -67,7 +69,8 @@ private slots:
     void ProcessActionRunning(QString name);
     void ProcessActionCompleted(QString name);
     void ProcessActionAborted(QString name);
-    void ProcessActionFailed(QString name, std::exception_ptr exception);
+    //void ProcessActionFailed(QString name, std::exception_ptr exception);
+    void ProcessActionFailed(QString name, ExceptionData exception);
 };
 
 }

@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringList>
 
+#include "Common/IAction.h"
 #include "Common/ServiceLocator.h"
 #include "ActionManager.h"
 #include "StateManager.h"
@@ -38,7 +39,8 @@ private slots:
     void ProcessActionRunning(QString name);
     void ProcessActionCompleted(QString name);
     void ProcessActionAborted(QString name);
-    void ProcessActionFailed(QString name, std::exception_ptr exception);
+    //void ProcessActionFailed(QString name, std::exception_ptr exception);
+    void ProcessActionFailed(QString name, ExceptionData exception);
     void ProcessActionChainCompleted();
     void ProcessActionChainAborted();
 };

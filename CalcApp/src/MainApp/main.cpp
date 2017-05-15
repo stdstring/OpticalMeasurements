@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QList>
+#include <QMetaType>
 
 #include <memory>
 
@@ -8,6 +9,7 @@
 #include "Common/Logger/QMessageLoggerWrapper.h"
 #include "Common/ComponentLoader.h"
 #include "Common/ComponentStorage.h"
+#include "Common/IAction.h"
 #include "Common/IComponentInfo.h"
 #include "Common/MainConfig.h"
 #include "Common/ServiceLocator.h"
@@ -16,6 +18,8 @@
 
 int main(int argc, char *argv[])
 {
+    // TODO (std_string) : move into separate place
+    qRegisterMetaType<CalcApp::ExceptionData>("ExceptionData");
     QApplication app(argc, argv);
     // TODO (std_string) : probably show splash screen here
     CalcApp::DefaultConfigReader reader;

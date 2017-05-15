@@ -14,11 +14,11 @@ namespace CalcApp
 class TestFailedAction : public IAction
 {
 public:
-    explicit TestFailedAction(QString const &name, int time, std::shared_ptr<Context> context/*QObject *parent = nullptr*/);
+    explicit TestFailedAction(QString const &name, int time, std::shared_ptr<Context> context);
 
     virtual QString GetName() override;
-    /*virtual void StartAction(Context &context) override;*/
-    /*virtual void Run(Context &context) override;*/
+    //virtual void StartAction(Context &context) override;
+    //virtual void Run(Context &context) override;
 
 protected:
     virtual void ProcessStartImpl() override;
