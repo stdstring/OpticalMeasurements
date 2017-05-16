@@ -6,7 +6,6 @@
 #include <QTextStream>
 
 #include <algorithm>
-//#include <exception>
 #include <iterator>
 #include <memory>
 
@@ -133,7 +132,6 @@ void MainWindow::ProcessActionAborted(QString name)
     _ui->ActionsListWidget->item(actionIndex)->setText(CreateItemText(_actions[actionIndex], "[aborted]"));
 }
 
-//void MainWindow::ProcessActionFailed(QString name, std::exception_ptr exception)
 void MainWindow::ProcessActionFailed(QString name, ExceptionData exception)
 {
     Q_UNUSED(exception)

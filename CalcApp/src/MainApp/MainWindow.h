@@ -39,7 +39,6 @@ private slots:
     void ProcessActionRunning(QString name);
     void ProcessActionCompleted(QString name);
     void ProcessActionAborted(QString name);
-    //void ProcessActionFailed(QString name, std::exception_ptr exception);
     void ProcessActionFailed(QString name, ExceptionData exception);
     void ProcessActionChainCompleted();
     void ProcessActionChainAborted();

@@ -46,14 +46,11 @@ ActionExecuter::ActionExecuter(std::shared_ptr<IAction> action, QObject *parent)
     QObject::connect(_thread.get(), &QThread::started, _action.get(), &IAction::ProcessStart);
     QObject::connect(_thread.get(), &QThread::started, this, [this](){ emit ActionRunning(_actionName); });
     QObject::connect(_thread.get(), &QThread::finished, _action.get(), &IAction::ProcessStop);
-    //QObject::connect(_action.get(), &IAction::ActionFinished, _thread.get(), &QThread::quit);
     QObject::connect(_action.get(), &IAction::ActionFinished, this, [this](){
         _thread.get()->exit();
         _thread.get()->wait();
         emit ActionCompleted(_actionName);
     });
-    //QObject::connect(_action.get(), &IAction::ErrorOccured, this, [this](std::exception_ptr exception){ emit ActionFailed(_action.get()->GetName(), exception); });
-    //QObject::connect(_action.get(), &IAction::ErrorOccured, this, [this](std::exception_ptr exception){
     QObject::connect(_action.get(), &IAction::ErrorOccured, this, [this](ExceptionData exception){
         _thread.get()->exit();
         _thread.get()->wait();
@@ -164,10 +161,11 @@ void ActionManager::ProcessActionAborted(QString name)
         emit ActionChainAborted();
 }
 
-//void ActionManager::ProcessActionFailed(QString name, std::exception_ptr exception)
 void ActionManager::ProcessActionFailed(QString name, ExceptionData exception)
 {
     emit ActionFailed(name, exception);
+    _hasAborted = true;
+    Stop();
     _runningCount--;
     if (_runningCount == 0)
         emit ActionChainAborted();
