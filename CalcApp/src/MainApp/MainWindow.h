@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringList>
 
+#include "Common/ExceptionData.h"
 #include "Common/IAction.h"
 #include "Common/ServiceLocator.h"
 #include "ActionManager.h"

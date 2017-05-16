@@ -3,22 +3,13 @@
 #include <QObject>
 #include <QString>
 
-#include <exception>
 #include <memory>
 
 #include "Context.h"
+#include "ExceptionData.h"
 
 namespace CalcApp
 {
-
-class ExceptionData
-{
-public:
-    ExceptionData() {}
-    explicit ExceptionData(std::exception_ptr exception) : Exception(exception) {}
-
-    std::exception_ptr Exception;
-};
 
 class IAction : public QObject
 {
@@ -42,7 +33,6 @@ private:
 
 signals:
     void DataCompleted(QString const &key);
-    //void ErrorOccured(std::exception_ptr exception);
     void ErrorOccured(ExceptionData exception);
     void ActionFinished();
 
@@ -59,5 +49,3 @@ public slots:
 };
 
 }
-
-Q_DECLARE_METATYPE(CalcApp::ExceptionData);

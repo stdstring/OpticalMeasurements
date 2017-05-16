@@ -10,6 +10,7 @@
 #include <memory>
 
 #include "Common/ActionsConfig.h"
+#include "Common/ExceptionData.h"
 #include "Common/IAction.h"
 #include "Common/MainConfig.h"
 #include "Common/ServiceLocator.h"

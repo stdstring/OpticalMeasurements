@@ -13,6 +13,7 @@
 #include "Common/ActionChainFactory.h"
 #include "Common/ActionsConfig.h"
 #include "Common/Context.h"
+#include "Common/ExceptionData.h"
 #include "Common/IAction.h"
 #include "Common/ServiceLocator.h"
 #include "ActionManager.h"
