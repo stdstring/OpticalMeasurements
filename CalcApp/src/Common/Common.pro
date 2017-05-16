@@ -19,7 +19,8 @@ SOURCES += Logger/LoggerService.cpp \
            TransportSerialization.cpp \
            ServiceLocator.cpp
 
-HEADERS += ../../include/Common/Logger/ILogger.h \
+HEADERS += ../../include/Common/Exception/NotImplementedException.h \
+           ../../include/Common/Logger/ILogger.h \
            ../../include/Common/Logger/LoggerService.h \
            ../../include/Common/Logger/NullLogger.h \
            ../../include/Common/Logger/QMessageLoggerWrapper.h \
@@ -39,7 +40,6 @@ HEADERS += ../../include/Common/Logger/ILogger.h \
            ../../include/Common/TransportConfig.h \
            ../../include/Common/TransportSerialization.h \
            ../../include/Common/ServiceLocator.h \
-           ../../include/Common/NotImplementedException.h \
            ../../include/Common/ExceptionData.h
 
 unix {
