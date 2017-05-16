@@ -14,11 +14,13 @@ SOURCES += main.cpp \
            MainWindow.cpp \
            StateManager.cpp \
            ActionManager.cpp \
-           DefaultConfigReader.cpp
+           DefaultConfigReader.cpp \
+           ActionExecuter.cpp
 
 HEADERS  += MainWindow.h \
             StateManager.h \
             ActionManager.h \
-            DefaultConfigReader.h
+            DefaultConfigReader.h \
+            ActionExecuter.h
 
 FORMS    += MainWindow.ui
