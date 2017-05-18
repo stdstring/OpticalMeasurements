@@ -3,7 +3,6 @@
 #include <QTimer>
 
 #include <exception>
-#include <functional>
 #include <memory>
 #include <stdexcept>
 
@@ -41,19 +40,10 @@ QString TestFailedAction::GetName()
 
 void TestFailedAction::ProcessStartImpl()
 {
-    std::function<void()> handler = [this]()
+    QTimer::singleShot(_time, this, [this]()
     {
-        try
-        {
-            throw std::logic_error("Internal error: action is failed");
-        }
-        catch (...)
-        {
-            std::exception_ptr exception = std::current_exception();
-            emit ErrorOccured(ExceptionData(/*exception*/));
-        }
-    };
-    QTimer::singleShot(_time, this, handler);
+        emit ErrorOccured(ExceptionData(std::make_exception_ptr(std::logic_error("Internal error: action is failed"))));
+    });
 }
 
 void TestFailedAction::ProcessStopImpl()
