@@ -10,7 +10,8 @@ SUBDIRS += src/Common \
            src/TestFailedAction \
            src/MainApp \
            src/TestSaveDataAction \
-           src/TestInteractionAction
+           src/TestInteractionAction \
+    src/TestDataDependentAction
 
 # tests
 #SUBDIRS += tests/TransportTests
