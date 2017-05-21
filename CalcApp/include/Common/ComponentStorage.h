@@ -3,15 +3,13 @@
 #include <QList>
 #include <QString>
 
+#include "CommonDefs.h"
 #include "IActionFactory.h"
 #include "IComponentInfo.h"
 #include "ITransportFactory.h"
 
 namespace CalcApp
 {
-
-// TODO (std_string) : think about this definition
-class IActionFactory;
 
 class ComponentStorage
 {

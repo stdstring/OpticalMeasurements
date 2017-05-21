@@ -3,20 +3,21 @@
 
 #include <algorithm>
 #include <iterator>
-#include <memory>
 #include <stdexcept>
 
+#include "CommonDefs.h"
 #include "ActionsConfig.h"
 #include "IAction.h"
+#include "IActionFactory.h"
 #include "ServiceLocator.h"
 #include "ActionChainFactory.h"
 
 namespace CalcApp
 {
 
-QList<std::shared_ptr<IAction>> ActionChainFactory::Create(ActionChainDef const &chainDef, std::shared_ptr<ServiceLocator> serviceLocator, std::shared_ptr<Context> context)
+QList<ActionPtr> ActionChainFactory::Create(ActionChainDef const &chainDef, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
-    QList<std::shared_ptr<IAction>> dest;
+    QList<ActionPtr> dest;
     std::transform(chainDef.Actions.cbegin(), chainDef.Actions.cend(), std::back_inserter(dest), [&serviceLocator, context](ActionDef const &actionDef){
         IActionFactory *factory = serviceLocator.get()->GetStorage()->FindAction(actionDef.Id);
         if (factory == nullptr)

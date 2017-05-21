@@ -4,18 +4,11 @@
 #include <QString>
 #include <QtPlugin>
 
-#include <memory>
-
-#include "Context.h"
-#include "IAction.h"
+#include "CommonDefs.h"
 #include "IComponentInfo.h"
-#include "ServiceLocator.h"
 
 namespace CalcApp
 {
-
-// TODO (std_string) : think about this definition
-class ServiceLocator;
 
 class IActionFactory : public IComponentInfo
 {
@@ -23,7 +16,7 @@ class IActionFactory : public IComponentInfo
 public:
     explicit IActionFactory(QObject *parent = nullptr) : IComponentInfo(parent) {}
 
-    virtual std::shared_ptr<IAction> Create(QString const &name, QString const &args, std::shared_ptr<ServiceLocator> serviceLocator, std::shared_ptr<Context> context) = 0;
+    virtual ActionPtr Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) = 0;
     virtual ComponentType GetComponentType() override { return ComponentType::ACTION; }
 };
 

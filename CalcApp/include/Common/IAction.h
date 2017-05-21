@@ -3,8 +3,7 @@
 #include <QObject>
 #include <QString>
 
-#include <memory>
-
+#include "CommonDefs.h"
 #include "Context.h"
 #include "ExceptionData.h"
 
@@ -15,7 +14,7 @@ class IAction : public QObject
 {
     Q_OBJECT
 public:
-    explicit IAction(std::shared_ptr<Context> context) : QObject(), _context(context)
+    explicit IAction(ContextPtr context) : QObject(), _context(context)
     {
     }
 
@@ -26,10 +25,10 @@ public:
 protected:
     virtual void ProcessStartImpl() = 0;
     virtual void ProcessStopImpl() = 0;
-    std::shared_ptr<Context> GetContext() const { return _context; }
+    ContextPtr GetContext() const { return _context; }
 
 private:
-    std::shared_ptr<Context> _context;
+    ContextPtr _context;
 
 signals:
     void DataCompleted(QString const &key);

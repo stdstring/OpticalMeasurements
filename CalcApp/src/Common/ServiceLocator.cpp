@@ -1,5 +1,6 @@
 #include <memory>
 
+#include "CommonDefs.h"
 #include "ComponentStorage.h"
 #include "ILogger.h"
 #include "MainConfig.h"
@@ -8,21 +9,19 @@
 namespace CalcApp
 {
 
-ServiceLocator::ServiceLocator(std::shared_ptr<MainConfig> config,
-                               std::shared_ptr<ComponentStorage> storage,
-                               std::shared_ptr<ILogger> logger) :
+ServiceLocator::ServiceLocator(MainConfigPtr config, ComponentStoragePtr storage, std::shared_ptr<ILogger> logger) :
     _config(config),
     _storage(storage),
     _logger(logger)
 {
 }
 
-std::shared_ptr<MainConfig> ServiceLocator::GetConfig() const
+MainConfigPtr ServiceLocator::GetConfig() const
 {
     return _config;
 }
 
-std::shared_ptr<ComponentStorage> ServiceLocator::GetStorage() const
+ComponentStoragePtr ServiceLocator::GetStorage() const
 {
     return _storage;
 }

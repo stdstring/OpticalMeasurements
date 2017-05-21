@@ -5,7 +5,7 @@
 #include <QString>
 #include <QStringList>
 
-#include <memory>
+#include "CommonDefs.h"
 
 namespace CalcApp
 {
@@ -34,8 +34,8 @@ class Context : public QObject
 public:
     explicit Context(QObject *parent = nullptr);
     bool HasKey(QString const &key) const;
-    std::shared_ptr<IContextItem> Get(QString const &key) const;
-    void Set(QString const &key, std::shared_ptr<IContextItem> item);
+    ContextItemPtr Get(QString const &key) const;
+    void Set(QString const &key, ContextItemPtr item);
     void Clear();
 
     template <typename TResult> TResult* GetValue(QString const &key) const
@@ -44,7 +44,7 @@ public:
     }
 
 private:
-    QHash<QString, std::shared_ptr<IContextItem>> _storage;
+    QHash<QString, ContextItemPtr> _storage;
 
 signals:
     void DataChanged(QString const &key);

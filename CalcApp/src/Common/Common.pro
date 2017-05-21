@@ -40,7 +40,8 @@ HEADERS += ../../include/Common/Exception/NotImplementedException.h \
            ../../include/Common/TransportConfig.h \
            ../../include/Common/TransportSerialization.h \
            ../../include/Common/ServiceLocator.h \
-           ../../include/Common/ExceptionData.h
+           ../../include/Common/ExceptionData.h \
+           ../../include/Common/CommonDefs.h
 
 unix {
     target.path = /usr/lib

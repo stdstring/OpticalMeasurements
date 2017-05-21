@@ -3,12 +3,8 @@
 #include <QList>
 #include <QObject>
 
-#include <memory>
-
+#include "CommonDefs.h"
 #include "ActionsConfig.h"
-#include "Context.h"
-#include "IAction.h"
-#include "ServiceLocator.h"
 
 namespace CalcApp
 {
@@ -16,7 +12,7 @@ namespace CalcApp
 class ActionChainFactory
 {
 public:
-    static QList<std::shared_ptr<IAction>> Create(ActionChainDef const &chainDef, std::shared_ptr<ServiceLocator> serviceLocator, std::shared_ptr<Context> context);
+    static QList<ActionPtr> Create(ActionChainDef const &chainDef, ServiceLocatorPtr serviceLocator, ContextPtr context);
 
     ActionChainFactory() = delete;
     ActionChainFactory(ActionChainFactory const&) = delete;
