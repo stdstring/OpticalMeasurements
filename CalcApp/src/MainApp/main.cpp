@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     CalcApp::ServiceLocator serviceLocator(std::shared_ptr<CalcApp::MainConfig>(&config, [](CalcApp::MainConfig*){}),
                                            std::shared_ptr<CalcApp::ComponentStorage>(&componentStorage, [](CalcApp::ComponentStorage*){}),
                                            std::shared_ptr<CalcApp::ILogger>(&loggerService, [](CalcApp::ILogger*){}));
-    CalcApp::MainWindow w(serviceLocator);
+   CalcApp::MainWindow w(std::shared_ptr<CalcApp::ServiceLocator>(&serviceLocator, [](CalcApp::ServiceLocator*){}));
     w.show();
     int result = app.exec();
     loggerService.WriteDebug("app is finished");

@@ -34,7 +34,7 @@ QString CreateItemText(QString const &name, QString const &suffix)
 
 }
 
-MainWindow::MainWindow(ServiceLocator const &serviceLocator, QWidget *parent) :
+MainWindow::MainWindow(std::shared_ptr<ServiceLocator> serviceLocator, QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
     _actionManager(new ActionManager(serviceLocator, this)),
@@ -49,7 +49,7 @@ MainWindow::MainWindow(ServiceLocator const &serviceLocator, QWidget *parent) :
                                      _ui->ClearButton,
                                      this);
     QStringList actionChainList;
-    std::shared_ptr<MainConfig> config = serviceLocator.GetConfig();
+    std::shared_ptr<MainConfig> config = serviceLocator.get()->GetConfig();
     std::transform(config.get()->Actions.Chains.cbegin(),
                    config.get()->Actions.Chains.cend(),
                    std::back_inserter(actionChainList),

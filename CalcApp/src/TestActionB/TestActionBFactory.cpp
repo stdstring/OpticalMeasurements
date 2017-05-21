@@ -22,7 +22,10 @@ QString TestActionBFactory::GetId()
     return "TestActionB";
 }
 
-std::shared_ptr<IAction> TestActionBFactory::Create(QString const &name, QString const &args, ServiceLocator const &serviceLocator, std::shared_ptr<Context> context)
+std::shared_ptr<IAction> TestActionBFactory::Create(QString const &name,
+                                                    QString const &args,
+                                                    std::shared_ptr<ServiceLocator> serviceLocator,
+                                                    std::shared_ptr<Context> context)
 {
     Q_UNUSED(serviceLocator);
     int time = args.toInt();

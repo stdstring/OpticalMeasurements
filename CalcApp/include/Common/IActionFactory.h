@@ -23,7 +23,7 @@ class IActionFactory : public IComponentInfo
 public:
     explicit IActionFactory(QObject *parent = nullptr) : IComponentInfo(parent) {}
 
-    virtual std::shared_ptr<IAction> Create(QString const &name, QString const &args, ServiceLocator const &serviceLocator, std::shared_ptr<Context> context) = 0;
+    virtual std::shared_ptr<IAction> Create(QString const &name, QString const &args, std::shared_ptr<ServiceLocator> serviceLocator, std::shared_ptr<Context> context) = 0;
     virtual ComponentType GetComponentType() override { return ComponentType::ACTION; }
 };
 

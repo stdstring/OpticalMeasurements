@@ -23,7 +23,10 @@ public:
     explicit TestActionBFactory(QObject *parent = nullptr);
 
     virtual QString GetId() override;
-    virtual std::shared_ptr<IAction> Create(QString const &name, QString const &args, ServiceLocator const &serviceLocator, std::shared_ptr<Context> context) override;
+    virtual std::shared_ptr<IAction> Create(QString const &name,
+                                            QString const &args,
+                                            std::shared_ptr<ServiceLocator> serviceLocator,
+                                            std::shared_ptr<Context> context) override;
 };
 
 }

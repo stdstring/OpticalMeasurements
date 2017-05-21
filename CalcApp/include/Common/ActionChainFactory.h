@@ -16,7 +16,7 @@ namespace CalcApp
 class ActionChainFactory
 {
 public:
-    static QList<std::shared_ptr<IAction>> Create(ActionChainDef const &chainDef, ServiceLocator const &serviceLocator, std::shared_ptr<Context> context);
+    static QList<std::shared_ptr<IAction>> Create(ActionChainDef const &chainDef, std::shared_ptr<ServiceLocator> serviceLocator, std::shared_ptr<Context> context);
 
     ActionChainFactory() = delete;
     ActionChainFactory(ActionChainFactory const&) = delete;

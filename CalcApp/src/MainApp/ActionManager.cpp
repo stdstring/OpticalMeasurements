@@ -36,7 +36,7 @@ ActionChainDef const& FindActionChain(ActionsConfig const &config, QString const
 
 }
 
-ActionManager::ActionManager(ServiceLocator const &serviceLocator, QObject *parent) :
+ActionManager::ActionManager(std::shared_ptr<ServiceLocator> serviceLocator, QObject *parent) :
     QObject(parent),
     _serviceLocator(serviceLocator),
     _context(new Context()),
@@ -51,7 +51,7 @@ QStringList ActionManager::Create(QString const &chainName)
             throw std::logic_error("Action's chain isn't empty");
     _runningCount = 0;
     _hasAborted = false;
-    ActionChainDef const &chain = FindActionChain(_serviceLocator.GetConfig().get()->Actions, chainName);
+    ActionChainDef const &chain = FindActionChain(_serviceLocator.get()->GetConfig()->Actions, chainName);
     QList<std::shared_ptr<IAction>> actions = ActionChainFactory::Create(chain, _serviceLocator, _context);
     std::function<std::shared_ptr<ActionExecuter>(std::shared_ptr<IAction>)> executerFactory = [this](std::shared_ptr<IAction> action)
     {

@@ -20,7 +20,7 @@ class ActionManager : public QObject
 {
     Q_OBJECT
 public:
-    ActionManager(ServiceLocator const &serviceLocator, QObject *parent = nullptr);
+    ActionManager(std::shared_ptr<ServiceLocator> serviceLocator, QObject *parent = nullptr);
 
     QStringList Create(QString const &chainName);
     void Run();
@@ -28,7 +28,7 @@ public:
     void Clear();
 
 private:
-    ServiceLocator _serviceLocator;
+    std::shared_ptr<ServiceLocator> _serviceLocator;
     QList<std::shared_ptr<ActionExecuter>> _chain;
     std::shared_ptr<Context> _context;
     int _runningCount;

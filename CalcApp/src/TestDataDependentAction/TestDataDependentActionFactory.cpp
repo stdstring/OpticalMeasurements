@@ -24,7 +24,7 @@ QString TestDataDependentActionFactory::GetId()
 
 std::shared_ptr<IAction> TestDataDependentActionFactory::Create(QString const &name,
                                                                 QString const &args,
-                                                                ServiceLocator const &serviceLocator,
+                                                                std::shared_ptr<ServiceLocator> serviceLocator,
                                                                 std::shared_ptr<Context> context)
 {
     Q_UNUSED(name);

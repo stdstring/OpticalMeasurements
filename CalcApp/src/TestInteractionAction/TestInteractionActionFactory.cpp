@@ -24,7 +24,10 @@ QString TestInteractionActionFactory::GetId()
     return "TestInteractionAction";
 }
 
-std::shared_ptr<IAction> TestInteractionActionFactory::Create(QString const &name, QString const &args, ServiceLocator const &serviceLocator, std::shared_ptr<Context> context)
+std::shared_ptr<IAction> TestInteractionActionFactory::Create(QString const &name,
+                                                              QString const &args,
+                                                              std::shared_ptr<ServiceLocator> serviceLocator,
+                                                              std::shared_ptr<Context> context)
 {
     Q_UNUSED(name);
     Q_UNUSED(args);
