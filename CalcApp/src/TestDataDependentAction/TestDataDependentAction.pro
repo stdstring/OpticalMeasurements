@@ -7,6 +7,10 @@ TARGET = TestDataDependentAction
 TEMPLATE = lib
 CONFIG += plugin
 
+DEFINES += TEST_DATA_DEPENDENT_ACTION_LIBRARY
+
+LIBS += -lCommon
+
 #DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
 DEFINES += TEST_DATA_DEPENDENT_ACTION_LIBRARY
@@ -22,9 +26,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES +=
+SOURCES += TestDataDependentActionFactory.cpp
 
-HEADERS +=
+HEADERS += TestDataDependentActionFactory.h
 
 DISTFILES += TestDataDependentAction.json
 
