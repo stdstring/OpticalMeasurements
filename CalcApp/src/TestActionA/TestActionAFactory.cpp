@@ -1,9 +1,7 @@
 #include <QObject>
 #include <QString>
-//#include <QtGlobal>
 
-#include <memory>
-
+#include "Common/CommonDefs.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
 #include "Common/IActionFactory.h"
@@ -23,14 +21,11 @@ QString TestActionAFactory::GetId()
     return "TestActionA";
 }
 
-std::shared_ptr<IAction> TestActionAFactory::Create(QString const &name,
-                                                    QString const &args,
-                                                    std::shared_ptr<ServiceLocator> serviceLocator,
-                                                    std::shared_ptr<Context> context)
+ActionPtr TestActionAFactory::Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
     Q_UNUSED(serviceLocator);
     int time = args.toInt();
-    return std::shared_ptr<IAction>(new TestActionA(name, time, context));
+    return ActionPtr(new TestActionA(name, time, context));
 }
 
 }
