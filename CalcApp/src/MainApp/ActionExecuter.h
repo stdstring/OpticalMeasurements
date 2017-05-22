@@ -6,8 +6,9 @@
 
 #include <memory>
 
+
+#include "Common/CommonDefs.h"
 #include "Common/ExceptionData.h"
-#include "Common/IAction.h"
 
 namespace CalcApp
 {
@@ -16,9 +17,9 @@ class ActionExecuter : public QObject
 {
     Q_OBJECT
 public:
-    ActionExecuter(std::shared_ptr<IAction> action, QObject *parent = nullptr);
+    ActionExecuter(ActionPtr action, QObject *parent = nullptr);
     void Start();
-    void Stop(bool hardStop = true);
+    void Stop(/*bool hardStop = true*/);
     virtual ~ActionExecuter() override;
 
 signals:
@@ -28,7 +29,7 @@ signals:
     void ActionFailed(QString name, ExceptionData exception);
 
 private:
-    std::shared_ptr<IAction> _action;
+    ActionPtr _action;
     QString _actionName;
     std::shared_ptr<QThread> _thread;
 };

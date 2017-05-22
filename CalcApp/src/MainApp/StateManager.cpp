@@ -44,7 +44,6 @@ void StateManager::ChangeState(MainAppState state)
             ChainAborted();
             break;
     }
-    //_state = state;
 }
 
 void StateManager::Init()

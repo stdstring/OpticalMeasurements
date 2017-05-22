@@ -4,11 +4,8 @@
 #include <QString>
 #include <QStringList>
 
-#include <memory>
-
+#include "Common/CommonDefs.h"
 #include "Common/ExceptionData.h"
-#include "Common/IAction.h"
-#include "Common/ServiceLocator.h"
 #include "ActionManager.h"
 #include "StateManager.h"
 
@@ -24,7 +21,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    MainWindow(std::shared_ptr<ServiceLocator> serviceLocator, QWidget *parent = nullptr);
+    MainWindow(ServiceLocatorPtr serviceLocator, QWidget *parent = nullptr);
     ~MainWindow();
 
 private:

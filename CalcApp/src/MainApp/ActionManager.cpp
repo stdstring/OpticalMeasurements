@@ -9,6 +9,7 @@
 #include <memory>
 #include <stdexcept>
 
+#include "Common/CommonDefs.h"
 #include "Common/ActionChainFactory.h"
 #include "Common/ActionsConfig.h"
 #include "Common/Context.h"
@@ -36,7 +37,7 @@ ActionChainDef const& FindActionChain(ActionsConfig const &config, QString const
 
 }
 
-ActionManager::ActionManager(std::shared_ptr<ServiceLocator> serviceLocator, QObject *parent) :
+ActionManager::ActionManager(ServiceLocatorPtr serviceLocator, QObject *parent) :
     QObject(parent),
     _serviceLocator(serviceLocator),
     _context(new Context()),
@@ -52,8 +53,8 @@ QStringList ActionManager::Create(QString const &chainName)
     _runningCount = 0;
     _hasAborted = false;
     ActionChainDef const &chain = FindActionChain(_serviceLocator.get()->GetConfig()->Actions, chainName);
-    QList<std::shared_ptr<IAction>> actions = ActionChainFactory::Create(chain, _serviceLocator, _context);
-    std::function<std::shared_ptr<ActionExecuter>(std::shared_ptr<IAction>)> executerFactory = [this](std::shared_ptr<IAction> action)
+    QList<ActionPtr> actions = ActionChainFactory::Create(chain, _serviceLocator, _context);
+    std::function<std::shared_ptr<ActionExecuter>(ActionPtr)> executerFactory = [this](ActionPtr action)
     {
         std::shared_ptr<ActionExecuter> executer(new ActionExecuter(action));
         QObject::connect(executer.get(), &ActionExecuter::ActionRunning, this, &ActionManager::ProcessActionRunning);
@@ -64,7 +65,7 @@ QStringList ActionManager::Create(QString const &chainName)
     };
     std::transform(actions.cbegin(), actions.cend(), std::back_inserter(_chain), executerFactory);
     QStringList dest;
-    std::transform(actions.cbegin(), actions.cend(), std::back_inserter(dest), [](std::shared_ptr<IAction> action){ return action.get()->GetName(); });
+    std::transform(actions.cbegin(), actions.cend(), std::back_inserter(dest), [](ActionPtr action){ return action.get()->GetName(); });
     return dest;
 }
 
@@ -82,7 +83,7 @@ void ActionManager::Stop()
 {
     for (std::shared_ptr<ActionExecuter> executer : _chain)
     {
-        executer->Stop(false);
+        executer->Stop(/*false*/);
     }
 }
 

@@ -3,13 +3,14 @@
 
 #include <memory>
 
+#include "Common/CommonDefs.h"
 #include "Common/IAction.h"
 #include "ActionExecuter.h"
 
 namespace CalcApp
 {
 
-ActionExecuter::ActionExecuter(std::shared_ptr<IAction> action, QObject *parent) :
+ActionExecuter::ActionExecuter(ActionPtr action, QObject *parent) :
     QObject(parent),
     _action(action),
     _actionName(action.get()->GetName()),
@@ -37,9 +38,8 @@ void ActionExecuter::Start()
     _thread->start();
 }
 
-void ActionExecuter::Stop(bool hardStop)
+void ActionExecuter::Stop(/*bool hardStop*/)
 {
-    Q_UNUSED(hardStop)
     if (!_thread.get()->isRunning())
         return;
     //hardStop ? _thread.get()->terminate() : _thread.get()->quit();

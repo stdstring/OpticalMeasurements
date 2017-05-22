@@ -7,8 +7,8 @@
 
 #include <algorithm>
 #include <iterator>
-#include <memory>
 
+#include "Common/CommonDefs.h"
 #include "Common/ActionsConfig.h"
 #include "Common/ExceptionData.h"
 #include "Common/IAction.h"
@@ -34,7 +34,7 @@ QString CreateItemText(QString const &name, QString const &suffix)
 
 }
 
-MainWindow::MainWindow(std::shared_ptr<ServiceLocator> serviceLocator, QWidget *parent) :
+MainWindow::MainWindow(ServiceLocatorPtr serviceLocator, QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
     _actionManager(new ActionManager(serviceLocator, this)),
@@ -49,7 +49,7 @@ MainWindow::MainWindow(std::shared_ptr<ServiceLocator> serviceLocator, QWidget *
                                      _ui->ClearButton,
                                      this);
     QStringList actionChainList;
-    std::shared_ptr<MainConfig> config = serviceLocator.get()->GetConfig();
+    MainConfigPtr config = serviceLocator.get()->GetConfig();
     std::transform(config.get()->Actions.Chains.cbegin(),
                    config.get()->Actions.Chains.cend(),
                    std::back_inserter(actionChainList),

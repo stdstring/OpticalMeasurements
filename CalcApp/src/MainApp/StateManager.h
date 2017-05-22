@@ -28,7 +28,6 @@ private:
     void ChainCompleted();
     void ChainAborted();
 
-    //MainAppState _state;
     QComboBox *_actionChainsComboBox;
     QAbstractButton *_createButton;
     QAbstractButton *_runButton;

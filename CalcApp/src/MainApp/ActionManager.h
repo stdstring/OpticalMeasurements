@@ -7,10 +7,8 @@
 
 #include <memory>
 
-#include "Common/Context.h"
+#include "Common/CommonDefs.h"
 #include "Common/ExceptionData.h"
-#include "Common/IAction.h"
-#include "Common/ServiceLocator.h"
 #include"ActionExecuter.h"
 
 namespace CalcApp
@@ -20,7 +18,7 @@ class ActionManager : public QObject
 {
     Q_OBJECT
 public:
-    ActionManager(std::shared_ptr<ServiceLocator> serviceLocator, QObject *parent = nullptr);
+    ActionManager(ServiceLocatorPtr serviceLocator, QObject *parent = nullptr);
 
     QStringList Create(QString const &chainName);
     void Run();
@@ -28,9 +26,9 @@ public:
     void Clear();
 
 private:
-    std::shared_ptr<ServiceLocator> _serviceLocator;
+    ServiceLocatorPtr _serviceLocator;
     QList<std::shared_ptr<ActionExecuter>> _chain;
-    std::shared_ptr<Context> _context;
+    ContextPtr _context;
     int _runningCount;
     bool _hasAborted;
 
