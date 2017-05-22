@@ -2,8 +2,7 @@
 #include <QString>
 #include <QTimer>
 
-#include <memory>
-
+#include "Common/CommonDefs.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
 #include "TestActionB.h"
@@ -11,7 +10,7 @@
 namespace CalcApp
 {
 
-TestActionB::TestActionB(QString const &name, int time, std::shared_ptr<Context> context) :
+TestActionB::TestActionB(QString const &name, int time, ContextPtr context) :
     IAction(context),
     _name(name),
     _time(time)
