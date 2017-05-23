@@ -3,9 +3,10 @@
 #include <QObject>
 #include <QString>
 
-#include<memory>
+//#include<memory>
 
-#include "Common/Context.h"
+#include "Common/CommonDefs.h"
+//#include "Common/Context.h"
 #include "Common/IAction.h"
 
 namespace CalcApp
@@ -14,7 +15,7 @@ namespace CalcApp
 class TestSaveDataAction : public IAction
 {
 public:
-    explicit TestSaveDataAction(QString const &actionName, QString const &contextKey, QString const &destFilename,  std::shared_ptr<Context> context/*QObject *parent = nullptr*/);
+    explicit TestSaveDataAction(QString const &actionName, QString const &contextKey, QString const &destFilename, ContextPtr context);
 
     virtual QString GetName() override;
     /*virtual void StartAction(Context &context) override;*/

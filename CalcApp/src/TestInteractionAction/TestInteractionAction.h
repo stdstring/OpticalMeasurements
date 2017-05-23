@@ -48,7 +48,7 @@ public:
                           QString const &contextKey,
                           ITransportFactory *transportFactory,
                           TransportConfig const &config,
-                          ContextPtr context/*QObject *parent = nullptr*/);
+                          ContextPtr context);
 
     virtual QString GetName() override;
     /*virtual void StartAction(Context &context) override;*/

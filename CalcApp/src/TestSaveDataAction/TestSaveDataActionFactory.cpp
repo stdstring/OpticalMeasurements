@@ -5,8 +5,9 @@
 //#include <QtGlobal>
 
 //#include <stdexcept>
-#include <memory>
+//#include <memory>
 
+#include "Common/CommonDefs.h"
 #include "Common/Exception/NotImplementedException.h"
 #include "Common/Context.h"
 #include "Common/IActionFactory.h"
@@ -26,10 +27,7 @@ QString TestSaveDataActionFactory::GetId()
     return "TestSaveDataAction";
 }
 
-std::shared_ptr<IAction> TestSaveDataActionFactory::Create(QString const &name,
-                                                           QString const &args,
-                                                           std::shared_ptr<ServiceLocator> serviceLocator,
-                                                           std::shared_ptr<Context> context)
+ActionPtr TestSaveDataActionFactory::Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
     Q_UNUSED(name);
     Q_UNUSED(args);

@@ -88,7 +88,7 @@ TestInteractionAction::TestInteractionAction(QString const &actionName,
                                              QString const &contextKey,
                                              ITransportFactory *transportFactory,
                                              TransportConfig const &config,
-                                             ContextPtr context/*QObject *parent = nullptr*/) :
+                                             ContextPtr context) :
     IAction(context),
     _actionName(actionName),
     _contextKey(contextKey),

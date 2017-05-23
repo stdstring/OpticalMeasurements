@@ -5,8 +5,9 @@
 //#include <QStringList>
 //#include <QTextStream>
 
-#include <memory>
+//#include <memory>
 
+#include "Common/CommonDefs.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
 #include "TestSaveDataAction.h"
@@ -14,7 +15,7 @@
 namespace CalcApp
 {
 
-TestSaveDataAction::TestSaveDataAction(QString const &actionName, QString const &contextKey, QString const &destFilename,  std::shared_ptr<Context> context/*QObject *parent = nullptr*/) :
+TestSaveDataAction::TestSaveDataAction(QString const &actionName, QString const &contextKey, QString const &destFilename, ContextPtr context) :
     IAction(context),
     _actionName(actionName),
     _contextKey(contextKey),
