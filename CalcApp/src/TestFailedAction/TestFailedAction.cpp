@@ -3,9 +3,9 @@
 #include <QTimer>
 
 #include <exception>
-#include <memory>
 #include <stdexcept>
 
+#include "Common/CommonDefs.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
 #include "TestFailedAction.h"
@@ -13,7 +13,7 @@
 namespace CalcApp
 {
 
-TestFailedAction::TestFailedAction(const QString &name, int time, std::shared_ptr<Context> context) :
+TestFailedAction::TestFailedAction(const QString &name, int time, ContextPtr context) :
     IAction(context),
     _name(name),
     _time(time)

@@ -3,9 +3,7 @@
 #include <QObject>
 #include <QString>
 
-#include <memory>
-
-#include "Common/Context.h"
+#include "Common/CommonDefs.h"
 #include "Common/IAction.h"
 
 namespace CalcApp
@@ -14,7 +12,7 @@ namespace CalcApp
 class TestFailedAction : public IAction
 {
 public:
-    explicit TestFailedAction(QString const &name, int time, std::shared_ptr<Context> context);
+    explicit TestFailedAction(QString const &name, int time, ContextPtr context);
 
     virtual QString GetName() override;
     //virtual void StartAction(Context &context) override;
