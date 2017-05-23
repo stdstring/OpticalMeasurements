@@ -1,8 +1,7 @@
 #include <QObject>
 #include <QString>
 
-#include <memory>
-
+#include "Common/CommonDefs.h"
 #include "Common/Exception/NotImplementedException.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
@@ -22,10 +21,7 @@ QString TestDataDependentActionFactory::GetId()
     return "TestDataDependentAction";
 }
 
-std::shared_ptr<IAction> TestDataDependentActionFactory::Create(QString const &name,
-                                                                QString const &args,
-                                                                std::shared_ptr<ServiceLocator> serviceLocator,
-                                                                std::shared_ptr<Context> context)
+ActionPtr TestDataDependentActionFactory::Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
     Q_UNUSED(name);
     Q_UNUSED(args);
