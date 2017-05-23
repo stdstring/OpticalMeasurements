@@ -11,6 +11,7 @@ class Context;
 class IAction;
 class IActionFactory;
 class IContextItem;
+class ILogger;
 class MainConfig;
 class ServiceLocator;
 
@@ -19,6 +20,7 @@ typedef std::shared_ptr<ComponentStorage> ComponentStoragePtr;
 typedef std::shared_ptr<Context> ContextPtr;
 typedef std::shared_ptr<IAction> ActionPtr;
 typedef std::shared_ptr<IContextItem> ContextItemPtr;
+typedef std::shared_ptr<ILogger> LoggerPtr;
 typedef std::shared_ptr<MainConfig> MainConfigPtr;
 typedef std::shared_ptr<ServiceLocator> ServiceLocatorPtr;
 

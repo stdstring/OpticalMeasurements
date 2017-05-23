@@ -2,8 +2,7 @@
 #include <QString>
 #include <QThread>
 
-#include <memory>
-
+#include "Common/CommonDefs.h"
 #include "ILogger.h"
 #include "LoggerService.h"
 
@@ -18,7 +17,7 @@ typedef void (LoggerServiceWorker::*CategoryWriteFun) (LoggerCategory const&, QS
 
 }
 
-LoggerServiceWorker::LoggerServiceWorker(std::shared_ptr<ILogger> logger) : _logger(logger)
+LoggerServiceWorker::LoggerServiceWorker(LoggerPtr logger) : _logger(logger)
 {
     QObject::connect(this, static_cast<SimpleWriteFun>(&LoggerServiceWorker::WriteDebug), this, static_cast<SimpleWriteFun>(&LoggerServiceWorker::ProcessWriteDebug));
     QObject::connect(this, static_cast<CategoryWriteFun>(&LoggerServiceWorker::WriteDebug), this, static_cast<CategoryWriteFun>(&LoggerServiceWorker::ProcessWriteDebug));
@@ -70,7 +69,7 @@ void LoggerServiceWorker::ProcessWriteError(const LoggerCategory &category, cons
     _logger.get()->WriteError(category, message);
 }
 
-LoggerService::LoggerService(std::shared_ptr<ILogger> logger, QObject *parent) :
+LoggerService::LoggerService(LoggerPtr logger, QObject *parent) :
     ILogger(parent),
     _worker(new LoggerServiceWorker(logger)),
     _workerThread(new QThread())

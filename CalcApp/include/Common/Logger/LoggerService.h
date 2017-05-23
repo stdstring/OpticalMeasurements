@@ -6,6 +6,7 @@
 
 #include <memory>
 
+#include "Common/CommonDefs.h"
 #include "ILogger.h"
 
 namespace CalcApp
@@ -15,10 +16,10 @@ class LoggerServiceWorker : public QObject
 {
     Q_OBJECT
 public:
-    LoggerServiceWorker(std::shared_ptr<ILogger> logger);
+    LoggerServiceWorker(LoggerPtr logger);
 
 private:
-    std::shared_ptr<ILogger> _logger;
+    LoggerPtr _logger;
 
 signals:
     void WriteDebug(const QString &message);
@@ -44,7 +45,7 @@ private slots:
 class LoggerService : public ILogger
 {
 public:
-    LoggerService(std::shared_ptr<ILogger> logger, QObject *parent = nullptr);
+    LoggerService(LoggerPtr logger, QObject *parent = nullptr);
     ~LoggerService();
 
     virtual void WriteDebug(const QString &message) override;
