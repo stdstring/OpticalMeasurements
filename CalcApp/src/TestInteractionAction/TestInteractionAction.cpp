@@ -4,9 +4,9 @@
 #include <QString>
 //#include <QThread>
 
-#include <memory>
 //#include <stdexcept>
 
+#include "Common/CommonDefs.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
 //#include "Common/ITransport.h"
@@ -88,7 +88,7 @@ TestInteractionAction::TestInteractionAction(QString const &actionName,
                                              QString const &contextKey,
                                              ITransportFactory *transportFactory,
                                              TransportConfig const &config,
-                                             std::shared_ptr<Context> context/*QObject *parent = nullptr*/) :
+                                             ContextPtr context/*QObject *parent = nullptr*/) :
     IAction(context),
     _actionName(actionName),
     _contextKey(contextKey),

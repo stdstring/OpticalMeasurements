@@ -3,9 +3,7 @@
 #include <QObject>
 #include <QString>
 
-#include <memory>
-
-#include "Common/Context.h"
+#include "Common/CommonDefs.h"
 #include "Common/IAction.h"
 //#include "Common/ITransport.h"
 #include "Common/ITransportFactory.h"
@@ -50,7 +48,7 @@ public:
                           QString const &contextKey,
                           ITransportFactory *transportFactory,
                           TransportConfig const &config,
-                          std::shared_ptr<Context> context/*QObject *parent = nullptr*/);
+                          ContextPtr context/*QObject *parent = nullptr*/);
 
     virtual QString GetName() override;
     /*virtual void StartAction(Context &context) override;*/
