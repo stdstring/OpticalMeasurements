@@ -15,7 +15,8 @@ class IContextItem : public QObject
     Q_OBJECT
 public:
     explicit IContextItem(QObject *parent = nullptr);
-    virtual ~IContextItem() {}
+    void NotifyDataChange();
+    virtual ~IContextItem();
 
 signals:
     void DataChanged();

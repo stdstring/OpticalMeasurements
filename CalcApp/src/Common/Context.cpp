@@ -12,6 +12,16 @@ IContextItem::IContextItem(QObject *parent) : QObject(parent)
 {
 }
 
+void IContextItem::NotifyDataChange()
+{
+    emit DataChanged();
+}
+
+IContextItem::~IContextItem()
+{
+    // do nothing
+}
+
 Context::Context(QObject *parent) : QObject(parent)
 {
 }
