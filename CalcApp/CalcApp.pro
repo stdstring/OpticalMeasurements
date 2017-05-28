@@ -11,7 +11,8 @@ SUBDIRS += src/Common \
            src/MainApp \
            src/TestSaveDataAction \
            src/TestInteractionAction \
-           src/TestDataGeneratorAction
+           src/TestDataGeneratorAction \
+           src/TestTotalDataConsumerAction
 
 # tests
 #SUBDIRS += tests/TransportTests
