@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QHash>
+#include <QList>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -27,6 +28,13 @@ class QStringListContextItem : public IContextItem
 {
 public:
     QStringList Data;
+};
+
+// TODO (std_string) : probably we need some encapsulation here
+template <typename TItem> class QListContextItem : public IContextItem
+{
+public:
+    QList<TItem> Data;
 };
 
 class Context : public QObject
