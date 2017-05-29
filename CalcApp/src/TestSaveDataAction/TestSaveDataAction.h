@@ -15,7 +15,7 @@ namespace CalcApp
 class TestSaveDataAction : public IAction
 {
 public:
-    explicit TestSaveDataAction(QString const &actionName, QString const &contextKey, QString const &destFilename, ContextPtr context);
+    TestSaveDataAction(QString const &actionName, QString const &contextKey, QString const &destFilename, ContextPtr context);
 
     virtual QString GetName() override;
     /*virtual void StartAction(Context &context) override;*/

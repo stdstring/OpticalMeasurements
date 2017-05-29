@@ -12,7 +12,7 @@ namespace CalcApp
 class TestActionA : public IAction
 {
 public:
-    explicit TestActionA(QString const &name, int time, ContextPtr context);
+    TestActionA(QString const &name, int time, ContextPtr context);
 
     virtual QString GetName() override;
     //virtual void StartAction(Context &context) override;
