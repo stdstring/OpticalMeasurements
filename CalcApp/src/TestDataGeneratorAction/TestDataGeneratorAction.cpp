@@ -64,7 +64,7 @@ void TestDataGeneratorAction::GenerateNextItem()
     emit item->DataChanged();
     if (_data.empty())
     {
-        emit DataCompleted(_key);
+        emit context.get()->DataCompleted(_key);
     }
     else
     {

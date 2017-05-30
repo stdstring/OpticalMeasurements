@@ -31,7 +31,6 @@ private:
     ContextPtr _context;
 
 signals:
-    void DataCompleted(QString const &key);
     void ErrorOccured(ExceptionData exception);
     void ActionFinished();
 

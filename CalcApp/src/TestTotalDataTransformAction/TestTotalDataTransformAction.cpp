@@ -64,11 +64,9 @@ void TestTotalDataTransformAction::ProcessTotalData()
         destItem->Data.append(sourceValue + 1);
         destItem->Data.append(sourceValue + 2);
         destItem->Data.append(sourceValue + 3);
-        //emit context.get()->DataChanged(_destKey);
     }
-    //emit context.get()->DataChanged(_destKey);
-    //emit context.get()->DataCompleted(_destKey);
-    emit DataCompleted(_destKey);
+    emit context.get()->DataChanged(_destKey);
+    emit context.get()->DataCompleted(_destKey);
 }
 
 }

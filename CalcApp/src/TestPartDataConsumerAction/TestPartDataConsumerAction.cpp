@@ -18,13 +18,20 @@ namespace
 typedef QListContextItem<int> IntContextItem;
 typedef std::shared_ptr<IntContextItem> IntContextItemPtr;
 
-void SaveData(QTextStream &stream, IntContextItem *item, int start)
+void SaveData(QString const &filename, IntContextItem *item, int start, bool lastSave)
 {
+    QFile file(filename);
+    file.open(start == 0 ? QIODevice::WriteOnly : QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream stream(&file);
+    if (start == 0)
+        stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : start" << endl;
     for (int index = start; index < item->Data.length(); ++index)
     {
         int value  = item->Data[index];
         stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : value =" << value << endl;
     }
+    if (lastSave)
+        stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : finish" << endl;
 }
 
 }
@@ -73,30 +80,15 @@ void TestPartDataConsumerAction::ProcessData()
 {
     ContextPtr context = GetContext();
     IntContextItem *item = context.get()->GetValue<IntContextItem>(_key);
-    if (_index == -1)
-    {
-        QFile destFile(_filename);
-        destFile.open(QIODevice::WriteOnly);
-        QTextStream stream(&destFile);
-        stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : start" << endl;
-        SaveData(stream, item, 0);
-    }
-    else
-    {
-        QFile destFile(_filename);
-        destFile.open(QIODevice::WriteOnly | QIODevice::Append);
-        QTextStream stream(&destFile);
-        SaveData(stream, item, _index + 1);
-    }
+    SaveData(_filename, item, _index + 1, false);
     _index = item->Data.length() - 1;
 }
 
 void TestPartDataConsumerAction::FinishProcessData()
 {
-    QFile destFile(_filename);
-    destFile.open(QIODevice::WriteOnly | QIODevice::Append);
-    QTextStream stream(&destFile);
-    stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : finish" << endl;
+    ContextPtr context = GetContext();
+    IntContextItem *item = context.get()->GetValue<IntContextItem>(_key);
+    SaveData(_filename, item, _index + 1, true);
 }
 
 }
