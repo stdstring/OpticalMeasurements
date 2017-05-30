@@ -61,9 +61,9 @@ void TestTotalDataTransformAction::ProcessTotalData()
     IntContextItem *destItem = context.get()->GetValue<IntContextItem>(_destKey);
     for (int sourceValue : sourceItem->Data)
     {
-        destItem->Data.append(sourceValue + 1);
-        destItem->Data.append(sourceValue + 2);
-        destItem->Data.append(sourceValue + 3);
+        destItem->Data.append(sourceValue + 10000);
+        destItem->Data.append(sourceValue + 11000);
+        destItem->Data.append(sourceValue + 12000);
     }
     emit context.get()->DataChanged(_destKey);
     emit context.get()->DataCompleted(_destKey);

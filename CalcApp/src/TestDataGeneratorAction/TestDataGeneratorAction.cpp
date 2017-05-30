@@ -1,5 +1,4 @@
 #include <QString>
-#include <QtGlobal>
 #include <QTimer>
 
 #include <memory>
@@ -29,7 +28,7 @@ TestDataGeneratorAction::TestDataGeneratorAction(QString const &name, QString co
     context.get()->Set(key, IntContextItemPtr(new IntContextItem()));
     for (int index = 0; index < dataCount; ++index)
     {
-        _data.enqueue(qrand() % 100 + 1);
+        _data.enqueue(index + 1);
     }
 }
 
