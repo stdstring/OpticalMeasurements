@@ -27,15 +27,10 @@ QString TestFailedAction::GetName()
 
 /*void TestFailedAction::StartAction(Context &context)
 {
-    Q_UNUSED(context);
-    QTimer::singleShot(_time, this, [this](){ emit ActionFinished(); });
 }*/
 
 /*void TestFailedAction::Run(Context &context)
 {
-    Q_UNUSED(context);
-    QThread::msleep(_time);
-    throw std::logic_error("Internal error: action is failed");
 }*/
 
 void TestFailedAction::ProcessStartImpl()

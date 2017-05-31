@@ -67,6 +67,7 @@ void TestTotalDataTransformAction::ProcessTotalData()
     }
     emit context.get()->DataChanged(_destKey);
     emit context.get()->DataCompleted(_destKey);
+    emit ActionFinished();
 }
 
 }

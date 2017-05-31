@@ -68,6 +68,7 @@ void TestTotalDataConsumerAction::ProcessTotalData()
         stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : value =" << value << endl;
     }
     stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : finish" << endl;
+    emit ActionFinished();
 }
 
 }

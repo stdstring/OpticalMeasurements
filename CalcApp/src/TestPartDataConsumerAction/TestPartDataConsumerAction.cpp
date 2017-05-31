@@ -89,6 +89,7 @@ void TestPartDataConsumerAction::FinishProcessData()
     ContextPtr context = GetContext();
     IntContextItem *item = context.get()->GetValue<IntContextItem>(_key);
     SaveData(_filename, item, _index + 1, true);
+    emit ActionFinished();
 }
 
 }

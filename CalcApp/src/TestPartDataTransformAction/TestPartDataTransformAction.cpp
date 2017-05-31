@@ -90,6 +90,7 @@ void TestPartDataTransformAction::FinishProcessData()
     IntContextItem *destItem = context.get()->GetValue<IntContextItem>(_destKey);
     TransformData(context, _destKey, sourceItem, destItem, _index + 1);
     emit context.get()->DataCompleted(_destKey);
+    emit ActionFinished();
 
 }
 

@@ -24,14 +24,10 @@ QString TestActionA::GetName()
 
 /*void TestActionA::StartAction(Context &context)
 {
-    Q_UNUSED(context);
-    QTimer::singleShot(_time, this, [this](){ emit ActionFinished(); });
 }*/
 
 /*void TestActionA::Run(Context &context)
 {
-    Q_UNUSED(context);
-    QThread::msleep(_time);
 }*/
 
 void TestActionA::ProcessStartImpl()
