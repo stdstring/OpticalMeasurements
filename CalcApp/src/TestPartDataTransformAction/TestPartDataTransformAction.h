@@ -25,6 +25,7 @@ protected:
 private:
     void ProcessData();
     void FinishProcessData();
+    void ProcessData(ContextPtr context);
 
 private:
     QString _name;

@@ -16,7 +16,7 @@ namespace
 typedef QListContextItem<int> IntContextItem;
 typedef std::shared_ptr<IntContextItem> IntContextItemPtr;
 
-void TransformData(ContextPtr context, QString const &destKey, IntContextItem *sourceItem, IntContextItem *destItem, int start)
+void TransformData(IntContextItem *sourceItem, IntContextItem *destItem, int start)
 {
     bool transformed = false;
     for (int index = start; index < sourceItem->Data.length(); ++index)
@@ -28,7 +28,7 @@ void TransformData(ContextPtr context, QString const &destKey, IntContextItem *s
         destItem->Data.append(sourceValue + 92000);
     }
     if (transformed)
-        emit context.get()->DataChanged(destKey);
+        emit destItem->NotifyDataChange();
 }
 
 }
@@ -76,22 +76,23 @@ void TestPartDataTransformAction::ProcessStopImpl()
 
 void TestPartDataTransformAction::ProcessData()
 {
-    ContextPtr context = GetContext();
-    IntContextItem *sourceItem = context.get()->GetValue<IntContextItem>(_sourceKey);
-    IntContextItem *destItem = context.get()->GetValue<IntContextItem>(_destKey);
-    TransformData(context, _destKey, sourceItem, destItem, _index + 1);
-    _index = sourceItem->Data.length() - 1;
+    ProcessData(GetContext());
 }
 
 void TestPartDataTransformAction::FinishProcessData()
 {
     ContextPtr context = GetContext();
-    IntContextItem *sourceItem = context.get()->GetValue<IntContextItem>(_sourceKey);
-    IntContextItem *destItem = context.get()->GetValue<IntContextItem>(_destKey);
-    TransformData(context, _destKey, sourceItem, destItem, _index + 1);
+    ProcessData(context);
     emit context.get()->DataCompleted(_destKey);
     emit ActionFinished();
+}
 
+void TestPartDataTransformAction::ProcessData(ContextPtr context)
+{
+    IntContextItem *sourceItem = context.get()->GetValue<IntContextItem>(_sourceKey);
+    IntContextItem *destItem = context.get()->GetValue<IntContextItem>(_destKey);
+    TransformData(sourceItem, destItem, _index + 1);
+    _index = sourceItem->Data.length() - 1;
 }
 
 }

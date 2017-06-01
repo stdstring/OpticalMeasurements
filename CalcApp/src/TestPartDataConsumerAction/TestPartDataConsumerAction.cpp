@@ -28,7 +28,7 @@ void SaveData(QString const &filename, IntContextItem *item, int start, bool las
     for (int index = start; index < item->Data.length(); ++index)
     {
         int value  = item->Data[index];
-        stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : value =" << value << endl;
+        stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : value = " << value << endl;
     }
     if (lastSave)
         stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : finish" << endl;
@@ -78,18 +78,21 @@ void TestPartDataConsumerAction::ProcessStopImpl()
 
 void TestPartDataConsumerAction::ProcessData()
 {
-    ContextPtr context = GetContext();
-    IntContextItem *item = context.get()->GetValue<IntContextItem>(_key);
-    SaveData(_filename, item, _index + 1, false);
-    _index = item->Data.length() - 1;
+    ProcessData(false);
 }
 
 void TestPartDataConsumerAction::FinishProcessData()
 {
+    ProcessData(true);
+    emit ActionFinished();
+}
+
+void TestPartDataConsumerAction::ProcessData(bool last)
+{
     ContextPtr context = GetContext();
     IntContextItem *item = context.get()->GetValue<IntContextItem>(_key);
-    SaveData(_filename, item, _index + 1, true);
-    emit ActionFinished();
+    SaveData(_filename, item, _index + 1, last);
+    _index = item->Data.length() - 1;
 }
 
 }

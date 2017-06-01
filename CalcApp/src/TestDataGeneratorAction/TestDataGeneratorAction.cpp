@@ -60,7 +60,7 @@ void TestDataGeneratorAction::GenerateNextItem()
     ContextPtr context = GetContext();
     IntContextItem *item = context.get()->GetValue<IntContextItem>(_key);
     item->Data.append(_data.dequeue());
-    emit item->DataChanged();
+    emit item->NotifyDataChange();
     if (_data.empty())
     {
         emit context.get()->DataCompleted(_key);

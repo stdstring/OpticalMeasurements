@@ -25,6 +25,7 @@ protected:
 private:
     void ProcessData();
     void FinishProcessData();
+    void ProcessData(bool last);
 
 private:
     QString _name;

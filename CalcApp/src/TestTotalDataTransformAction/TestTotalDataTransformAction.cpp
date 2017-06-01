@@ -65,7 +65,7 @@ void TestTotalDataTransformAction::ProcessTotalData()
         destItem->Data.append(sourceValue + 11000);
         destItem->Data.append(sourceValue + 12000);
     }
-    emit context.get()->DataChanged(_destKey);
+    emit destItem->NotifyDataChange();
     emit context.get()->DataCompleted(_destKey);
     emit ActionFinished();
 }

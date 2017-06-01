@@ -30,7 +30,7 @@ MainConfig DefaultConfigReader::Read(int argc, char *argv[])
     Q_UNUSED(argc);
     Q_UNUSED(argv);
     TransportConfig transportConfig(MaxDelayedCount, ServerAddress, TcpPortNumber, UdpPortNumber);
-    ActionChainDef shortChain("Short command chain", {ActionDef("TestActionA", "ActionA", "3000"),
+    /*ActionChainDef shortChain("Short command chain", {ActionDef("TestActionA", "ActionA", "3000"),
                                                       ActionDef("TestActionB", "ActionB", "5000")});
     ActionChainDef longChain("Long command chain", {ActionDef("TestActionA", "First ActionA", "2000"),
                                                      ActionDef("TestActionB", "First ActionB", "3000"),
@@ -43,7 +43,35 @@ MainConfig DefaultConfigReader::Read(int argc, char *argv[])
                                                 ActionDef("TestActionB", "ActionB", "5000")});
     ActionChainDef stage1DemoChain("Chain1 demo", {ActionDef("TestInteractionAction", "Server interaction action", "data"),
                                                    ActionDef("TestSaveDataAction", "Save data action", "data dest.data")});
-    ActionsConfig actionsConfig({shortChain, longChain, failedChain, stage1DemoChain});
+    ActionsConfig actionsConfig({shortChain, longChain, failedChain, stage1DemoChain});*/
+    ActionChainDef generatorTotalConsumerChain("Generator - Total consumer chain",
+                                               {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                                ActionDef("TestTotalDataConsumerAction", "Consumer", "Generator GeneratorTotalCosumer.dat")});
+    ActionChainDef generatorPartConsumerChain("Generator - Part consumer chain",
+                                              {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                               ActionDef("TestPartDataConsumerAction", "Consumer", "Generator GeneratorPartCosumer.dat")});
+    ActionChainDef generatorTotalTransformTotalConsumerChain("Generator - TotalTransform - Total consumer chain",
+                                                             {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                                              ActionDef("TestTotalDataTransformAction", "Transform", "Generator Transform"),
+                                                              ActionDef("TestTotalDataConsumerAction", "Consumer", "Transform GeneratorTotalTransformTotalConsumer.dat")});
+    ActionChainDef generatorTotalTransformPartConsumerChain("Generator - TotalTransform - Part consumer chain",
+                                                            {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                                             ActionDef("TestTotalDataTransformAction", "Transform", "Generator Transform"),
+                                                             ActionDef("TestPartDataConsumerAction", "Consumer", "Transform GeneratorTotalTransformPartConsumer.dat")});
+    ActionChainDef generatorPartTransformTotalConsumerChain("Generator - PartTransform - Total consumer chain",
+                                                            {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                                             ActionDef("TestPartDataTransformAction", "Transform", "Generator Transform"),
+                                                             ActionDef("TestTotalDataConsumerAction", "Consumer", "Transform GeneratorPartTransformTotalConsumer.dat")});
+    ActionChainDef generatorPartTransformPartConsumerChain("Generator - PartTransform - Part consumer chain",
+                                                           {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                                            ActionDef("TestPartDataTransformAction", "Transform", "Generator Transform"),
+                                                            ActionDef("TestPartDataConsumerAction", "Consumer", "Transform GeneratorPartTransformPartConsumer.dat")});
+    ActionsConfig actionsConfig({generatorTotalConsumerChain,
+                                 generatorPartConsumerChain,
+                                 generatorTotalTransformTotalConsumerChain,
+                                 generatorTotalTransformPartConsumerChain,
+                                 generatorPartTransformTotalConsumerChain,
+                                 generatorPartTransformPartConsumerChain});
     QString pluginsCommonDir = ".";
     return MainConfig(pluginsCommonDir, actionsConfig, transportConfig);
 }
