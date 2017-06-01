@@ -23,9 +23,9 @@ void TransformData(IntContextItem *sourceItem, IntContextItem *destItem, int sta
     {
         transformed = true;
         int sourceValue = sourceItem->Data[index];
-        destItem->Data.append(sourceValue + 90000);
-        destItem->Data.append(sourceValue + 91000);
-        destItem->Data.append(sourceValue + 92000);
+        destItem->Data.append(sourceValue + 75000);
+        destItem->Data.append(sourceValue + 76000);
+        destItem->Data.append(sourceValue + 77000);
     }
     if (transformed)
         emit destItem->NotifyDataChange();

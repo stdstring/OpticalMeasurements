@@ -50,28 +50,74 @@ MainConfig DefaultConfigReader::Read(int argc, char *argv[])
     ActionChainDef generatorPartConsumerChain("Generator - Part consumer chain",
                                               {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
                                                ActionDef("TestPartDataConsumerAction", "Consumer", "Generator GeneratorPartCosumer.dat")});
-    ActionChainDef generatorTotalTransformTotalConsumerChain("Generator - TotalTransform - Total consumer chain",
+    ActionChainDef generatorTotalTransformTotalConsumerChain("Generator - Total transform - Total consumer chain",
                                                              {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
                                                               ActionDef("TestTotalDataTransformAction", "Transform", "Generator Transform"),
                                                               ActionDef("TestTotalDataConsumerAction", "Consumer", "Transform GeneratorTotalTransformTotalConsumer.dat")});
-    ActionChainDef generatorTotalTransformPartConsumerChain("Generator - TotalTransform - Part consumer chain",
+    ActionChainDef generatorTotalTransformPartConsumerChain("Generator - Total transform - Part consumer chain",
                                                             {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
                                                              ActionDef("TestTotalDataTransformAction", "Transform", "Generator Transform"),
                                                              ActionDef("TestPartDataConsumerAction", "Consumer", "Transform GeneratorTotalTransformPartConsumer.dat")});
-    ActionChainDef generatorPartTransformTotalConsumerChain("Generator - PartTransform - Total consumer chain",
+    ActionChainDef generatorPartTransformTotalConsumerChain("Generator - Part transform - Total consumer chain",
                                                             {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
                                                              ActionDef("TestPartDataTransformAction", "Transform", "Generator Transform"),
                                                              ActionDef("TestTotalDataConsumerAction", "Consumer", "Transform GeneratorPartTransformTotalConsumer.dat")});
-    ActionChainDef generatorPartTransformPartConsumerChain("Generator - PartTransform - Part consumer chain",
+    ActionChainDef generatorPartTransformPartConsumerChain("Generator - Part transform - Part consumer chain",
                                                            {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
                                                             ActionDef("TestPartDataTransformAction", "Transform", "Generator Transform"),
                                                             ActionDef("TestPartDataConsumerAction", "Consumer", "Transform GeneratorPartTransformPartConsumer.dat")});
+    ActionChainDef generatorTwoConsumersChain("Generator - Two consumers chain",
+                                              {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                               ActionDef("TestTotalDataConsumerAction", "Total consumer", "Generator GeneratorTotalCosumer.dat"),
+                                               ActionDef("TestPartDataConsumerAction", "Part consumer", "Generator GeneratorPartCosumer.dat")});
+    ActionChainDef generatorTwoTransformsTotalConsumerChain("Generator - Two transforms - Total consumer chain",
+                                                            {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                                             ActionDef("TestTotalDataTransformAction", "Total transform", "Generator FirstTransform"),
+                                                             ActionDef("TestPartDataTransformAction", "Part transform", "FirstTransform SecondTransform"),
+                                                             ActionDef("TestTotalDataConsumerAction", "Consumer", "SecondTransform GeneratorTwoTransformsTotalConsumer.dat")});
+    ActionChainDef generatorTwoTransformsPartConsumerChain("Generator - Two transforms - Part consumer chain",
+                                                           {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                                            ActionDef("TestTotalDataTransformAction", "Total transform", "Generator FirstTransform"),
+                                                            ActionDef("TestPartDataTransformAction", "Part transform", "FirstTransform SecondTransform"),
+                                                            ActionDef("TestPartDataConsumerAction", "Consumer", "SecondTransform GeneratorTwoTransformsPartConsumer.dat")});
+    ActionChainDef generatorTwoTransformConsumerBranchesChain("Generator - Two transform consumer branches chain",
+                                                              {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                                               ActionDef("TestTotalDataTransformAction", "Total transform", "Generator FirstTransform"),
+                                                               ActionDef("TestPartDataTransformAction", "Part transform", "Generator SecondTransform"),
+                                                               ActionDef("TestTotalDataConsumerAction", "Total consumer", "FirstTransform GeneratorTotalBranchChain.dat"),
+                                                               ActionDef("TestPartDataConsumerAction", "Part consumer", "SecondTransform GeneratorPartBranchChain.dat")});
+    ActionChainDef complexChain("Complex chain",
+                                {ActionDef("TestDataGeneratorAction", "Generator1", "Generator1 1000 10"),
+                                 ActionDef("TestDataGeneratorAction", "Generator2", "Generator2 2000 15"),
+                                 ActionDef("TestTotalDataConsumerAction", "Consumer1", "Generator1 Complex_Consumer1.dat"),
+                                 ActionDef("TestPartDataConsumerAction", "Consumer2", "Generator1 Complex_Consumer2.dat"),
+                                 ActionDef("TestTotalDataTransformAction", "Transform1", "Generator1 Transform1"),
+                                 ActionDef("TestPartDataTransformAction", "Transform2", "Generator1 Transform2"),
+                                 ActionDef("TestTotalDataTransformAction", "Transform3", "Transform1 Transform3"),
+                                 ActionDef("TestPartDataTransformAction", "Transform4", "Transform1 Transform4"),
+                                 ActionDef("TestTotalDataTransformAction", "Transform5", "Transform2 Transform5"),
+                                 ActionDef("TestPartDataTransformAction", "Transform6", "Transform2 Transform6"),
+                                 ActionDef("TestTotalDataConsumerAction", "Consumer3", "Transform1 Complex_Consumer3.dat"),
+                                 ActionDef("TestPartDataConsumerAction", "Consumer4", "Transform1 Complex_Consumer4.dat"),
+                                 ActionDef("TestTotalDataConsumerAction", "Consumer5", "Transform2 Complex_Consumer5.dat"),
+                                 ActionDef("TestPartDataConsumerAction", "Consumer6", "Transform2 Complex_Consumer6.dat"),
+                                 ActionDef("TestTotalDataConsumerAction", "Consumer7", "Transform3 Complex_Consumer7.dat"),
+                                 ActionDef("TestPartDataConsumerAction", "Consumer8", "Transform3 Complex_Consumer8.dat"),
+                                 ActionDef("TestTotalDataConsumerAction", "Consumer9", "Transform4 Complex_Consumer9.dat"),
+                                 ActionDef("TestPartDataConsumerAction", "Consumer10", "Transform4 Complex_Consumer10.dat"),
+                                 ActionDef("TestTotalDataConsumerAction", "Consumer11", "Generator2 Complex_Consumer11.dat"),
+                                 ActionDef("TestPartDataConsumerAction", "Consumer12", "Generator2 Complex_Consumer12.dat")});
     ActionsConfig actionsConfig({generatorTotalConsumerChain,
                                  generatorPartConsumerChain,
                                  generatorTotalTransformTotalConsumerChain,
                                  generatorTotalTransformPartConsumerChain,
                                  generatorPartTransformTotalConsumerChain,
-                                 generatorPartTransformPartConsumerChain});
+                                 generatorPartTransformPartConsumerChain,
+                                 generatorTwoConsumersChain,
+                                 generatorTwoTransformsTotalConsumerChain,
+                                 generatorTwoTransformsPartConsumerChain,
+                                 generatorTwoTransformConsumerBranchesChain,
+                                 complexChain});
     QString pluginsCommonDir = ".";
     return MainConfig(pluginsCommonDir, actionsConfig, transportConfig);
 }
