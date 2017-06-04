@@ -14,7 +14,8 @@ SUBDIRS += src/Common \
            src/TestPartDataConsumerAction \
            src/TestTotalDataTransformAction \
            src/TestPartDataTransformAction \
-           src/TestTotalDataFailedAction
+           src/TestTotalDataFailedAction \
+           src/TestPartDataFailedAction
 
 # tests
 #SUBDIRS += tests/TransportTests

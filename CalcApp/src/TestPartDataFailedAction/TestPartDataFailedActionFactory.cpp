@@ -10,25 +10,25 @@
 #include "Common/IAction.h"
 #include "Common/IActionFactory.h"
 #include "Common/ServiceLocator.h"
-#include "TestTotalDataFailedAction.h"
-#include "TestTotalDataFailedActionFactory.h"
+#include "TestPartDataFailedAction.h"
+#include "TestPartDataFailedActionFactory.h"
 
 namespace CalcApp
 {
 
-TestTotalDataFailedActionFactory::TestTotalDataFailedActionFactory(QObject *parent) : IActionFactory(parent)
+TestPartDataFailedActionFactory::TestPartDataFailedActionFactory(QObject *parent) : IActionFactory(parent)
 {
 }
 
-QString TestTotalDataFailedActionFactory::GetId()
+QString TestPartDataFailedActionFactory::GetId()
 {
-    return "TestTotalDataFailedAction";
+    return "TestPartDataFailedAction";
 }
 
-ActionPtr TestTotalDataFailedActionFactory::Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestPartDataFailedActionFactory::Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
     Q_UNUSED(serviceLocator);
-    const int argsCount = 3;
+    const int argsCount = 2;
     QStringList argsList = args.split(QRegExp("\\s+"));
     if (argsList.size() != argsCount)
         throw std::invalid_argument("args");
@@ -38,7 +38,7 @@ ActionPtr TestTotalDataFailedActionFactory::Create(QString const &name, QString 
     int failedIteration = argsList[2].toInt(&ok);
     if (!ok)
         throw std::invalid_argument("failed iteration");
-    return ActionPtr(new TestTotalDataFailedAction(name, sourceKey, destKey, failedIteration, context));
+    return ActionPtr(new TestPartDataFailedAction(name, sourceKey, destKey, failedIteration, context));
 }
 
 }
