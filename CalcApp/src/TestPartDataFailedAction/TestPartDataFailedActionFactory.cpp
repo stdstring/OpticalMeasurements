@@ -28,7 +28,7 @@ QString TestPartDataFailedActionFactory::GetId()
 ActionPtr TestPartDataFailedActionFactory::Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
     Q_UNUSED(serviceLocator);
-    const int argsCount = 2;
+    const int argsCount = 3;
     QStringList argsList = args.split(QRegExp("\\s+"));
     if (argsList.size() != argsCount)
         throw std::invalid_argument("args");

@@ -107,6 +107,23 @@ MainConfig DefaultConfigReader::Read(int argc, char *argv[])
                                  ActionDef("TestPartDataConsumerAction", "Consumer10", "Transform4 Complex_Consumer10.dat"),
                                  ActionDef("TestTotalDataConsumerAction", "Consumer11", "Generator2 Complex_Consumer11.dat"),
                                  ActionDef("TestPartDataConsumerAction", "Consumer12", "Generator2 Complex_Consumer12.dat")});
+    ActionChainDef generatorTotalFailedChain("Generator - Total failed - Total consumer chain",
+                                             {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                              ActionDef("TestTotalDataFailedAction", "FailedAction", "Generator Dest 3"),
+                                              ActionDef("TestTotalDataConsumerAction", "Consumer", "Dest GeneratorTotalFailed.dat")});
+    ActionChainDef generatorPartFailedChain("Generator - Part failed - Part consumer chain",
+                                            {ActionDef("TestDataGeneratorAction", "Generator", "Generator 1000 10"),
+                                             ActionDef("TestPartDataFailedAction", "FailedAction", "Generator Dest 3"),
+                                             ActionDef("TestPartDataConsumerAction", "Consumer", "Dest GeneratorPartFailed.dat")});
+    ActionChainDef complexFailedChain("Complex failed chain",
+                                      {ActionDef("TestDataGeneratorAction", "Generator1", "Generator1 1000 10"),
+                                       ActionDef("TestDataGeneratorAction", "Generator2", "Generator2 1000 10"),
+                                       ActionDef("TestDataGeneratorAction", "Generator3", "Generator3 2000 20"),
+                                       ActionDef("TestTotalDataFailedAction", "FailedAction1", "Generator1 Dest1 3"),
+                                       ActionDef("TestTotalDataConsumerAction", "Consumer1", "Dest1 Complex_GeneratorTotalFailed.dat"),
+                                       ActionDef("TestPartDataFailedAction", "FailedAction2", "Generator2 Dest2 3"),
+                                       ActionDef("TestPartDataConsumerAction", "Consumer2", "Dest2 Complex_GeneratorPartFailed.dat"),
+                                       ActionDef("TestPartDataConsumerAction", "Consumer3", "Generator3 Complex_GeneratorPartCosumer.dat")});
     ActionsConfig actionsConfig({generatorTotalConsumerChain,
                                  generatorPartConsumerChain,
                                  generatorTotalTransformTotalConsumerChain,
@@ -117,7 +134,10 @@ MainConfig DefaultConfigReader::Read(int argc, char *argv[])
                                  generatorTwoTransformsTotalConsumerChain,
                                  generatorTwoTransformsPartConsumerChain,
                                  generatorTwoTransformConsumerBranchesChain,
-                                 complexChain});
+                                 complexChain,
+                                 generatorTotalFailedChain,
+                                 generatorPartFailedChain,
+                                 complexFailedChain});
     QString pluginsCommonDir = ".";
     return MainConfig(pluginsCommonDir, actionsConfig, transportConfig);
 }
