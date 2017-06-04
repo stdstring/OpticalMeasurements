@@ -22,7 +22,7 @@ public:
 
     // TODO (std_string) : think about using project name
     // TODO (std_string) : think about moving this into global defs
-    virtual QString GetId() override { return "Transport"; }
+    virtual QString GetType() override { return "Transport"; }
     virtual ITransport* Create(TransportConfig const &transportConfig, QObject *parent) override;
 };
 

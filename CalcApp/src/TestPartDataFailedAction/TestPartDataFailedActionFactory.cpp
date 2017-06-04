@@ -20,7 +20,7 @@ TestPartDataFailedActionFactory::TestPartDataFailedActionFactory(QObject *parent
 {
 }
 
-QString TestPartDataFailedActionFactory::GetId()
+QString TestPartDataFailedActionFactory::GetType()
 {
     return "TestPartDataFailedAction";
 }

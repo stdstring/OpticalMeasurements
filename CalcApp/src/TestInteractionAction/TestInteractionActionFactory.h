@@ -18,7 +18,7 @@ class TestInteractionActionFactory : public IActionFactory
 public:
     explicit TestInteractionActionFactory(QObject *parent = nullptr);
 
-    virtual QString GetId() override;
+    virtual QString GetType() override;
     virtual ActionPtr Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) override;
 };
 

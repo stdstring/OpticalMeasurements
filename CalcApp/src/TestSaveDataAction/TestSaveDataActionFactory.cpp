@@ -22,7 +22,7 @@ TestSaveDataActionFactory::TestSaveDataActionFactory(QObject *parent) : IActionF
 {
 }
 
-QString TestSaveDataActionFactory::GetId()
+QString TestSaveDataActionFactory::GetType()
 {
     return "TestSaveDataAction";
 }

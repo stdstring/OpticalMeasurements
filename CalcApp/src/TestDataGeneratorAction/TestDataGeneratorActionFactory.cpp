@@ -20,7 +20,7 @@ TestDataGeneratorActionFactory::TestDataGeneratorActionFactory(QObject *parent) 
 {
 }
 
-QString TestDataGeneratorActionFactory::GetId()
+QString TestDataGeneratorActionFactory::GetType()
 {
     return "TestDataGeneratorAction";
 }

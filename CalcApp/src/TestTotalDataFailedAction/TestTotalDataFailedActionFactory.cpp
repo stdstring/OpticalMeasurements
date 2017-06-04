@@ -20,7 +20,7 @@ TestTotalDataFailedActionFactory::TestTotalDataFailedActionFactory(QObject *pare
 {
 }
 
-QString TestTotalDataFailedActionFactory::GetId()
+QString TestTotalDataFailedActionFactory::GetType()
 {
     return "TestTotalDataFailedAction";
 }

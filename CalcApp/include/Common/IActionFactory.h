@@ -17,7 +17,7 @@ public:
     explicit IActionFactory(QObject *parent = nullptr) : IComponentInfo(parent) {}
 
     virtual ActionPtr Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) = 0;
-    virtual ComponentType GetComponentType() override { return ComponentType::ACTION; }
+    virtual ComponentCategory GetComponentCategory() override { return ComponentCategory::ACTION; }
 };
 
 }

@@ -17,7 +17,7 @@ public:
     ComponentStorage();
     void AddComponent(IComponentInfo *component);
     void AddComponents(QList<IComponentInfo*> components);
-    IActionFactory* FindAction(QString const &id) const;
+    IActionFactory* FindAction(QString const &type) const;
     ITransportFactory* GetTransport() const;
 
     ComponentStorage(ComponentStorage const&) = delete;

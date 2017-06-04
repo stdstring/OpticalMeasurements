@@ -20,7 +20,7 @@ TestTotalDataTransformActionFactory::TestTotalDataTransformActionFactory(QObject
 {
 }
 
-QString TestTotalDataTransformActionFactory::GetId()
+QString TestTotalDataTransformActionFactory::GetType()
 {
     return "TestTotalDataTransformAction";
 }

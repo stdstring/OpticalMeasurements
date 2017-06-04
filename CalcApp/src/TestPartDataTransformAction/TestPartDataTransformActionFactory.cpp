@@ -20,7 +20,7 @@ TestPartDataTransformActionFactory::TestPartDataTransformActionFactory(QObject *
 {
 }
 
-QString TestPartDataTransformActionFactory::GetId()
+QString TestPartDataTransformActionFactory::GetType()
 {
     return "TestPartDataTransformAction";
 }

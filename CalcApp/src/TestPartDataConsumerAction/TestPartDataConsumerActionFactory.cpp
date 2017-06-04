@@ -18,7 +18,7 @@ TestPartDataConsumerActionFactory::TestPartDataConsumerActionFactory(QObject *pa
 {
 }
 
-QString TestPartDataConsumerActionFactory::GetId()
+QString TestPartDataConsumerActionFactory::GetType()
 {
     return "TestPartDataConsumerAction";
 }

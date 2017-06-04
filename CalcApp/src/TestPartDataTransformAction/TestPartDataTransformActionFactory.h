@@ -17,7 +17,7 @@ class TestPartDataTransformActionFactory : public IActionFactory
 public:
     explicit TestPartDataTransformActionFactory(QObject *parent = nullptr);
 
-    virtual QString GetId() override;
+    virtual QString GetType() override;
     virtual ActionPtr Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) override;
 };
 

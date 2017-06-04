@@ -16,7 +16,7 @@ TestFailedActionFactory::TestFailedActionFactory(QObject *parent) : IActionFacto
 {
 }
 
-QString TestFailedActionFactory::GetId()
+QString TestFailedActionFactory::GetType()
 {
     return "TestFailedAction";
 }

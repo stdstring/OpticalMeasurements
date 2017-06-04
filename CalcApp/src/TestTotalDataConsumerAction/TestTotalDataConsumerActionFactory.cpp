@@ -18,7 +18,7 @@ TestTotalDataConsumerActionFactory::TestTotalDataConsumerActionFactory(QObject *
 {
 }
 
-QString TestTotalDataConsumerActionFactory::GetId()
+QString TestTotalDataConsumerActionFactory::GetType()
 {
     return "TestTotalDataConsumerAction";
 }

@@ -19,14 +19,14 @@ ComponentStorage::ComponentStorage() :
 void ComponentStorage::AddComponent(IComponentInfo *component)
 {
     // TODO (std_string) : use more functional style
-    switch (component->GetComponentType())
+    switch (component->GetComponentCategory())
     {
-        case ComponentType::ACTION:
+        case ComponentCategory::ACTION:
         {
             AddAction(qobject_cast<IActionFactory*>(component));
             break;
         }
-        case ComponentType::TRANSPORT:
+        case ComponentCategory::TRANSPORT:
         {
             SetTransport(qobject_cast<ITransportFactory*>(component));
             break;
@@ -45,11 +45,11 @@ void ComponentStorage::AddComponents(QList<IComponentInfo*> components)
     }
 }
 
-IActionFactory* ComponentStorage::FindAction(QString const &id) const
+IActionFactory* ComponentStorage::FindAction(QString const &type) const
 {
     QList<IActionFactory*>::const_iterator iterator = std::find_if(_actions.cbegin(),
                                                                    _actions.cend(),
-                                                                   [&id](IActionFactory* factory){ return factory->GetId() == id; });
+                                                                   [&type](IActionFactory* factory){ return factory->GetType() == type; });
     return iterator == _actions.cend() ? nullptr : *iterator;
 }
 
@@ -61,7 +61,7 @@ ITransportFactory* ComponentStorage::GetTransport() const
 void ComponentStorage::AddAction(IActionFactory *action)
 {
     // TODO (std_string) : think about processing of situation with several actions modules with the same id
-    if (FindAction(action->GetId()) == nullptr)
+    if (FindAction(action->GetType()) == nullptr)
         _actions.append(action);
     else
         delete action;

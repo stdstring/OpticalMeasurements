@@ -17,7 +17,7 @@ class TestDataGeneratorActionFactory : public IActionFactory
 public:
     explicit TestDataGeneratorActionFactory(QObject *parent = nullptr);
 
-    virtual QString GetId() override;
+    virtual QString GetType() override;
     virtual ActionPtr Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) override;
 };
 

@@ -17,7 +17,7 @@ TestInteractionActionFactory::TestInteractionActionFactory(QObject *parent) : IA
 {
 }
 
-QString TestInteractionActionFactory::GetId()
+QString TestInteractionActionFactory::GetType()
 {
     return "TestInteractionAction";
 }

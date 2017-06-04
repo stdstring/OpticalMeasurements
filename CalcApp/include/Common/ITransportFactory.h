@@ -16,7 +16,7 @@ public:
     explicit ITransportFactory(QObject *parent = nullptr) : IComponentInfo(parent) {}
 
     virtual ITransport* Create(TransportConfig const &transportConfig, QObject *parent) = 0;
-    virtual ComponentType GetComponentType() override { return ComponentType::TRANSPORT; }
+    virtual ComponentCategory GetComponentCategory() override { return ComponentCategory::TRANSPORT; }
 };
 
 }

@@ -17,7 +17,7 @@ class TestTotalDataConsumerActionFactory : public IActionFactory
 public:
     explicit TestTotalDataConsumerActionFactory(QObject *parent = nullptr);
 
-    virtual QString GetId() override;
+    virtual QString GetType() override;
     virtual ActionPtr Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) override;
 };
 

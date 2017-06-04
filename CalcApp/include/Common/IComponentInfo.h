@@ -7,7 +7,7 @@
 namespace CalcApp
 {
 
-enum ComponentType { ACTION, TRANSPORT };
+enum ComponentCategory { ACTION, TRANSPORT };
 
 class IComponentInfo : public QObject
 {
@@ -15,8 +15,8 @@ class IComponentInfo : public QObject
 public:
     explicit IComponentInfo(QObject *parent = nullptr) : QObject(parent) {}
 
-    virtual QString GetId() = 0;
-    virtual ComponentType GetComponentType() = 0;
+    virtual QString GetType() = 0;
+    virtual ComponentCategory GetComponentCategory() = 0;
 };
 
 }
