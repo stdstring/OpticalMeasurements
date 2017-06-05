@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QMultiMap>
 #include <QObject>
 #include <QString>
 #include <QtPlugin>
@@ -18,7 +19,7 @@ public:
     explicit TestTotalDataTransformActionFactory(QObject *parent = nullptr);
 
     virtual QString GetType() override;
-    virtual ActionPtr Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) override;
+    virtual ActionPtr Create(QString const &name, QMultiMap<QString, QString> const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) override;
 };
 
 }

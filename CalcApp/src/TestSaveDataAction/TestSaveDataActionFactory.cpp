@@ -1,3 +1,4 @@
+#include <QMultiMap>
 #include <QObject>
 //#include <QRegExp>
 #include <QString>
@@ -27,7 +28,7 @@ QString TestSaveDataActionFactory::GetType()
     return "TestSaveDataAction";
 }
 
-ActionPtr TestSaveDataActionFactory::Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestSaveDataActionFactory::Create(QString const &name, const QMultiMap<QString, QString> &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
     Q_UNUSED(name);
     Q_UNUSED(args);

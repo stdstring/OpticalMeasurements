@@ -1,7 +1,7 @@
+#include <QList>
+#include <QMultiMap>
 #include <QObject>
-#include <QRegExp>
 #include <QString>
-#include <QStringList>
 
 #include <stdexcept>
 
@@ -25,21 +25,29 @@ QString TestDataGeneratorActionFactory::GetType()
     return "TestDataGeneratorAction";
 }
 
-ActionPtr TestDataGeneratorActionFactory::Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestDataGeneratorActionFactory::Create(QString const &name, const QMultiMap<QString, QString> &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
+    const QString keyName = "key";
+    const QString sleepTimeName = "sleep_time";
+    const QString dataCountName = "data_count";
     Q_UNUSED(serviceLocator);
-    const int argsCount = 3;
-    QStringList argsList = args.split(QRegExp("\\s+"));
-    if (argsList.size() != argsCount)
-        throw std::invalid_argument("args");
-    QString key = argsList[0];
     bool ok;
-    int sleepTime = argsList[1].toInt(&ok);
+    QList<QString> keyData = args.values(keyName);
+    if (keyData.size() != 1)
+        throw std::invalid_argument(keyName.toStdString());
+    QString key = keyData[0];
+    QList<QString> sleepTimeData = args.values(sleepTimeName);
+    if (sleepTimeData.size() != 1)
+        throw std::invalid_argument(sleepTimeName.toStdString());
+    int sleepTime = sleepTimeData[0].toInt(&ok);
     if (!ok)
-        throw std::invalid_argument("sleep time");
-    int dataCount = argsList[2].toInt(&ok);
+        throw std::invalid_argument(sleepTimeName.toStdString());
+    QList<QString> dataCountData = args.values(dataCountName);
+    if (dataCountData.size() != 1)
+        throw std::invalid_argument(dataCountName.toStdString());
+    int dataCount = dataCountData[0].toInt(&ok);
     if (!ok)
-        throw std::invalid_argument("data count");
+        throw std::invalid_argument(dataCountName.toStdString());
     return ActionPtr(new TestDataGeneratorAction(name, key, sleepTime, dataCount, context));
 }
 

@@ -1,7 +1,9 @@
+#include <QList>
+#include <QMultiMap>
 #include <QObject>
-#include <QRegExp>
 #include <QString>
-#include <QStringList>
+
+#include <stdexcept>
 
 #include "Common/CommonDefs.h"
 #include "Common/Context.h"
@@ -23,16 +25,20 @@ QString TestTotalDataConsumerActionFactory::GetType()
     return "TestTotalDataConsumerAction";
 }
 
-ActionPtr TestTotalDataConsumerActionFactory::Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestTotalDataConsumerActionFactory::Create(QString const &name, const QMultiMap<QString, QString> &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
+    const QString keyName = "key";
+    const QString filenameName = "filename";
     Q_UNUSED(args);
     Q_UNUSED(serviceLocator);
-    const int argsCount = 2;
-    QStringList argsList = args.split(QRegExp("\\s+"));
-    if (argsList.size() != argsCount)
-        throw std::invalid_argument("args");
-    QString key = argsList[0];
-    QString filename = argsList[1];
+    QList<QString> keyData = args.values(keyName);
+    if (keyData.size() != 1)
+        throw std::invalid_argument(keyName.toStdString());
+    QString key = keyData[0];
+    QList<QString> filenameData = args.values(filenameName);
+    if (filenameData.size() != 1)
+        throw std::invalid_argument(filenameName.toStdString());
+    QString filename = filenameData[0];
     return ActionPtr(new TestTotalDataConsumerAction(name, key, filename, context));
 }
 

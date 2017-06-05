@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QMultiMap>
 #include <QObject>
 #include <QString>
 #include <QtPlugin>
@@ -16,7 +17,7 @@ class IActionFactory : public IComponentInfo
 public:
     explicit IActionFactory(QObject *parent = nullptr) : IComponentInfo(parent) {}
 
-    virtual ActionPtr Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) = 0;
+    virtual ActionPtr Create(QString const &name, QMultiMap<QString, QString> const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) = 0;
     virtual ComponentCategory GetComponentCategory() override { return ComponentCategory::ACTION; }
 };
 

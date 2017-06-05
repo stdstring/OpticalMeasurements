@@ -1,3 +1,4 @@
+#include <QMultiMap>
 #include <QObject>
 #include <QString>
 
@@ -22,7 +23,7 @@ QString TestInteractionActionFactory::GetType()
     return "TestInteractionAction";
 }
 
-ActionPtr TestInteractionActionFactory::Create(QString const &name, QString const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestInteractionActionFactory::Create(QString const &name, QMultiMap<QString, QString> const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
     Q_UNUSED(name);
     Q_UNUSED(args);
