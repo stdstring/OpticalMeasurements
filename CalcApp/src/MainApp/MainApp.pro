@@ -1,7 +1,7 @@
 include( ../../common.pri )
 include( ../../app.pri )
 
-QT       += core gui
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,12 +15,16 @@ SOURCES += main.cpp \
            StateManager.cpp \
            ActionManager.cpp \
            DefaultConfigReader.cpp \
-           ActionExecuter.cpp
+           ActionExecuter.cpp \
+           XmlConfigReader.cpp
 
 HEADERS  += MainWindow.h \
             StateManager.h \
             ActionManager.h \
             DefaultConfigReader.h \
-            ActionExecuter.h
+            ActionExecuter.h \
+            XmlConfigReader.h
 
 FORMS    += MainWindow.ui
+
+DISTFILES += MainApp_Test.conf

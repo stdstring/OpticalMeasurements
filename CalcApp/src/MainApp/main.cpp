@@ -12,7 +12,7 @@
 #include "Common/IComponentInfo.h"
 #include "Common/MainConfig.h"
 #include "Common/ServiceLocator.h"
-#include "DefaultConfigReader.h"
+#include "XmlConfigReader.h"
 #include "MainWindow.h"
 
 int main(int argc, char *argv[])
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<CalcApp::ExceptionData>("ExceptionData");
     QApplication app(argc, argv);
     // TODO (std_string) : probably show splash screen here
-    CalcApp::DefaultConfigReader reader;
+    CalcApp::XmlConfigReader reader;
     CalcApp::MainConfig config = reader.Read(argc, argv);
     // TODO (std_string) : configurate logger based on config info
     CalcApp::QMessageLoggerWrapper logger(CalcApp::LogLevel::DEBUG);

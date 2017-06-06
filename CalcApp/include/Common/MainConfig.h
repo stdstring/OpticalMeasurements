@@ -8,6 +8,16 @@
 namespace CalcApp
 {
 
+class CommonConfig
+{
+public:
+    CommonConfig(QString const &pluginsCommonDir) : PluginsCommonDir(pluginsCommonDir)
+    {
+    }
+
+    QString PluginsCommonDir;
+};
+
 class MainConfig
 {
 public:
