@@ -1,3 +1,4 @@
+#include <QCommandLineParser>
 #include <QObject>
 
 #include "Common/IConfigReader.h"
@@ -10,7 +11,7 @@ class XmlConfigReader : public IConfigReader
 {
 public:
     explicit XmlConfigReader(QObject *parent = nullptr);
-    virtual MainConfig Read(int argc, char *argv[]) override;
+    virtual MainConfig Read(/*int argc, char *argv[]*/QCommandLineParser *parser) override;
 };
 
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QCommandLineParser>
 #include <QObject>
 
 #include "Common/IConfigReader.h"
@@ -13,7 +14,7 @@ class DefaultConfigReader : public IConfigReader
     Q_OBJECT
 public:
     explicit DefaultConfigReader(QObject *parent = nullptr);
-    virtual MainConfig Read(int argc, char *argv[]) override;
+    virtual MainConfig Read(/*int argc, char *argv[]*/QCommandLineParser *parser) override;
 };
 
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QCommandLineParser>
 #include <QObject>
 
 #include "MainConfig.h"
@@ -12,7 +13,7 @@ class IConfigReader : public QObject
     Q_OBJECT
 public:
     explicit IConfigReader(QObject *parent = nullptr) : QObject(parent) {}
-    virtual MainConfig Read(int argc, char *argv[]) = 0;
+    virtual MainConfig Read(/*int argc, char *argv[]*/QCommandLineParser *parser) = 0;
 };
 
 }

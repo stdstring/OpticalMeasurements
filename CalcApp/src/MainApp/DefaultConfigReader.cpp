@@ -1,3 +1,4 @@
+#include <QCommandLineParser>
 #include <QObject>
 #include <QString>
 #include <QtGlobal>
@@ -25,10 +26,9 @@ DefaultConfigReader::DefaultConfigReader(QObject *parent) : IConfigReader(parent
 {
 }
 
-MainConfig DefaultConfigReader::Read(int argc, char *argv[])
+MainConfig DefaultConfigReader::Read(/*int argc, char *argv[]*/QCommandLineParser *parser)
 {
-    Q_UNUSED(argc);
-    Q_UNUSED(argv);
+    Q_UNUSED(parser);
     TransportConfig transportConfig(MaxDelayedCount, ServerAddress, TcpPortNumber, UdpPortNumber);
     ActionChainDef generatorTotalConsumerChain("Generator - Total consumer chain",
                                                {ActionDef("Generator",

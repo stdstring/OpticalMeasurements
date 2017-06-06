@@ -1,3 +1,4 @@
+#include <QCommandLineParser>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
@@ -20,8 +21,6 @@ namespace CalcApp
 
 namespace
 {
-
-const QString defaultConfigFilename = "MainApp.conf";
 
 QMultiMap<QString, QString> ParseActionArgs(QDomNode actionNode)
 {
@@ -111,11 +110,10 @@ XmlConfigReader::XmlConfigReader(QObject *parent) : IConfigReader(parent)
 {
 }
 
-MainConfig XmlConfigReader::Read(int argc, char *argv[])
+MainConfig XmlConfigReader::Read(/*int argc, char *argv[]*/QCommandLineParser *parser)
 {
-    Q_UNUSED(argc);
-    Q_UNUSED(argv);
-    QString configFilename(defaultConfigFilename);
+    // TODO (std_string) : think about location
+    QString configFilename(parser->value("config"));
     QFile config(configFilename);
     if (!config.open(QIODevice::ReadOnly | QIODevice::Text))
         throw std::invalid_argument("missing config");
