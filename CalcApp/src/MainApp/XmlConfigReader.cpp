@@ -14,6 +14,7 @@
 #include "Common/IConfigReader.h"
 #include "Common/MainConfig.h"
 #include "Common/TransportConfig.h"
+#include "CommandLineDefs.h"
 #include "XmlConfigReader.h"
 
 namespace CalcApp
@@ -110,10 +111,9 @@ XmlConfigReader::XmlConfigReader(QObject *parent) : IConfigReader(parent)
 {
 }
 
-MainConfig XmlConfigReader::Read(/*int argc, char *argv[]*/QCommandLineParser *parser)
+MainConfig XmlConfigReader::Read(QCommandLineParser *parser)
 {
-    // TODO (std_string) : think about location
-    QString configFilename(parser->value("config"));
+    QString configFilename(parser->value(CommandLineDefs::ConfigOptionName));
     QFile config(configFilename);
     if (!config.open(QIODevice::ReadOnly | QIODevice::Text))
         throw std::invalid_argument("missing config");

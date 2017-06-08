@@ -26,7 +26,7 @@ DefaultConfigReader::DefaultConfigReader(QObject *parent) : IConfigReader(parent
 {
 }
 
-MainConfig DefaultConfigReader::Read(/*int argc, char *argv[]*/QCommandLineParser *parser)
+MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
 {
     Q_UNUSED(parser);
     TransportConfig transportConfig(MaxDelayedCount, ServerAddress, TcpPortNumber, UdpPortNumber);

@@ -11,7 +11,7 @@ class XmlConfigReader : public IConfigReader
 {
 public:
     explicit XmlConfigReader(QObject *parent = nullptr);
-    virtual MainConfig Read(/*int argc, char *argv[]*/QCommandLineParser *parser) override;
+    virtual MainConfig Read(QCommandLineParser *parser) override;
 };
 
 }

@@ -16,14 +16,16 @@ SOURCES += main.cpp \
            ActionManager.cpp \
            DefaultConfigReader.cpp \
            ActionExecuter.cpp \
-           XmlConfigReader.cpp
+           XmlConfigReader.cpp \
+           CommandLineDefs.cpp
 
 HEADERS  += MainWindow.h \
             StateManager.h \
             ActionManager.h \
             DefaultConfigReader.h \
             ActionExecuter.h \
-            XmlConfigReader.h
+            XmlConfigReader.h \
+            CommandLineDefs.h
 
 FORMS    += MainWindow.ui
 
