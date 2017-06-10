@@ -1,4 +1,7 @@
+#include <QReadLocker>
+#include <QReadWriteLock>
 #include <QString>
+#include <QWriteLocker>
 
 #include <stdexcept>
 
@@ -8,7 +11,7 @@
 namespace CalcApp
 {
 
-IContextItem::IContextItem(QObject *parent) : QObject(parent)
+IContextItem::IContextItem(QObject *parent) : QObject(parent), Lock(QReadWriteLock::NonRecursive)
 {
 }
 
@@ -22,7 +25,7 @@ IContextItem::~IContextItem()
     // do nothing
 }
 
-Context::Context(QObject *parent) : QObject(parent)
+Context::Context(QObject *parent) : QObject(parent), _lock(QReadWriteLock::NonRecursive)
 {
 }
 
@@ -33,6 +36,7 @@ bool Context::HasKey(QString const &key) const
 
 ContextItemPtr Context::Get(QString const &key) const
 {
+    QReadLocker locker(&_lock);
     QHash<QString, ContextItemPtr>::const_iterator iterator = _storage.find(key);
     if (_storage.cend() == iterator)
         throw std::invalid_argument("key");
@@ -41,6 +45,7 @@ ContextItemPtr Context::Get(QString const &key) const
 
 void Context::Set(QString const &key, ContextItemPtr item)
 {
+    QWriteLocker locker(&_lock);
     _storage.insert(key, item);
     QObject::connect(item.get(), &IContextItem::DataChanged, this, [key, this](){ emit this->DataChanged(key); });
 }

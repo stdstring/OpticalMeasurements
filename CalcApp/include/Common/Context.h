@@ -3,6 +3,7 @@
 #include <QHash>
 #include <QList>
 #include <QObject>
+#include <QReadWriteLock>
 #include <QString>
 #include <QStringList>
 
@@ -18,6 +19,9 @@ public:
     explicit IContextItem(QObject *parent = nullptr);
     void NotifyDataChange();
     virtual ~IContextItem();
+
+    // TODO (std_string) : probably we need some encapsulation here
+    QReadWriteLock Lock;
 
 signals:
     void DataChanged();
@@ -54,6 +58,7 @@ public:
 
 private:
     QHash<QString, ContextItemPtr> _storage;
+    mutable QReadWriteLock _lock;
 
 signals:
     void DataChanged(QString const &key);
