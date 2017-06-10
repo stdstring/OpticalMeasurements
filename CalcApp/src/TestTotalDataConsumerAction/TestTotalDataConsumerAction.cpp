@@ -1,8 +1,10 @@
 #include <QDateTime>
 #include <QFile>
 #include <QIODevice>
+#include <QReadLocker>
 #include <QString>
 #include <QTextStream>
+#include <QWriteLocker>
 
 #include "Common/CommonDefs.h"
 #include "Common/Context.h"
@@ -17,6 +19,15 @@ namespace
 
 typedef QListContextItem<int> IntContextItem;
 typedef std::shared_ptr<IntContextItem> IntContextItemPtr;
+
+void SaveData(QTextStream &stream, IntContextItem *item)
+{
+    QReadLocker locker(&item->Lock);
+    for(int value : item->Data)
+    {
+        stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : value = " << value << endl;
+    }
+}
 
 }
 
@@ -63,10 +74,7 @@ void TestTotalDataConsumerAction::ProcessTotalData()
     destFile.open(QIODevice::WriteOnly);
     QTextStream stream(&destFile);
     stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : start" << endl;
-    for(int value : item->Data)
-    {
-        stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : value = " << value << endl;
-    }
+    SaveData(stream, item);
     stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : finish" << endl;
     emit ActionFinished();
 }

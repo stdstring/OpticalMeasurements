@@ -1,4 +1,6 @@
+#include <QReadLocker>
 #include <QString>
+#include <QWriteLocker>
 
 #include <memory>
 
@@ -15,6 +17,18 @@ namespace
 
 typedef QListContextItem<int> IntContextItem;
 typedef std::shared_ptr<IntContextItem> IntContextItemPtr;
+
+void TransformData(IntContextItem *sourceItem, IntContextItem *destItem)
+{
+    QReadLocker _readLocker(&sourceItem->Lock);
+    QWriteLocker _writeLocker(&destItem->Lock);
+    for (int sourceValue : sourceItem->Data)
+    {
+        destItem->Data.append(sourceValue + 10000);
+        destItem->Data.append(sourceValue + 11000);
+        destItem->Data.append(sourceValue + 12000);
+    }
+}
 
 }
 
@@ -59,12 +73,7 @@ void TestTotalDataTransformAction::ProcessTotalData()
     ContextPtr context = GetContext();
     IntContextItem *sourceItem = context.get()->GetValue<IntContextItem>(_sourceKey);
     IntContextItem *destItem = context.get()->GetValue<IntContextItem>(_destKey);
-    for (int sourceValue : sourceItem->Data)
-    {
-        destItem->Data.append(sourceValue + 10000);
-        destItem->Data.append(sourceValue + 11000);
-        destItem->Data.append(sourceValue + 12000);
-    }
+    TransformData(sourceItem, destItem);
     emit destItem->NotifyDataChange();
     emit context.get()->DataCompleted(_destKey);
     emit ActionFinished();

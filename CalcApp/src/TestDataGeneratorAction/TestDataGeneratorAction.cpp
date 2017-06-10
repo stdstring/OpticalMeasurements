@@ -1,5 +1,6 @@
 #include <QString>
 #include <QTimer>
+#include <QWriteLocker>
 
 #include <memory>
 
@@ -16,6 +17,12 @@ namespace
 
 typedef QListContextItem<int> IntContextItem;
 typedef std::shared_ptr<IntContextItem> IntContextItemPtr;
+
+void ProcessValue(IntContextItem *item, int value)
+{
+    QWriteLocker locker(&item->Lock);
+    item->Data.append(value);
+}
 
 }
 
@@ -59,7 +66,7 @@ void TestDataGeneratorAction::GenerateNextItem()
 {
     ContextPtr context = GetContext();
     IntContextItem *item = context.get()->GetValue<IntContextItem>(_key);
-    item->Data.append(_data.dequeue());
+    ProcessValue(item, _data.dequeue());
     emit item->NotifyDataChange();
     if (_data.empty())
     {

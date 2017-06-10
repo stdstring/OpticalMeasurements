@@ -1,4 +1,6 @@
+#include <QReadLocker>
 #include <QString>
+#include <QWriteLocker>
 
 #include <memory>
 
@@ -18,6 +20,8 @@ typedef std::shared_ptr<IntContextItem> IntContextItemPtr;
 
 void TransformData(IntContextItem *sourceItem, IntContextItem *destItem, int start)
 {
+    QReadLocker _readLocker(&sourceItem->Lock);
+    QWriteLocker _writeLocker(&destItem->Lock);
     bool transformed = false;
     for (int index = start; index < sourceItem->Data.length(); ++index)
     {

@@ -1,4 +1,6 @@
+#include <QReadLocker>
 #include <QString>
+#include <QWriteLocker>
 
 #include <exception>
 #include <memory>
@@ -18,6 +20,26 @@ namespace
 
 typedef QListContextItem<int> IntContextItem;
 typedef std::shared_ptr<IntContextItem> IntContextItemPtr;
+
+void Process(IntContextItem *sourceItem, IntContextItem *destItem, int start, int failedIteration, bool &failed)
+{
+    QReadLocker _readLocker(&sourceItem->Lock);
+    QWriteLocker _writeLocker(&destItem->Lock);
+    bool transformed = false;
+    for (int index = start; index < sourceItem->Data.length(); ++index)
+    {
+        transformed = true;
+        int sourceValue = sourceItem->Data[index];
+        destItem->Data.append(sourceValue);
+        if (index == failedIteration)
+        {
+            failed = true;
+            return;
+        }
+    }
+    if (transformed)
+        emit destItem->NotifyDataChange();
+}
 
 }
 
@@ -87,22 +109,13 @@ void TestPartDataFailedAction::ProcessData(ContextPtr context)
 {
     IntContextItem *sourceItem = context.get()->GetValue<IntContextItem>(_sourceKey);
     IntContextItem *destItem = context.get()->GetValue<IntContextItem>(_destKey);
-    bool transformed = false;
-    for (int index = _index + 1; index < sourceItem->Data.length(); ++index)
+    Process(sourceItem, destItem, _index + 1, _failedIteration, _failed);
+    if (_failed)
     {
-        transformed = true;
-        int sourceValue = sourceItem->Data[index];
-        destItem->Data.append(sourceValue);
-        if (index == _failedIteration)
-        {
-            ExceptionData exception(std::make_exception_ptr(std::logic_error("some error")));
-            emit ErrorOccured(exception);
-            _failed = true;
-            return;
-        }
+        ExceptionData exception(std::make_exception_ptr(std::logic_error("some error")));
+        emit ErrorOccured(exception);
+        return;
     }
-    if (transformed)
-        emit destItem->NotifyDataChange();
     _index = sourceItem->Data.length() - 1;
 }
 
