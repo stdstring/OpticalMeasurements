@@ -27,6 +27,7 @@ private:
 
 private slots:
     void ReceiveData(Message const &message);
+    void ProcessDataMessageFail();
 };
 
 }

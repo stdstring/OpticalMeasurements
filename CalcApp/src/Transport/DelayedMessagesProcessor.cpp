@@ -1,3 +1,4 @@
+#include <QObject>
 #include <QList>
 
 #include <algorithm>
@@ -24,7 +25,8 @@ QList<MessageData>::Iterator FindMessage(QList<MessageData> &storage, quint32 pa
 
 }
 
-DelayedMessagesProcessor::DelayedMessagesProcessor(IMessageCheckStrategy *messageCheckStrategy) :
+DelayedMessagesProcessor::DelayedMessagesProcessor(IMessageCheckStrategy *messageCheckStrategy, QObject *parent) :
+    QObject(parent),
     _messageCheckStrategy(messageCheckStrategy)
 {
 }
@@ -33,11 +35,10 @@ void DelayedMessagesProcessor::AddDelayedMessage(MessageInfo const &info, Messag
 {
     if (FindMessage(_delayedMessages, info.GetPackageNumber()) != _delayedMessages.end())
         return;
-    // TODO (std_string) : use more specific exception instead of std::logic_error
-    // TODO (std_string) : think about using of another approach for this
-    if (!_messageCheckStrategy->Check(info, _delayedMessages))
-        throw std::logic_error("Can't add yet one delayed message");
-    _delayedMessages.append(MessageData(info, message));
+    if (_messageCheckStrategy->Check(info, _delayedMessages))
+        _delayedMessages.append(MessageData(info, message));
+    else
+        emit MessageProcessFail();
 }
 
 bool DelayedMessagesProcessor::CanDeliverMessage(MessageInfo const &prevMessage)

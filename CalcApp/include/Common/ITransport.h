@@ -18,6 +18,7 @@ public:
 signals:
     void ResponseReceived(Message const &message);
     void DataReceived(Message const &message);
+    void DataProcessFailed();
     void EventReceived(Message const &message);
 
 };

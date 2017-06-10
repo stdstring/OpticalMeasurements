@@ -14,11 +14,12 @@ namespace CalcApp
 Transport::Transport(ITransport *transportLowLevel, IMessageCheckStrategy *messageCheckStrategy, QObject *parent) :
     ITransport(parent),
     _transportLowLevel(transportLowLevel),
-    _delayedMessagesProcessor(DelayedMessagesProcessor(messageCheckStrategy))
+    _delayedMessagesProcessor(messageCheckStrategy)
 {
     QObject::connect(_transportLowLevel, &ITransport::ResponseReceived, this, &Transport::ResponseReceived);
     QObject::connect(_transportLowLevel, &ITransport::EventReceived, this, &Transport::EventReceived);
     QObject::connect(_transportLowLevel, &ITransport::DataReceived, this, &Transport::ReceiveData);
+    QObject::connect(&_delayedMessagesProcessor, &DelayedMessagesProcessor::MessageProcessFail, this, &Transport::ProcessDataMessageFail);
 }
 
 void Transport::Connect()
@@ -56,6 +57,12 @@ void Transport::ReceiveData(Message const &message)
         default:
             throw std::logic_error("Unknown validation result of message");
     }
+}
+
+void Transport::ProcessDataMessageFail()
+{
+    QObject::disconnect(_transportLowLevel, &ITransport::DataReceived, this, &Transport::ReceiveData);
+    emit DataProcessFailed();
 }
 
 }
