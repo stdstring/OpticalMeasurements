@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "Common/CommonDefs.h"
 #include "Common/ITransport.h"
 #include "Common/ITransportFactory.h"
 #include "Common/TransportConfig.h"
@@ -24,12 +25,12 @@ private:
 signals:
     // for interaction with TransportService
     void Connect();
-    void Send(Message /*const &*/message);
+    void Send(MessagePtr message);
     // for interaction with Transport
-    void ResponseReceived(Message /*const &*/message);
-    void DataReceived(Message /*const &*/message);
+    void ResponseReceived(MessagePtr message);
+    void DataReceived(MessagePtr message);
     void DataProcessFailed();
-    void EventReceived(Message /*const &*/message);
+    void EventReceived(MessagePtr message);
 
 public slots:
     void ProcessStart();
@@ -37,7 +38,7 @@ public slots:
 
 private slots:
     void ProcessConnect();
-    void ProcessSend(Message /*const &*/message);
+    void ProcessSend(MessagePtr message);
 };
 
 class TransportService : public ITransport
@@ -47,7 +48,7 @@ public:
     ~TransportService();
 
     virtual void Connect() override;
-    virtual void Send(Message /*const &*/message) override;
+    virtual void Send(MessagePtr message) override;
 
 private:
     std::shared_ptr<QThread> _workerThread;

@@ -4,7 +4,7 @@
 #include <QString>
 #include <QTcpSocket>
 
-#include "Common/Message.h"
+#include "Common/CommonDefs.h"
 #include "Common/TransportConfig.h"
 #include "Common/TransportSerialization.h"
 
@@ -17,11 +17,11 @@ class TcpTransport : public QObject
 public:
     TcpTransport(TransportConfig const &transportConfig, QObject *parent);
     void Connect();
-    void Send(Message const &message);
+    void Send(MessagePtr message);
 
 signals:
-    void ResponseReceived(Message const &message);
-    void EventReceived(Message const &message);
+    void ResponseReceived(MessagePtr message);
+    void EventReceived(MessagePtr message);
 
 private:
     QString _address;

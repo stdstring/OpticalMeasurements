@@ -2,7 +2,7 @@
 
 #include <QPair>
 
-#include "Common/Message.h"
+#include "Common/CommonDefs.h"
 
 namespace CalcApp
 {
@@ -43,6 +43,6 @@ private:
     quint32 _calcNumber;
 };
 
-typedef QPair<MessageInfo, Message> MessageData;
+typedef QPair<MessageInfo, MessagePtr> MessageData;
 
 }

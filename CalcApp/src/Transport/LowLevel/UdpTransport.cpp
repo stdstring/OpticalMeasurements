@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QUdpSocket>
 
+#include <memory>
+
+#include "Common/CommonDefs.h"
 #include "Common/Message.h"
 #include "Common/TransportConfig.h"
 #include "Common/TransportSerialization.h"
@@ -57,7 +60,7 @@ void UdpTransport::ProcessRead()
     QList<QByteArray> result = ReadData(_socket);
     foreach(QByteArray data, result)
     {
-        emit DataReceived(Message(MessageType::DATA, data));
+        emit DataReceived(std::make_shared<Message>(MessageType::DATA, data));
     }
 }
 

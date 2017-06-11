@@ -1,6 +1,7 @@
 #include <QObject>
 #include <stdexcept>
 
+#include "Common/CommonDefs.h"
 #include "Common/ITransport.h"
 #include "Common/Message.h"
 #include "MessageInfo.h"
@@ -27,12 +28,12 @@ void Transport::Connect()
     _transportLowLevel->Connect();
 }
 
-void Transport::Send(Message /*const &*/message)
+void Transport::Send(MessagePtr message)
 {
     _transportLowLevel->Send(message);
 }
 
-void Transport::ReceiveData(Message const &message)
+void Transport::ReceiveData(MessagePtr message)
 {
     MessageInfo messageInfo = CreateMessageInfo(message);
     MessageValidationResult validationResult = IsMessageValid(messageInfo, _lastProcessedMessage);

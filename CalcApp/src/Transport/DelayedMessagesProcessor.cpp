@@ -5,6 +5,8 @@
 #include <functional>
 #include <stdexcept>
 
+#include "Common/CommonDefs.h"
+#include "Common/Message.h"
 #include "MessageInfo.h"
 #include "DelayedMessagesProcessor.h"
 
@@ -31,7 +33,7 @@ DelayedMessagesProcessor::DelayedMessagesProcessor(IMessageCheckStrategy *messag
 {
 }
 
-void DelayedMessagesProcessor::AddDelayedMessage(MessageInfo const &info, Message const &message)
+void DelayedMessagesProcessor::AddDelayedMessage(MessageInfo const &info, MessagePtr message)
 {
     if (FindMessage(_delayedMessages, info.GetPackageNumber()) != _delayedMessages.end())
         return;

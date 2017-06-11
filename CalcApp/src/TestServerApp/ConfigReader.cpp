@@ -9,9 +9,11 @@
 
 #include <functional>
 #include <map>
+#include <memory>
 #include <stdexcept>
 #include <tuple>
 
+#include "Common/CommonDefs.h"
 #include "Common/Message.h"
 #include "TestServerCore/TestServerConfig.h"
 #include "ConfigReader.h"
@@ -85,12 +87,12 @@ TestServerConfig CreateServerConfig(QStringList &lines)
     return TestServerConfig(timerInterval, serverAddress, tcpPortNumber, udpPortNumber);
 }
 
-bool IsResponseRequired(QList<Message> const &messages)
+bool IsResponseRequired(QList<MessagePtr> const &messages)
 {
-    return (messages.size() > 0) && (messages.last().GetType() == MessageType::REQUEST);
+    return (messages.size() > 0) && (messages.last().get()->GetType() == MessageType::REQUEST);
 }
 
-void ProcessMessageLine(QList<Message> &messages, QString const &line)
+void ProcessMessageLine(QList<MessagePtr> &messages, QString const &line)
 {
     if (line.isEmpty())
         return;
@@ -106,17 +108,17 @@ void ProcessMessageLine(QList<Message> &messages, QString const &line)
     if (!responseRequired && messageType == MessageType::RESPONSE)
         return;
     if (responseRequired && messageType != MessageType::RESPONSE)
-        messages.append(Message(MessageType::RESPONSE, QByteArray()));
+        messages.append(std::make_shared<Message>(MessageType::RESPONSE, QByteArray()));
     MessageBodyConvertMapType::const_iterator messageBodyIterator = MessageBodyConvertMap.find(parts[1]);
     if (messageBodyIterator == MessageBodyConvertMap.cend())
         return;
     QByteArray messageBody = messageBodyIterator->second(parts[2]);
-    messages.append(Message(messageType, messageBody));
+    messages.append(std::make_shared<Message>(messageType, messageBody));
 }
 
 }
 
-std::tuple<TestServerConfig, QList<Message>> ReadConfig(QString const &filename)
+std::tuple<TestServerConfig, QList<MessagePtr>> ReadConfig(QString const &filename)
 {
     QFile configFile(filename);
     configFile.open(QIODevice::ReadOnly);
@@ -126,15 +128,15 @@ std::tuple<TestServerConfig, QList<Message>> ReadConfig(QString const &filename)
         // TODO (std_string) : think about type of generated exception
         throw std::logic_error("Bad config");
     TestServerConfig serverConfig = CreateServerConfig(serverConfigLines);
-    QList<Message> messages;
+    QList<MessagePtr> messages;
     while (!textStream.atEnd())
     {
         QString line = ReadLine(textStream);
         ProcessMessageLine(messages, line);
     }
     if (IsResponseRequired(messages))
-        messages.append(Message(MessageType::RESPONSE, QByteArray()));
-    return std::tuple<TestServerConfig, QList<Message>>(serverConfig, messages);
+        messages.append(std::make_shared<Message>(MessageType::RESPONSE, QByteArray()));
+    return std::tuple<TestServerConfig, QList<MessagePtr>>(serverConfig, messages);
 }
 
 }

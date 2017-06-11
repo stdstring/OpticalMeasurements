@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QUdpSocket>
 
-#include "Common/Message.h"
+#include "Common/CommonDefs.h"
 #include "Common/TransportConfig.h"
 
 namespace CalcApp
@@ -17,7 +17,7 @@ public:
     void Connect();
 
 signals:
-    void DataReceived(Message const &message);
+    void DataReceived(MessagePtr message);
 
 private:
     quint16 _port;

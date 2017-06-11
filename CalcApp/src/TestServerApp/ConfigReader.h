@@ -5,12 +5,12 @@
 
 #include <tuple>
 
-#include "Common/Message.h"
+#include "Common/CommonDefs.h"
 #include "TestServerCore/TestServerConfig.h"
 
 namespace CalcApp
 {
 
-std::tuple<TestServerConfig, QList<Message>> ReadConfig(QString const &filename);
+std::tuple<TestServerConfig, QList<MessagePtr>> ReadConfig(QString const &filename);
 
 }

@@ -7,6 +7,9 @@
 #include <QString>
 #include <QTcpSocket>
 
+#include <memory>
+
+#include "Common/CommonDefs.h"
 #include "Common/Message.h"
 #include "Common/TransportConfig.h"
 #include "Common/TransportSerialization.h"
@@ -18,7 +21,7 @@ namespace CalcApp
 namespace
 {
 
-void SendData(QTcpSocket *socket, Message const &message)
+void SendData(QTcpSocket *socket, MessagePtr message)
 {
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
@@ -69,7 +72,7 @@ void TcpTransport::Connect()
     _socket->connectToHost(QHostAddress(_address), _port);
 }
 
-void TcpTransport::Send(Message const &message)
+void TcpTransport::Send(MessagePtr message)
 {
     SendData(_socket, message);
 }
@@ -86,9 +89,9 @@ void TcpTransport::ProcessRead()
         }
         // TODO (std_string) : use more functional style
         if (data.first.Type == MessageType::EVENT)
-            emit EventReceived(Message(MessageType::EVENT, data.second));
+            emit EventReceived(std::make_shared<Message>(MessageType::EVENT, data.second));
         else if (data.first.Type == MessageType::RESPONSE)
-            emit ResponseReceived(Message(MessageType::RESPONSE, data.second));
+            emit ResponseReceived(std::make_shared<Message>(MessageType::RESPONSE, data.second));
     }
 }
 

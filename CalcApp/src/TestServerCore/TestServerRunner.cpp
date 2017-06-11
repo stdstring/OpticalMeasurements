@@ -2,6 +2,7 @@
 #include <QObject>
 #include <QThread>
 
+#include "Common/CommonDefs.h"
 #include "Common/Message.h"
 #include "TestServer.h"
 #include "TestServerConfig.h"
@@ -17,7 +18,7 @@ TestServerRunner::TestServerRunner(TestServerConfig const &config, QObject *pare
 {
 }
 
-void TestServerRunner::Start(const QList<Message> &messages)
+void TestServerRunner::Start(QList<MessagePtr> const &messages)
 {
     _server.reset(new TestServer(_config, messages, nullptr));
     _server.get()->moveToThread(_thread);

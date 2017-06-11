@@ -4,6 +4,7 @@
 #include <QDataStream>
 #include <QtGlobal>
 
+#include "CommonDefs.h"
 #include "Message.h"
 
 namespace CalcApp
@@ -23,7 +24,7 @@ class TransportSerializer
 {
 public:
     static int GetMessageHeaderSize();
-    static void Serialize(Message const &message, QDataStream &stream);
+    static void Serialize(MessagePtr message, QDataStream &stream);
     static MessageHeader DeserializeHeader(QDataStream &stream);
     static QByteArray DeserializeBody(MessageHeader const &header, QDataStream &stream);
 

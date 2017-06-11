@@ -1,3 +1,8 @@
+#include <QObject>
+#include <QThread>
+
+#include "Common/CommonDefs.h"
+#include "Common/Message.h"
 #include "Common/ITransport.h"
 #include "Common/ITransportFactory.h"
 #include "Common/TransportConfig.h"
@@ -37,7 +42,7 @@ void TransportServiceWorker::ProcessConnect()
     _transport.get()->Connect();
 }
 
-void TransportServiceWorker::ProcessSend(Message /*const &*/message)
+void TransportServiceWorker::ProcessSend(MessagePtr message)
 {
     _transport.get()->Send(message);
 }
@@ -64,7 +69,7 @@ void TransportService::Connect()
     emit _worker.get()->Connect();
 }
 
-void TransportService::Send(Message /*const &*/message)
+void TransportService::Send(MessagePtr message)
 {
     emit _worker.get()->Send(message);
 }

@@ -3,7 +3,7 @@
 #include <QList>
 #include <QObject>
 
-#include "Common/Message.h"
+#include "Common/CommonDefs.h"
 #include "IMessageCheckStrategy.h"
 #include "MessageInfo.h"
 
@@ -15,7 +15,7 @@ class DelayedMessagesProcessor : public QObject
     Q_OBJECT
 public:
     explicit DelayedMessagesProcessor(IMessageCheckStrategy *messageCheckStrategy, QObject *parent = nullptr);
-    void AddDelayedMessage(MessageInfo const &info, Message const &message);
+    void AddDelayedMessage(MessageInfo const &info, MessagePtr message);
     bool CanDeliverMessage(MessageInfo const &prevMessage);
     MessageData DeliverMessage(MessageInfo const &prevMessage);
 

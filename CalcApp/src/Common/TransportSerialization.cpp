@@ -4,6 +4,7 @@
 
 #include <stdexcept>
 
+#include "CommonDefs.h"
 #include "Message.h"
 #include "TransportSerialization.h"
 
@@ -24,10 +25,10 @@ int TransportSerializer::GetMessageHeaderSize()
     return sizeof(quint32) + sizeof(quint32);
 }
 
-void TransportSerializer::Serialize(Message const &message, QDataStream &stream)
+void TransportSerializer::Serialize(MessagePtr message, QDataStream &stream)
 {
-    QByteArray data = message.GetData();
-    stream << static_cast<quint32>(message.GetType()) << static_cast<quint32>(data.size());
+    QByteArray data = message.get()->GetData();
+    stream << static_cast<quint32>(message.get()->GetType()) << static_cast<quint32>(data.size());
     stream.writeRawData(data.constData(), data.size());
 }
 

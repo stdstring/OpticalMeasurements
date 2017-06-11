@@ -6,7 +6,7 @@
 
 #include <memory>
 
-#include "Common/Message.h"
+#include "Common/CommonDefs.h"
 #include "TestServer.h"
 #include "TestServerConfig.h"
 
@@ -18,7 +18,7 @@ class TestServerRunner : public QObject
     Q_OBJECT
 public:
     TestServerRunner(TestServerConfig const &config, QObject *parent = nullptr);
-    void Start(QList<Message> const &messages);
+    void Start(QList<MessagePtr> const &messages);
     void Stop();
 
 private:

@@ -1,5 +1,6 @@
 #include <QObject>
 
+#include "Common/CommonDefs.h"
 #include "Common/ITransport.h"
 #include "Common/Message.h"
 #include "Common/TransportConfig.h"
@@ -26,7 +27,7 @@ void TransportLowLevel::Connect()
     _udpTransport->Connect();
 }
 
-void TransportLowLevel::Send(Message /*const &*/message)
+void TransportLowLevel::Send(MessagePtr message)
 {
     _tcpTransport->Send(message);
 }

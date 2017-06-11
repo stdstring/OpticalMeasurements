@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+#include "CommonDefs.h"
 #include "Message.h"
 
 namespace CalcApp
@@ -13,13 +14,13 @@ class ITransport : public QObject
 public:
     explicit ITransport(QObject *parent = nullptr) : QObject(parent) {}
     virtual void Connect() = 0;
-    virtual void Send(Message /*const &*/message) = 0;
+    virtual void Send(MessagePtr message) = 0;
 
 signals:
-    void ResponseReceived(Message /*const &*/message);
-    void DataReceived(Message /*const &*/message);
+    void ResponseReceived(MessagePtr message);
+    void DataReceived(MessagePtr message);
     void DataProcessFailed();
-    void EventReceived(Message /*const &*/message);
+    void EventReceived(MessagePtr message);
 
 };
 

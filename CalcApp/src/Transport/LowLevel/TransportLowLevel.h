@@ -2,8 +2,8 @@
 
 #include <QObject>
 
+#include "Common/CommonDefs.h"
 #include "Common/ITransport.h"
-#include "Common/Message.h"
 #include "Common/TransportConfig.h"
 #include "TcpTransport.h"
 #include "UdpTransport.h"
@@ -17,7 +17,7 @@ class TransportLowLevel : public ITransport
 public:
     explicit TransportLowLevel(TransportConfig const &config, QObject *parent = nullptr);
     virtual void Connect() override;
-    virtual void Send(Message /*const &*/message) override;
+    virtual void Send(MessagePtr message) override;
 
 private:
     TcpTransport *_tcpTransport;

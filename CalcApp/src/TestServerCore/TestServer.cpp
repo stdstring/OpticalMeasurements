@@ -9,8 +9,10 @@
 #include <QTcpSocket>
 #include <QUdpSocket>
 
+#include <memory>
 #include <stdexcept>
 
+#include "Common/CommonDefs.h"
 #include "Common/Message.h"
 #include "Common/TransportSerialization.h"
 #include "TestServer.h"
@@ -22,7 +24,7 @@ namespace CalcApp
 namespace
 {
 
-void SendUdpData(QUdpSocket *socket, QString const &serverAddress, quint16 udpPortNumber, Message const &message)
+void SendUdpData(QUdpSocket *socket, QString const &serverAddress, quint16 udpPortNumber, MessagePtr message)
 {
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
@@ -31,7 +33,7 @@ void SendUdpData(QUdpSocket *socket, QString const &serverAddress, quint16 udpPo
     socket->writeDatagram(buffer, QHostAddress(serverAddress), udpPortNumber);
 }
 
-void SendTcpData(QTcpSocket *socket, Message const &message)
+void SendTcpData(QTcpSocket *socket, MessagePtr message)
 {
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
@@ -68,7 +70,7 @@ QPair<MessageHeader, QByteArray> ReadTcpData(QTcpSocket *socket, MessageHeader c
 
 }
 
-TestServer::TestServer(TestServerConfig const &config, QList<Message> const &messages, QObject *parent) :
+TestServer::TestServer(TestServerConfig const &config, QList<MessagePtr> const &messages, QObject *parent) :
     QObject(parent),
     _config(config),
     _messages(messages),
@@ -111,11 +113,11 @@ void TestServer::Stop()
 void TestServer::ProcessTimeout()
 {
     // TODO (std_string) : use more functional approach
-    if (_messages.first().GetType() == MessageType::DATA)
+    if (_messages.first().get()->GetType() == MessageType::DATA)
         SendUdpData(_udpSocket, _config.ServerAddress, _config.UdpPortNumber, _messages.takeFirst());
-    else if (_messages.first().GetType() == MessageType::EVENT)
+    else if (_messages.first().get()->GetType() == MessageType::EVENT)
         SendTcpData(_tcpSocket, _messages.takeFirst());
-    if (!_messages.isEmpty() && _messages.first().GetType() != MessageType::REQUEST)
+    if (!_messages.isEmpty() && _messages.first().get()->GetType() != MessageType::REQUEST)
         _timer->start();
 }
 
@@ -124,7 +126,7 @@ void TestServer::TcpClientConnected()
     _tcpSocket = _server->nextPendingConnection();
     QObject::connect(_tcpSocket, &QTcpSocket::disconnected, this, &TestServer::TcpClientDisconnected);
     QObject::connect(_tcpSocket, &QTcpSocket::readyRead, this, &TestServer::ProcessClientRead);
-    if (!_messages.isEmpty() && _messages.first().GetType() != MessageType::REQUEST)
+    if (!_messages.isEmpty() && _messages.first().get()->GetType() != MessageType::REQUEST)
         _timer->start();
 }
 
@@ -138,10 +140,10 @@ void TestServer::ProcessClientRead()
             _tcpMessageHeader = data.first;
             return;
         }
-        emit RequestReceived(Message(MessageType::REQUEST, data.second));
+        emit RequestReceived(std::make_shared<Message>(MessageType::REQUEST, data.second));
         // TODO (std_string) : use more functional approach
-        if (_messages.isEmpty() || _messages.first().GetData() != data.second)
-            SendTcpData(_tcpSocket, Message(MessageType::RESPONSE, QByteArray()));
+        if (_messages.isEmpty() || _messages.first().get()->GetData() != data.second)
+            SendTcpData(_tcpSocket, std::make_shared<Message>(MessageType::RESPONSE, QByteArray()));
         else
         {
             // remove request
@@ -149,7 +151,7 @@ void TestServer::ProcessClientRead()
             // send and remove response
             SendTcpData(_tcpSocket, _messages.takeFirst());
         }
-        if (!_messages.isEmpty() && _messages.first().GetType() != MessageType::REQUEST)
+        if (!_messages.isEmpty() && _messages.first().get()->GetType() != MessageType::REQUEST)
             _timer->start();
     }
 }

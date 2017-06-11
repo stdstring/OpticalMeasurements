@@ -7,7 +7,7 @@
 #include <QTcpSocket>
 #include <QUdpSocket>
 
-#include "Common/Message.h"
+#include "Common/CommonDefs.h"
 #include "Common/TransportSerialization.h"
 #include "TestServerConfig.h"
 
@@ -18,10 +18,10 @@ class TestServer : public QObject
 {
     Q_OBJECT
 public:
-    TestServer(TestServerConfig const &config, QList<Message> const &messages, QObject *parent = nullptr);
+    TestServer(TestServerConfig const &config, QList<MessagePtr> const &messages, QObject *parent = nullptr);
 
 signals:
-    void RequestReceived(Message const &message);
+    void RequestReceived(MessagePtr message);
 
 public slots:
     void Start();
@@ -30,7 +30,7 @@ public slots:
 private:
     // TODO (std_string) : think about separation of tcp and udp parts
     TestServerConfig _config;
-    QList<Message> _messages;
+    QList<MessagePtr> _messages;
     QTimer *_timer;
     QTcpServer *_server;
     QTcpSocket *_tcpSocket;
