@@ -17,7 +17,9 @@ SOURCES += Logger/LoggerService.cpp \
            ComponentStorage.cpp \
            ActionChainFactory.cpp \
            TransportSerialization.cpp \
-           ServiceLocator.cpp
+           ServiceLocator.cpp \
+           TransportService.cpp \
+    TransportServiceFactory.cpp
 
 HEADERS += ../../include/Common/Exception/NotImplementedException.h \
            ../../include/Common/Logger/ILogger.h \
@@ -41,7 +43,9 @@ HEADERS += ../../include/Common/Exception/NotImplementedException.h \
            ../../include/Common/TransportSerialization.h \
            ../../include/Common/ServiceLocator.h \
            ../../include/Common/ExceptionData.h \
-           ../../include/Common/CommonDefs.h
+           ../../include/Common/CommonDefs.h \
+           TransportService.h \
+    TransportServiceFactory.h
 
 unix {
     target.path = /usr/lib

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QObject>
 #include <QThread>
 
@@ -53,17 +55,6 @@ public:
 private:
     std::shared_ptr<QThread> _workerThread;
     std::shared_ptr<TransportServiceWorker> _worker;
-};
-
-class TransportServiceFactory : public ITransportFactory
-{
-public:
-    explicit TransportServiceFactory(ITransportFactory *factory, QObject *parent = nullptr);
-
-    virtual ITransport* Create(TransportConfig const &transportConfig, QObject *parent) override;
-
-private:
-    ITransportFactory *_factory;
 };
 
 }
