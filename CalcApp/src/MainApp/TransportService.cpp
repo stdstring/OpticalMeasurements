@@ -74,4 +74,15 @@ void TransportService::Send(MessagePtr message)
     emit _worker.get()->Send(message);
 }
 
+TransportServiceFactory::TransportServiceFactory(ITransportFactory *factory, QObject *parent) :
+    ITransportFactory(parent),
+    _factory(factory)
+{
+}
+
+ITransport* TransportServiceFactory::Create(TransportConfig const &transportConfig, QObject *parent)
+{
+    return new TransportService(_factory, transportConfig, parent);
+}
+
 }
