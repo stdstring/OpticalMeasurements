@@ -26,7 +26,7 @@ void TransportLowLevel::Connect()
     _udpTransport->Connect();
 }
 
-void TransportLowLevel::Send(Message const &message)
+void TransportLowLevel::Send(Message /*const &*/message)
 {
     _tcpTransport->Send(message);
 }

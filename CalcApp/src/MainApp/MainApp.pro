@@ -17,7 +17,8 @@ SOURCES += main.cpp \
            DefaultConfigReader.cpp \
            ActionExecuter.cpp \
            XmlConfigReader.cpp \
-           CommandLineDefs.cpp
+           CommandLineDefs.cpp \
+           TransportService.cpp
 
 HEADERS  += MainWindow.h \
             StateManager.h \
@@ -25,7 +26,8 @@ HEADERS  += MainWindow.h \
             DefaultConfigReader.h \
             ActionExecuter.h \
             XmlConfigReader.h \
-            CommandLineDefs.h
+            CommandLineDefs.h \
+            TransportService.h
 
 FORMS    += MainWindow.ui
 

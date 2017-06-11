@@ -27,7 +27,7 @@ void Transport::Connect()
     _transportLowLevel->Connect();
 }
 
-void Transport::Send(Message const &message)
+void Transport::Send(Message /*const &*/message)
 {
     _transportLowLevel->Send(message);
 }

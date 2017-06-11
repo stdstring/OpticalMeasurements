@@ -18,7 +18,7 @@ class Transport : public ITransport
 public:
     explicit Transport(ITransport *transportLowLevel, IMessageCheckStrategy *messageCheckStrategy, QObject *parent = nullptr);
     virtual void Connect() override;
-    virtual void Send(Message const &message) override;
+    virtual void Send(Message /*const &*/message) override;
 
 private:
     ITransport *_transportLowLevel;

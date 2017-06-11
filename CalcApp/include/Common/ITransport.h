@@ -13,13 +13,13 @@ class ITransport : public QObject
 public:
     explicit ITransport(QObject *parent = nullptr) : QObject(parent) {}
     virtual void Connect() = 0;
-    virtual void Send(Message const &message) = 0;
+    virtual void Send(Message /*const &*/message) = 0;
 
 signals:
-    void ResponseReceived(Message const &message);
-    void DataReceived(Message const &message);
+    void ResponseReceived(Message /*const &*/message);
+    void DataReceived(Message /*const &*/message);
     void DataProcessFailed();
-    void EventReceived(Message const &message);
+    void EventReceived(Message /*const &*/message);
 
 };
 
