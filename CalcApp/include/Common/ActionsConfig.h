@@ -8,51 +8,6 @@
 namespace CalcApp
 {
 
-/*struct ArgumentDef
-{
-public:
-    ArgumentDef(QString const &name, QString const &value) :
-        Name(name),
-        Value(value)
-    {
-    }
-
-    QString Name;
-    QString Value;
-};
-
-struct ActionDef
-{
-public:
-    ActionDef(QString const &name, QString const &type, QList<ArgumentDef> const &args) :
-        Name(name),
-        Type(type),
-        Args(args)
-    {
-    }
-
-    QString Name;
-    QString Type;
-    QList<ArgumentDef> Args;
-};*/
-
-/*typedef QPair<QString, QString> ArgumentDef;
-
-struct ActionDef
-{
-public:
-    ActionDef(QString const &name, QString const &type, QList<ArgumentDef> const &args) :
-        Name(name),
-        Type(type),
-        Args(args)
-    {
-    }
-
-    QString Name;
-    QString Type;
-    QList<ArgumentDef> Args;
-};*/
-
 struct ActionDef
 {
 public:

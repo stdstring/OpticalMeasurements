@@ -61,8 +61,8 @@ private:
     mutable QReadWriteLock _lock;
 
 signals:
-    void DataChanged(QString const &key);
-    void DataCompleted(QString const &key);
+    void DataChanged(QString key);
+    void DataCompleted(QString key);
 };
 
 }
