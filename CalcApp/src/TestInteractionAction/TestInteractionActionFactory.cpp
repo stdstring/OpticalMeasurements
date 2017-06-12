@@ -3,10 +3,9 @@
 #include <QString>
 
 #include "Common/CommonDefs.h"
-#include "Common/Exception//NotImplementedException.h"
 #include "Common/IActionFactory.h"
-//#include "Common/ComponentStorage.h"
-//#include "Common/MainConfig.h"
+#include "Common/ComponentStorage.h"
+#include "Common/MainConfig.h"
 #include "Common/ServiceLocator.h"
 #include "TestInteractionAction.h"
 #include "TestInteractionActionFactory.h"
@@ -25,14 +24,14 @@ QString TestInteractionActionFactory::GetType()
 
 ActionPtr TestInteractionActionFactory::Create(QString const &name, QMultiMap<QString, QString> const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
-    Q_UNUSED(name);
-    Q_UNUSED(args);
-    Q_UNUSED(serviceLocator);
-    Q_UNUSED(context);
-    throw NotImplementedException();
-    /*std::shared_ptr<ComponentStorage> storage = serviceLocator.GetStorage();
-    std::shared_ptr<MainConfig> config = serviceLocator.GetConfig();
-    return new TestInteractionAction(name, args, storage.get()->GetTransport(), config.get()->Transport, parent);*/
+    const QString keyName = "key";
+    QList<QString> keyData = args.values(keyName);
+    if (keyData.size() != 1)
+        throw std::invalid_argument(keyName.toStdString());
+    QString key = keyData[0];
+    ComponentStoragePtr storage = serviceLocator.get()->GetStorage();
+    MainConfigPtr config = serviceLocator.get()->GetConfig();
+    return ActionPtr(new TestInteractionAction(name, key, storage.get()->GetTransport(), config.get()->Transport, context));
 }
 
 }

@@ -1,24 +1,26 @@
-//#include <QByteArray>
-//#include <QDataStream>
+#include <QByteArray>
+#include <QDataStream>
 #include <QObject>
 #include <QString>
-//#include <QThread>
+#include <QWriteLocker>
 
-//#include <stdexcept>
+#include <exception>
+#include <memory>
+#include <stdexcept>
 
 #include "Common/CommonDefs.h"
 #include "Common/Context.h"
+#include "Common/ExceptionData.h"
 #include "Common/IAction.h"
-//#include "Common/ITransport.h"
 #include "Common/ITransportFactory.h"
-//#include "Common/Message.h"
+#include "Common/Message.h"
 #include "Common/TransportConfig.h"
 #include "TestInteractionAction.h"
 
 namespace CalcApp
 {
 
-/*namespace
+namespace
 {
 
 const QString StartCommand("START");
@@ -26,107 +28,97 @@ const QString StopCommand("STOP");
 const QString SuccessResponse("OK");
 const QString FinishEvent("EOF");
 
+void ProcessData(QStringListContextItem *item, QByteArray const &data)
+{
+    QWriteLocker locker(&item->Lock);
+    item->Data.append(QString::fromUtf8(data));
 }
 
-TransportInteractionHandler::TransportInteractionHandler(ITransportFactory *transportFactory, TransportConfig const &config, QStringListContextItem *contextItem) :
-    _transportFactory(transportFactory),
-    _transport(nullptr),
-    _config(config),
-    _contextItem(contextItem),
-    _state(ExecutionState::STARTED)
-{
 }
 
-void TransportInteractionHandler::Start()
-{
-    _transport = _transportFactory->Create(_config, this);
-    QObject::connect(_transport, &ITransport::ResponseReceived, this, &TransportInteractionHandler::ProcessResponse);
-    QObject::connect(_transport, &ITransport::DataReceived, this, &TransportInteractionHandler::ProcessData);
-    QObject::connect(_transport, &ITransport::EventReceived, this, &TransportInteractionHandler::ProcessEvent);
-    _transport->Connect();
-    _transport->Send(Message(MessageType::REQUEST, StartCommand.toUtf8()));
-}
-
-void TransportInteractionHandler::Stop()
-{
-    QObject::disconnect(_transport, &ITransport::ResponseReceived, this, &TransportInteractionHandler::ProcessResponse);
-    QObject::disconnect(_transport, &ITransport::DataReceived, this, &TransportInteractionHandler::ProcessData);
-    QObject::disconnect(_transport, &ITransport::EventReceived, this, &TransportInteractionHandler::ProcessEvent);
-    //_transport->Disconnect();
-}
-
-void TransportInteractionHandler::ProcessResponse(Message const &message)
-{
-    QString response(QString::fromUtf8(message.GetData()));
-    if (SuccessResponse != response)
-        throw std::logic_error("bad response");
-    if (ExecutionState::FINISHED == _state)
-        emit Finished();
-}
-
-void TransportInteractionHandler::ProcessData(Message const &message)
-{
-    QDataStream stream(message.GetData());
-    stream.setVersion(QDataStream::Qt_5_5);
-    quint32 packageNumber, calcNumber;
-    QByteArray data;
-    stream >> packageNumber >> calcNumber >> data;
-    _contextItem->Data.append(QString::fromUtf8(data));
-}
-
-void TransportInteractionHandler::ProcessEvent(Message const &message)
-{
-    QString event(QString::fromUtf8(message.GetData()));
-    if (FinishEvent == event)
-    {
-        _state = ExecutionState::FINISHED;
-        _transport->Send(Message(MessageType::REQUEST, StopCommand.toUtf8()));
-    }
-}*/
-
-TestInteractionAction::TestInteractionAction(QString const &actionName,
-                                             QString const &contextKey,
-                                             ITransportFactory *transportFactory,
-                                             TransportConfig const &config,
-                                             ContextPtr context) :
+TestInteractionAction::TestInteractionAction(QString const &name, QString const &key, ITransportFactory *factory, TransportConfig const &config, ContextPtr context) :
     IAction(context),
-    _actionName(actionName),
-    _contextKey(contextKey),
-    _transportFactory(transportFactory),
-    _config(config)
+    _name(name),
+    _key(key),
+    _factory(factory),
+    _config(config),
+    _transport(nullptr),
+    _state(ExecutionState::STARTED)
 {
 }
 
 QString TestInteractionAction::GetName()
 {
-    return _actionName;
+    return _name;
 }
+
+/*void TestInteractionAction::StartAction(Context &context)
+{
+}*/
 
 /*void TestInteractionAction::Run(Context &context)
 {
-    if (!context.HasKey(_contextKey))
-        context.Set(_contextKey, std::shared_ptr<IContextItem>(new QStringListContextItem()));
-    QStringListContextItem *contextItem = context.GetValue<QStringListContextItem>(_contextKey);
-    std::shared_ptr<TransportInteractionHandler> handler(new TransportInteractionHandler(_transportFactory, _config, contextItem));
-    std::shared_ptr<QThread> thread(new QThread());
-    handler.get()->moveToThread(thread.get());
-    thread.get()->moveToThread(thread.get());
-    QObject::connect(thread.get(), &QThread::started, handler.get(), &TransportInteractionHandler::Start);
-    QObject::connect(thread.get(), &QThread::finished, handler.get(), &TransportInteractionHandler::Stop);
-    QObject::connect(handler.get(), &TransportInteractionHandler::Finished, thread.get(), &QThread::quit);
-    thread.get()->start();
-    thread.get()->wait();
-    QObject::disconnect(thread.get(), &QThread::started, handler.get(), &TransportInteractionHandler::Start);
-    QObject::disconnect(thread.get(), &QThread::finished, handler.get(), &TransportInteractionHandler::Stop);
-    QObject::disconnect(handler.get(), &TransportInteractionHandler::Finished, thread.get(), &QThread::quit);
 }*/
 
 void TestInteractionAction::ProcessStartImpl()
 {
+    // TODO (std_string) : think about place of creation and hold of transport
+    _transport = _factory->Create(_config, this);
+    QObject::connect(_transport, &ITransport::ResponseReceived, this, &TestInteractionAction::ProcessResponseReceived);
+    QObject::connect(_transport, &ITransport::DataReceived, this, &TestInteractionAction::ProcessDataReceived);
+    QObject::connect(_transport, &ITransport::DataProcessFailed, this, &TestInteractionAction::ProcessDataProcessFailed);
+    QObject::connect(_transport, &ITransport::EventReceived, this, &TestInteractionAction::ProcessEventReceived);
+    _transport->Connect();
 }
 
 void TestInteractionAction::ProcessStopImpl()
 {
+    //_transport->Disconnect();
+    QObject::disconnect(_transport, &ITransport::ResponseReceived, this, &TestInteractionAction::ProcessResponseReceived);
+    QObject::disconnect(_transport, &ITransport::DataReceived, this, &TestInteractionAction::ProcessDataReceived);
+    QObject::disconnect(_transport, &ITransport::DataProcessFailed, this, &TestInteractionAction::ProcessDataProcessFailed);
+    QObject::disconnect(_transport, &ITransport::EventReceived, this, &TestInteractionAction::ProcessEventReceived);
+}
+
+void TestInteractionAction::ProcessResponseReceived(MessagePtr message)
+{
+    QString response(QString::fromUtf8(message.get()->GetData()));
+    if (SuccessResponse != response)
+    {
+        ExceptionData exceptionData(std::make_exception_ptr(std::logic_error("bad response")));
+        emit ErrorOccured(exceptionData);
+        return;
+    }
+    if (ExecutionState::FINISHED == _state)
+        emit ActionFinished();
+}
+
+void TestInteractionAction::ProcessDataReceived(MessagePtr message)
+{
+    QDataStream stream(message.get()->GetData());
+    stream.setVersion(QDataStream::Qt_5_5);
+    quint32 packageNumber, calcNumber;
+    QByteArray data;
+    stream >> packageNumber >> calcNumber >> data;
+    QStringListContextItem *item = GetContext().get()->GetValue<QStringListContextItem>(_key);
+    ProcessData(item, data);
+    item->NotifyDataChange();
+}
+
+void TestInteractionAction::ProcessDataProcessFailed()
+{
+    ExceptionData exceptionData(std::make_exception_ptr(std::logic_error("bad data sequence")));
+    emit ErrorOccured(exceptionData);
+}
+
+void TestInteractionAction::ProcessEventReceived(MessagePtr message)
+{
+    QString event(QString::fromUtf8(message.get()->GetData()));
+    if (FinishEvent == event)
+    {
+        _state = ExecutionState::FINISHED;
+        _transport->Send(std::make_shared<Message>(MessageType::REQUEST, StopCommand.toUtf8()));
+    }
 }
 
 }

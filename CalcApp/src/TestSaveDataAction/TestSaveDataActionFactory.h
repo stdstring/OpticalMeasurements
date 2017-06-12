@@ -5,12 +5,8 @@
 #include <QString>
 #include <QtPlugin>
 
-//#include <memory>
-
 #include "Common/CommonDefs.h"
-//#include "Common/Context.h"
 #include "Common/IActionFactory.h"
-//#include "Common/ServiceLocator.h"
 
 namespace CalcApp
 {

@@ -1,15 +1,10 @@
 #include <QMultiMap>
 #include <QObject>
-//#include <QRegExp>
 #include <QString>
-//#include <QList>
-//#include <QtGlobal>
 
-//#include <stdexcept>
-//#include <memory>
+#include <stdexcept>
 
 #include "Common/CommonDefs.h"
-#include "Common/Exception/NotImplementedException.h"
 #include "Common/Context.h"
 #include "Common/IActionFactory.h"
 #include "Common/ServiceLocator.h"
@@ -30,19 +25,18 @@ QString TestSaveDataActionFactory::GetType()
 
 ActionPtr TestSaveDataActionFactory::Create(QString const &name, const QMultiMap<QString, QString> &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
 {
-    Q_UNUSED(name);
-    Q_UNUSED(args);
+    const QString keyName = "key";
+    const QString filenameName = "filename";
     Q_UNUSED(serviceLocator);
-    Q_UNUSED(context);
-    throw NotImplementedException();
-    /*// TODO (std_string) : this code isn't correct in case of presence of space characters inside of any parameters
-    const int argsCount = 2;
-    QStringList argsList = args.split(QRegExp("\\s+"));
-    if (argsList.size() != argsCount)
-        throw std::invalid_argument("args");
-    QString const &contextKey = argsList[0];
-    QString const &destFilename = argsList[1];
-    return new TestSaveDataAction(name, contextKey, destFilename, parent);*/
+    QList<QString> keyData = args.values(keyName);
+    if (keyData.size() != 1)
+        throw std::invalid_argument(keyName.toStdString());
+    QString key = keyData[0];
+    QList<QString> filenameData = args.values(filenameName);
+    if (filenameData.size() != 1)
+        throw std::invalid_argument(filenameName.toStdString());
+    QString filename = filenameData[0];
+    return ActionPtr(new TestSaveDataAction(name, key, filename, context));
 }
 
 }
