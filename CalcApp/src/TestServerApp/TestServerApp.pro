@@ -2,7 +2,6 @@ include( ../../common.pri )
 include( ../../app.pri )
 
 QT += core network
-QT -= gui
 
 TARGET = TestServerApp
 CONFIG += console
@@ -13,8 +12,11 @@ TEMPLATE = app
 LIBS += -lTestServerCore -lCommon
 
 SOURCES += main.cpp \
-           ConfigReader.cpp
+           ConfigReader.cpp \
+           CommandLineDefs.cpp
 
-HEADERS += ConfigReader.h
+HEADERS += ConfigReader.h \
+           CommandLineDefs.h
 
-DISTFILES += TestServer.config
+DISTFILES += \
+    TestServer.conf
