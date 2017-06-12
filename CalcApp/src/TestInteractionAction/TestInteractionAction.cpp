@@ -45,6 +45,7 @@ TestInteractionAction::TestInteractionAction(QString const &name, QString const 
     _transport(nullptr),
     _state(ExecutionState::STARTED)
 {
+    context.get()->Set(_key, std::make_shared<QStringListContextItem>());
 }
 
 QString TestInteractionAction::GetName()
@@ -69,6 +70,7 @@ void TestInteractionAction::ProcessStartImpl()
     QObject::connect(_transport, &ITransport::DataProcessFailed, this, &TestInteractionAction::ProcessDataProcessFailed);
     QObject::connect(_transport, &ITransport::EventReceived, this, &TestInteractionAction::ProcessEventReceived);
     _transport->Connect();
+    _transport->Send(std::make_shared<Message>(MessageType::REQUEST, StartCommand.toUtf8()));
 }
 
 void TestInteractionAction::ProcessStopImpl()
@@ -90,7 +92,10 @@ void TestInteractionAction::ProcessResponseReceived(MessagePtr message)
         return;
     }
     if (ExecutionState::FINISHED == _state)
+    {
+        emit GetContext().get()->DataCompleted(_key);
         emit ActionFinished();
+    }
 }
 
 void TestInteractionAction::ProcessDataReceived(MessagePtr message)

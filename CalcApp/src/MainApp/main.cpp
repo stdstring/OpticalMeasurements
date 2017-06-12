@@ -9,9 +9,11 @@
 #include "Common/Logger/QMessageLoggerWrapper.h"
 #include "Common/ComponentLoader.h"
 #include "Common/ComponentStorage.h"
+#include "Common/ExceptionData.h"
 #include "Common/IAction.h"
 #include "Common/IComponentInfo.h"
 #include "Common/MainConfig.h"
+#include "Common/Message.h"
 #include "Common/ServiceLocator.h"
 #include "CommandLineDefs.h"
 #include "XmlConfigReader.h"
@@ -21,6 +23,7 @@ int main(int argc, char *argv[])
 {
     // TODO (std_string) : move into separate place
     qRegisterMetaType<CalcApp::ExceptionData>("ExceptionData");
+    qRegisterMetaType<CalcApp::MessagePtr>("MessagePtr");
     QApplication app(argc, argv);
     QCommandLineParser parser;
     CalcApp::CommandLineDefs::CreateDefs(&parser);

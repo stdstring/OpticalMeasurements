@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QMetaType>
+
 #include <memory>
 
 namespace CalcApp
@@ -27,3 +29,5 @@ typedef std::shared_ptr<Message> MessagePtr;
 typedef std::shared_ptr<ServiceLocator> ServiceLocatorPtr;
 
 }
+
+Q_DECLARE_METATYPE(CalcApp::MessagePtr);

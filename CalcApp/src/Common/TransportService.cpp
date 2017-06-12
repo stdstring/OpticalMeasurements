@@ -54,6 +54,10 @@ TransportService::TransportService(ITransportFactory *transportFactory, Transpor
 {
     QObject::connect(_workerThread.get(), &QThread::started, _worker.get(), &TransportServiceWorker::ProcessStart);
     QObject::connect(_workerThread.get(), &QThread::finished, _worker.get(), &TransportServiceWorker::ProcessStop);
+    QObject::connect(_worker.get(), &TransportServiceWorker::ResponseReceived, this, &ITransport::ResponseReceived);
+    QObject::connect(_worker.get(), &TransportServiceWorker::DataReceived, this, &ITransport::DataReceived);
+    QObject::connect(_worker.get(), &TransportServiceWorker::DataProcessFailed, this, &ITransport::DataProcessFailed);
+    QObject::connect(_worker.get(), &TransportServiceWorker::EventReceived, this, &ITransport::EventReceived);
     _worker.get()->moveToThread(_workerThread.get());
     _workerThread.get()->start();
 }
@@ -62,6 +66,12 @@ TransportService::~TransportService()
 {
     _workerThread.get()->exit();
     _workerThread.get()->wait();
+    QObject::disconnect(_workerThread.get(), &QThread::started, _worker.get(), &TransportServiceWorker::ProcessStart);
+    QObject::disconnect(_workerThread.get(), &QThread::finished, _worker.get(), &TransportServiceWorker::ProcessStop);
+    QObject::disconnect(_worker.get(), &TransportServiceWorker::ResponseReceived, this, &ITransport::ResponseReceived);
+    QObject::disconnect(_worker.get(), &TransportServiceWorker::DataReceived, this, &ITransport::DataReceived);
+    QObject::disconnect(_worker.get(), &TransportServiceWorker::DataProcessFailed, this, &ITransport::DataProcessFailed);
+    QObject::disconnect(_worker.get(), &TransportServiceWorker::EventReceived, this, &ITransport::EventReceived);
 }
 
 void TransportService::Connect()
