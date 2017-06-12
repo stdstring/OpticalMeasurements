@@ -15,6 +15,7 @@ class TransportServiceFactory : public ITransportFactory
 public:
     explicit TransportServiceFactory(ITransportFactory *factory, QObject *parent = nullptr);
 
+    virtual QString GetType() override;
     virtual ITransport* Create(TransportConfig const &transportConfig, QObject *parent) override;
 
 private:

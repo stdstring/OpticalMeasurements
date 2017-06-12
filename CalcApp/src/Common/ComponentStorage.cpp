@@ -7,6 +7,7 @@
 #include "IComponentInfo.h"
 #include "ITransportFactory.h"
 #include "ComponentStorage.h"
+#include "TransportServiceFactory.h"
 
 namespace CalcApp
 {
@@ -71,7 +72,11 @@ void ComponentStorage::SetTransport(ITransportFactory *transport)
 {
     // TODO (std_string) : think about processing of situation with several transport's module
     if (_transport == nullptr)
-        _transport = transport;
+    {
+        // TODO (std_string) : create more reliable solution (probably, with help of smart pointers)
+        // TODO (std_string) : think about parent of transport
+        _transport = new TransportServiceFactory(transport, transport->parent());
+    }
     else
         delete transport;
 }

@@ -15,6 +15,11 @@ TransportServiceFactory::TransportServiceFactory(ITransportFactory *factory, QOb
 {
 }
 
+QString TransportServiceFactory::GetType()
+{
+    return _factory->GetType();
+}
+
 ITransport* TransportServiceFactory::Create(TransportConfig const &transportConfig, QObject *parent)
 {
     return new TransportService(_factory, transportConfig, parent);
