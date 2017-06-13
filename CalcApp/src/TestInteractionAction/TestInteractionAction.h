@@ -20,6 +20,7 @@ public:
     virtual QString GetName() override;
     /*virtual void StartAction(Context &context) override;*/
     /*virtual void Run(Context &context) override;*/
+    virtual void CleanupAtFailure() override;
 
 protected:
     virtual void ProcessStartImpl() override;

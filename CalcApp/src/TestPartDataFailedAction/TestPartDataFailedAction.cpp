@@ -66,6 +66,10 @@ QString TestPartDataFailedAction::GetName()
 {
 }*/
 
+void TestPartDataFailedAction::CleanupAtFailure()
+{
+}
+
 void TestPartDataFailedAction::ProcessStartImpl()
 {
     ContextPtr context = GetContext();

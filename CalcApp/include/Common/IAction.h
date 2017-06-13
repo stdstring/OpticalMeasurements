@@ -21,6 +21,7 @@ public:
     virtual QString GetName() = 0;
     //virtual void Run(Context &context) = 0;
     //virtual void StartAction(Context &context) = 0;
+    virtual void CleanupAtFailure() = 0;
 
 protected:
     virtual void ProcessStartImpl() = 0;

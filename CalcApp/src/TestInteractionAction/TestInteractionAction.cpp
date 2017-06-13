@@ -61,6 +61,10 @@ QString TestInteractionAction::GetName()
 {
 }*/
 
+void TestInteractionAction::CleanupAtFailure()
+{
+}
+
 void TestInteractionAction::ProcessStartImpl()
 {
     // TODO (std_string) : think about place of creation and hold of transport
