@@ -19,4 +19,5 @@ HEADERS += ConfigReader.h \
            CommandLineDefs.h
 
 DISTFILES += \
-    TestServer.conf
+    TestServer.conf \
+    TestServerWithBadData.conf
