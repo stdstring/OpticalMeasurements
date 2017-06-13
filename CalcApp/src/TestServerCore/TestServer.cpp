@@ -29,7 +29,7 @@ void SendUdpData(QUdpSocket *socket, QString const &serverAddress, quint16 udpPo
 {
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
-    output.setVersion(QDataStream::Qt_5_5);
+    output.setVersion(QDataStream::Qt_5_9);
     TransportSerializer::Serialize(message, output);
     socket->writeDatagram(buffer, QHostAddress(serverAddress), udpPortNumber);
 }
@@ -38,7 +38,7 @@ void SendTcpData(QTcpSocket *socket, MessagePtr message)
 {
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
-    output.setVersion(QDataStream::Qt_5_5);
+    output.setVersion(QDataStream::Qt_5_9);
     TransportSerializer::Serialize(message, output);
     socket->write(buffer);
 }
@@ -48,7 +48,7 @@ QPair<MessageHeader, QByteArray> StartReadTcpData(QTcpSocket *socket)
     if (socket->bytesAvailable() < TransportSerializer::GetMessageHeaderSize())
         return qMakePair(MessageHeader(), QByteArray());
     QDataStream input(socket);
-    input.setVersion(QDataStream::Qt_5_5);
+    input.setVersion(QDataStream::Qt_5_9);
     MessageHeader header = TransportSerializer::DeserializeHeader(input);
     if (socket->bytesAvailable() < header.Size)
         return qMakePair(header, QByteArray());
@@ -60,7 +60,7 @@ QByteArray ContinueReadTcpData(QTcpSocket *socket, MessageHeader const &header)
     if (socket->bytesAvailable() < header.Size)
         return QByteArray();
     QDataStream input(socket);
-    input.setVersion(QDataStream::Qt_5_5);
+    input.setVersion(QDataStream::Qt_5_9);
     return TransportSerializer::DeserializeBody(header, input);
 }
 
@@ -76,7 +76,7 @@ void LogProcessedDataMessage(LoggerPtr logger, QByteArray const &messageData)
     // 2) quint32 with calculation number
     // 3) other data
     QDataStream stream(messageData);
-    stream.setVersion(QDataStream::Qt_5_5);
+    stream.setVersion(QDataStream::Qt_5_9);
     quint32 packageNumber, calcNumber;
     QByteArray messageBody;
     stream >> packageNumber >> calcNumber >> messageBody;

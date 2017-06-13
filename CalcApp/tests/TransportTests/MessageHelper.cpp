@@ -28,7 +28,7 @@ Message CreateDataMessage(quint8 packageNumber, quint8 calcNumber, QVector<char>
 {
     QByteArray dest;
     QDataStream stream(&dest, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_5);
+    stream.setVersion(QDataStream::Qt_5_9);
     stream << static_cast<quint32>(packageNumber) << static_cast<quint32>(calcNumber) << data;
     return Message(MessageType::DATA, dest);
 }

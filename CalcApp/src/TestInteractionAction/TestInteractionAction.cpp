@@ -101,7 +101,7 @@ void TestInteractionAction::ProcessResponseReceived(MessagePtr message)
 void TestInteractionAction::ProcessDataReceived(MessagePtr message)
 {
     QDataStream stream(message.get()->GetData());
-    stream.setVersion(QDataStream::Qt_5_5);
+    stream.setVersion(QDataStream::Qt_5_9);
     quint32 packageNumber, calcNumber;
     QByteArray data;
     stream >> packageNumber >> calcNumber >> data;

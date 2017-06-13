@@ -18,7 +18,7 @@ MessageInfo CreateMessageInfo(MessagePtr message)
     // 3) other data
     quint32 packageNumber, calcNumber;
     QDataStream stream(message.get()->GetData());
-    stream.setVersion(QDataStream::Qt_5_5);
+    stream.setVersion(QDataStream::Qt_5_9);
     stream >> packageNumber >> calcNumber;
     return MessageInfo(packageNumber, calcNumber);
 }
