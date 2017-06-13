@@ -18,7 +18,7 @@ class TestServer : public QObject
 {
     Q_OBJECT
 public:
-    TestServer(TestServerConfig const &config, QList<MessagePtr> const &messages, QObject *parent = nullptr);
+    TestServer(TestServerConfig const &config, LoggerPtr logger, QList<MessagePtr> const &messages, QObject *parent = nullptr);
 
 signals:
     void RequestReceived(MessagePtr message);
@@ -28,8 +28,11 @@ public slots:
     void Stop();
 
 private:
+    void CheckAndStartTimer();
+
     // TODO (std_string) : think about separation of tcp and udp parts
     TestServerConfig _config;
+    LoggerPtr _logger;
     QList<MessagePtr> _messages;
     QTimer *_timer;
     QTcpServer *_server;

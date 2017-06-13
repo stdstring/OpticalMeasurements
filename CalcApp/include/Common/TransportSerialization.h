@@ -4,6 +4,8 @@
 #include <QDataStream>
 #include <QtGlobal>
 
+#include <tuple>
+
 #include "CommonDefs.h"
 #include "Message.h"
 
@@ -27,6 +29,7 @@ public:
     static void Serialize(MessagePtr message, QDataStream &stream);
     static MessageHeader DeserializeHeader(QDataStream &stream);
     static QByteArray DeserializeBody(MessageHeader const &header, QDataStream &stream);
+    static std::tuple<MessageHeader, QByteArray> Deserialize(QDataStream &stream);
 
     TransportSerializer() = delete;
     TransportSerializer(TransportSerializer const&) = delete;

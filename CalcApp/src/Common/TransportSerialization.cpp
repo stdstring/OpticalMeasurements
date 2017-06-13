@@ -3,6 +3,7 @@
 #include <QtGlobal>
 
 #include <stdexcept>
+#include <tuple>
 
 #include "CommonDefs.h"
 #include "Message.h"
@@ -48,6 +49,13 @@ QByteArray TransportSerializer::DeserializeBody(MessageHeader const &header, QDa
     if (stream.readRawData(data.data(), header.Size) != header.Size)
         throw std::logic_error("wrong data");
     return data;
+}
+
+std::tuple<MessageHeader, QByteArray> TransportSerializer::Deserialize(QDataStream &stream)
+{
+    MessageHeader header = DeserializeHeader(stream);
+    QByteArray body = DeserializeBody(header, stream);
+    return std::tuple<MessageHeader, QByteArray>(header, body);
 }
 
 }

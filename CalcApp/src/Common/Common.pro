@@ -12,6 +12,7 @@ INCLUDEPATH += ../../include/Common/Logger
 
 SOURCES += Logger/LoggerService.cpp \
            Logger/QMessageLoggerWrapper.cpp \
+           Logger/ConsoleLogger.cpp \
            ComponentLoader.cpp \
            Context.cpp \
            ComponentStorage.cpp \
@@ -19,13 +20,14 @@ SOURCES += Logger/LoggerService.cpp \
            TransportSerialization.cpp \
            ServiceLocator.cpp \
            TransportService.cpp \
-    TransportServiceFactory.cpp
+           TransportServiceFactory.cpp
 
 HEADERS += ../../include/Common/Exception/NotImplementedException.h \
            ../../include/Common/Logger/ILogger.h \
            ../../include/Common/Logger/LoggerService.h \
            ../../include/Common/Logger/NullLogger.h \
            ../../include/Common/Logger/QMessageLoggerWrapper.h \
+           ../../include/Common/Logger/ConsoleLogger.h \
            ../../include/Common/ActionChainFactory.h \
            ../../include/Common/ActionsConfig.h \
            ../../include/Common/ComponentLoader.h \
@@ -45,7 +47,7 @@ HEADERS += ../../include/Common/Exception/NotImplementedException.h \
            ../../include/Common/ExceptionData.h \
            ../../include/Common/CommonDefs.h \
            TransportService.h \
-    TransportServiceFactory.h
+           TransportServiceFactory.h
 
 unix {
     target.path = /usr/lib

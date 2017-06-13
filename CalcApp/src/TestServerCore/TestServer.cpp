@@ -13,6 +13,7 @@
 #include <stdexcept>
 
 #include "Common/CommonDefs.h"
+#include "Common/Logger/ILogger.h"
 #include "Common/Message.h"
 #include "Common/TransportSerialization.h"
 #include "TestServer.h"
@@ -68,11 +69,32 @@ QPair<MessageHeader, QByteArray> ReadTcpData(QTcpSocket *socket, MessageHeader c
     return header.Size == 0 ? StartReadTcpData(socket) : qMakePair(header, ContinueReadTcpData(socket, header));
 }
 
+void LogProcessedDataMessage(LoggerPtr logger, QByteArray const &messageData)
+{
+    // TODO (std_string) : move this into common place
+    // 1) quint32 with package number
+    // 2) quint32 with calculation number
+    // 3) other data
+    QDataStream stream(messageData);
+    stream.setVersion(QDataStream::Qt_5_5);
+    quint32 packageNumber, calcNumber;
+    QByteArray messageBody;
+    stream >> packageNumber >> calcNumber >> messageBody;
+    QString infoTemplate("Processing DATA message with packageNumber = %1, calcNumber =%2, data = \"%3\"");
+    logger.get()->WriteInfo(infoTemplate.arg(packageNumber).arg(calcNumber).arg(QString::fromUtf8(messageBody)));
 }
 
-TestServer::TestServer(TestServerConfig const &config, QList<MessagePtr> const &messages, QObject *parent) :
+void LogProcessedMessage(LoggerPtr logger, QString const &messageType, QByteArray const &messageData)
+{
+    logger.get()->WriteInfo(QString("Processing %1 message with data \"%2\"").arg(messageType).arg(QString::fromUtf8(messageData)));
+}
+
+}
+
+TestServer::TestServer(TestServerConfig const &config, LoggerPtr logger, QList<MessagePtr> const &messages, QObject *parent) :
     QObject(parent),
     _config(config),
+    _logger(logger),
     _messages(messages),
     _timer(nullptr),
     _server(nullptr),
@@ -83,6 +105,7 @@ TestServer::TestServer(TestServerConfig const &config, QList<MessagePtr> const &
 
 void TestServer::Start()
 {
+    _logger.get()->WriteInfo("Server started");
     _timer = new QTimer(this);
     _timer->setSingleShot(true);
     _timer->setTimerType(Qt::TimerType::CoarseTimer);
@@ -99,6 +122,7 @@ void TestServer::Start()
 
 void TestServer::Stop()
 {
+    _logger.get()->WriteInfo("Server stopped");
     _timer->stop();
     if (_tcpSocket != nullptr)
         _tcpSocket->close();
@@ -114,11 +138,16 @@ void TestServer::ProcessTimeout()
 {
     // TODO (std_string) : use more functional approach
     if (_messages.first().get()->GetType() == MessageType::DATA)
+    {
+        LogProcessedDataMessage(_logger, _messages.first().get()->GetData());
         SendUdpData(_udpSocket, _config.ServerAddress, _config.UdpPortNumber, _messages.takeFirst());
+    }
     else if (_messages.first().get()->GetType() == MessageType::EVENT)
+    {
+        LogProcessedMessage(_logger, "EVENT", _messages.first().get()->GetData());
         SendTcpData(_tcpSocket, _messages.takeFirst());
-    if (!_messages.isEmpty() && _messages.first().get()->GetType() != MessageType::REQUEST)
-        _timer->start();
+    }
+    CheckAndStartTimer();
 }
 
 void TestServer::TcpClientConnected()
@@ -126,8 +155,7 @@ void TestServer::TcpClientConnected()
     _tcpSocket = _server->nextPendingConnection();
     QObject::connect(_tcpSocket, &QTcpSocket::disconnected, this, &TestServer::TcpClientDisconnected);
     QObject::connect(_tcpSocket, &QTcpSocket::readyRead, this, &TestServer::ProcessClientRead);
-    if (!_messages.isEmpty() && _messages.first().get()->GetType() != MessageType::REQUEST)
-        _timer->start();
+    CheckAndStartTimer();
 }
 
 void TestServer::ProcessClientRead()
@@ -140,19 +168,23 @@ void TestServer::ProcessClientRead()
             _tcpMessageHeader = data.first;
             return;
         }
+        LogProcessedMessage(_logger, "REQUEST", data.second);
         emit RequestReceived(std::make_shared<Message>(MessageType::REQUEST, data.second));
         // TODO (std_string) : use more functional approach
         if (_messages.isEmpty() || _messages.first().get()->GetData() != data.second)
+        {
+            _logger.get()->WriteWarning("Unknown request");
             SendTcpData(_tcpSocket, std::make_shared<Message>(MessageType::RESPONSE, QByteArray()));
+        }
         else
         {
             // remove request
             _messages.takeFirst();
             // send and remove response
+            LogProcessedMessage(_logger, "RESPONSE", _messages.first().get()->GetData());
             SendTcpData(_tcpSocket, _messages.takeFirst());
         }
-        if (!_messages.isEmpty() && _messages.first().get()->GetType() != MessageType::REQUEST)
-            _timer->start();
+        CheckAndStartTimer();
     }
 }
 
@@ -160,6 +192,14 @@ void TestServer::TcpClientDisconnected()
 {
     QObject::disconnect(_tcpSocket, &QTcpSocket::disconnected, this, &TestServer::TcpClientDisconnected);
     QObject::disconnect(_tcpSocket, &QTcpSocket::readyRead, this, &TestServer::ProcessClientRead);
+}
+
+void TestServer::CheckAndStartTimer()
+{
+    if (_messages.isEmpty())
+        _logger.get()->WriteInfo("All messages are processed");
+    else if (_messages.first().get()->GetType() != MessageType::REQUEST)
+        _timer->start();
 }
 
 }

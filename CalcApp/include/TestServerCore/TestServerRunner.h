@@ -17,12 +17,13 @@ class TestServerRunner : public QObject
 {
     Q_OBJECT
 public:
-    TestServerRunner(TestServerConfig const &config, QObject *parent = nullptr);
+    TestServerRunner(TestServerConfig const &config, LoggerPtr logger, QObject *parent = nullptr);
     void Start(QList<MessagePtr> const &messages);
     void Stop();
 
 private:
     TestServerConfig _config;
+    LoggerPtr _logger;
     std::shared_ptr<TestServer> _server;
     QThread *_thread;
 };

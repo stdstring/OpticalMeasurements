@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     // TODO (std_string) : move into separate place
     qRegisterMetaType<CalcApp::ExceptionData>("ExceptionData");
     qRegisterMetaType<CalcApp::MessagePtr>("MessagePtr");
+    qRegisterMetaType<CalcApp::LoggerCategory>("LoggerCategory");
     QApplication app(argc, argv);
     QCommandLineParser parser;
     CalcApp::CommandLineDefs::CreateDefs(&parser);

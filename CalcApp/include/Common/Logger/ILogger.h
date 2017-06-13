@@ -45,3 +45,4 @@ public:
 
 }
 
+Q_DECLARE_METATYPE(CalcApp::LoggerCategory);
