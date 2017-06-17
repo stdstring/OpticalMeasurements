@@ -24,7 +24,7 @@ QByteArray ReadSingleData(QUdpSocket *socket)
     buffer.resize(socket->pendingDatagramSize());
     socket->readDatagram(buffer.data(), buffer.size());
     QDataStream input(&buffer, QIODevice::ReadOnly);
-    input.setVersion(QDataStream::Qt_5_9);
+    input.setVersion(DataStreamVersion);
     MessageHeader header = TransportSerializer::DeserializeHeader(input);
     return TransportSerializer::DeserializeBody(header, input);
 }

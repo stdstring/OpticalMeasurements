@@ -6,6 +6,7 @@
 
 #include <memory>
 
+#include "Common/CommonDefs.h"
 #include "Common/Message.h"
 #include "MessageHelper.h"
 #include "MessageInfo.h"
@@ -28,7 +29,7 @@ Message CreateDataMessage(quint8 packageNumber, quint8 calcNumber, QVector<char>
 {
     QByteArray dest;
     QDataStream stream(&dest, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_9);
+    stream.setVersion(DataStreamVersion);
     stream << static_cast<quint32>(packageNumber) << static_cast<quint32>(calcNumber) << data;
     return Message(MessageType::DATA, dest);
 }

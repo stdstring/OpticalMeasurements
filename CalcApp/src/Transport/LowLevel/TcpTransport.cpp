@@ -25,7 +25,7 @@ void SendData(QTcpSocket *socket, MessagePtr message)
 {
     QByteArray buffer;
     QDataStream output(&buffer, QIODevice::WriteOnly);
-    output.setVersion(QDataStream::Qt_5_9);
+    output.setVersion(DataStreamVersion);
     TransportSerializer::Serialize(message, output);
     socket->write(buffer);
 }
@@ -35,7 +35,7 @@ QPair<MessageHeader, QByteArray> StartReadData(QTcpSocket *socket)
     if (socket->bytesAvailable() < TransportSerializer::GetMessageHeaderSize())
             return qMakePair(MessageHeader(), QByteArray());
     QDataStream input(socket);
-    input.setVersion(QDataStream::Qt_5_9);
+    input.setVersion(DataStreamVersion);
     MessageHeader header = TransportSerializer::DeserializeHeader(input);
     if (socket->bytesAvailable() < header.Size)
         return qMakePair(header, QByteArray());
@@ -47,7 +47,7 @@ QByteArray ContinueReadData(QTcpSocket *socket, MessageHeader const &header)
     if (socket->bytesAvailable() < header.Size)
         return QByteArray();
     QDataStream input(socket);
-    input.setVersion(QDataStream::Qt_5_9);
+    input.setVersion(DataStreamVersion);
     return TransportSerializer::DeserializeBody(header, input);
 }
 

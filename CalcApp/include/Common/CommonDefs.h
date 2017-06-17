@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QDataStream>
 #include <QMetaType>
 
 #include <memory>
@@ -27,6 +28,9 @@ typedef std::shared_ptr<ILogger> LoggerPtr;
 typedef std::shared_ptr<MainConfig> MainConfigPtr;
 typedef std::shared_ptr<Message> MessagePtr;
 typedef std::shared_ptr<ServiceLocator> ServiceLocatorPtr;
+
+// serialization definitions
+constexpr QDataStream::Version DataStreamVersion = QDataStream::Version::Qt_5_9;
 
 }
 
