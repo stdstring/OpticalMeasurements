@@ -82,6 +82,7 @@ void TestSaveDataAction::ProcessStopImpl()
 
 void TestSaveDataAction::CleanupNonFinished()
 {
+    QFile::remove(_filename);
 }
 
 void TestSaveDataAction::ProcessData()

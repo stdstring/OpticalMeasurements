@@ -64,6 +64,7 @@ void TestDataGeneratorAction::ProcessStopImpl()
 
 void TestDataGeneratorAction::CleanupNonFinished()
 {
+    // do nothing
 }
 
 void TestDataGeneratorAction::GenerateNextItem()

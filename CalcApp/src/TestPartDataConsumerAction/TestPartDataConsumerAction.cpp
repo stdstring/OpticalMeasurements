@@ -85,6 +85,7 @@ void TestPartDataConsumerAction::ProcessStopImpl()
 
 void TestPartDataConsumerAction::CleanupNonFinished()
 {
+    QFile::remove(_filename);
 }
 
 void TestPartDataConsumerAction::ProcessData()

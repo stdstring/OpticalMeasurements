@@ -70,6 +70,7 @@ void TestTotalDataTransformAction::ProcessStopImpl()
 
 void TestTotalDataTransformAction::CleanupNonFinished()
 {
+    // do nothing
 }
 
 void TestTotalDataTransformAction::ProcessTotalData()

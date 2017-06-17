@@ -88,6 +88,7 @@ void TestPartDataFailedAction::ProcessStopImpl()
 
 void TestPartDataFailedAction::CleanupNonFinished()
 {
+    // do nothing
 }
 
 void TestPartDataFailedAction::ProcessData()

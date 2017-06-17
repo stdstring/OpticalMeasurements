@@ -84,6 +84,7 @@ void TestInteractionAction::ProcessStopImpl()
 
 void TestInteractionAction::CleanupNonFinished()
 {
+    _transport->Send(std::make_shared<Message>(MessageType::REQUEST, StopCommand.toUtf8()));
 }
 
 void TestInteractionAction::ProcessResponseReceived(MessagePtr message)

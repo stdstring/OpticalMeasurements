@@ -80,6 +80,7 @@ void TestPartDataTransformAction::ProcessStopImpl()
 
 void TestPartDataTransformAction::CleanupNonFinished()
 {
+    // do nothing
 }
 
 void TestPartDataTransformAction::ProcessData()

@@ -78,6 +78,7 @@ void TestTotalDataFailedAction::ProcessStopImpl()
 
 void TestTotalDataFailedAction::CleanupNonFinished()
 {
+    // do nothing
 }
 
 void TestTotalDataFailedAction::ProcessTotalData()

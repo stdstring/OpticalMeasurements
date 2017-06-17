@@ -68,6 +68,7 @@ void TestTotalDataConsumerAction::ProcessStopImpl()
 
 void TestTotalDataConsumerAction::CleanupNonFinished()
 {
+    // do nothing
 }
 
 void TestTotalDataConsumerAction::ProcessTotalData()
