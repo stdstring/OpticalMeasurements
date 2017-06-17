@@ -59,10 +59,6 @@ QString TestPartDataTransformAction::GetName()
 {
 }*/
 
-void TestPartDataTransformAction::CleanupAtFailure()
-{
-}
-
 void TestPartDataTransformAction::ProcessStartImpl()
 {
     ContextPtr context = GetContext();
@@ -80,6 +76,10 @@ void TestPartDataTransformAction::ProcessStartImpl()
 void TestPartDataTransformAction::ProcessStopImpl()
 {
     // do nothing
+}
+
+void TestPartDataTransformAction::CleanupNonFinished()
+{
 }
 
 void TestPartDataTransformAction::ProcessData()

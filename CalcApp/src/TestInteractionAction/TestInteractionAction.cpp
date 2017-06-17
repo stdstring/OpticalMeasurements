@@ -61,10 +61,6 @@ QString TestInteractionAction::GetName()
 {
 }*/
 
-void TestInteractionAction::CleanupAtFailure()
-{
-}
-
 void TestInteractionAction::ProcessStartImpl()
 {
     // TODO (std_string) : think about place of creation and hold of transport
@@ -84,6 +80,10 @@ void TestInteractionAction::ProcessStopImpl()
     QObject::disconnect(_transport, &ITransport::DataReceived, this, &TestInteractionAction::ProcessDataReceived);
     QObject::disconnect(_transport, &ITransport::DataProcessFailed, this, &TestInteractionAction::ProcessDataProcessFailed);
     QObject::disconnect(_transport, &ITransport::EventReceived, this, &TestInteractionAction::ProcessEventReceived);
+}
+
+void TestInteractionAction::CleanupNonFinished()
+{
 }
 
 void TestInteractionAction::ProcessResponseReceived(MessagePtr message)

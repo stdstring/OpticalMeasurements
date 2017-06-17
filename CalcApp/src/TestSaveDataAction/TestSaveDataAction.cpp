@@ -62,10 +62,6 @@ QString TestSaveDataAction::GetName()
 {
 }*/
 
-void TestSaveDataAction::CleanupAtFailure()
-{
-}
-
 void TestSaveDataAction::ProcessStartImpl()
 {
     ContextPtr context = GetContext();
@@ -81,6 +77,10 @@ void TestSaveDataAction::ProcessStartImpl()
 }
 
 void TestSaveDataAction::ProcessStopImpl()
+{
+}
+
+void TestSaveDataAction::CleanupNonFinished()
 {
 }
 

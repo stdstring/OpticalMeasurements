@@ -52,10 +52,6 @@ QString TestDataGeneratorAction::GetName()
 {
 }*/
 
-void TestDataGeneratorAction::CleanupAtFailure()
-{
-}
-
 void TestDataGeneratorAction::ProcessStartImpl()
 {
     QTimer::singleShot(_sleepTime, this, [this](){ emit GenerateNextItem(); });
@@ -64,6 +60,10 @@ void TestDataGeneratorAction::ProcessStartImpl()
 void TestDataGeneratorAction::ProcessStopImpl()
 {
     // do nothing
+}
+
+void TestDataGeneratorAction::CleanupNonFinished()
+{
 }
 
 void TestDataGeneratorAction::GenerateNextItem()

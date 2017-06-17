@@ -62,10 +62,6 @@ QString TestTotalDataFailedAction::GetName()
 {
 }*/
 
-void TestTotalDataFailedAction::CleanupAtFailure()
-{
-}
-
 void TestTotalDataFailedAction::ProcessStartImpl()
 {
     ContextPtr context = GetContext();
@@ -78,6 +74,10 @@ void TestTotalDataFailedAction::ProcessStartImpl()
 void TestTotalDataFailedAction::ProcessStopImpl()
 {
     // do nothing
+}
+
+void TestTotalDataFailedAction::CleanupNonFinished()
+{
 }
 
 void TestTotalDataFailedAction::ProcessTotalData()

@@ -14,22 +14,24 @@ class IAction : public QObject
 {
     Q_OBJECT
 public:
-    explicit IAction(ContextPtr context) : QObject(), _context(context)
+    explicit IAction(ContextPtr context) : QObject(), _context(context), _isActionFinished(false)
     {
+        QObject::connect(this, &IAction::ActionFinished, this, [this](){ _isActionFinished = true; });
     }
 
     virtual QString GetName() = 0;
     //virtual void Run(Context &context) = 0;
     //virtual void StartAction(Context &context) = 0;
-    virtual void CleanupAtFailure() = 0;
 
 protected:
     virtual void ProcessStartImpl() = 0;
     virtual void ProcessStopImpl() = 0;
+    virtual void CleanupNonFinished() = 0;
     ContextPtr GetContext() const { return _context; }
 
 private:
     ContextPtr _context;
+    bool _isActionFinished;
 
 signals:
     void ErrorOccured(ExceptionData exception);
@@ -43,6 +45,8 @@ public slots:
 
     void ProcessStop()
     {
+        if (!_isActionFinished)
+            CleanupNonFinished();
         ProcessStopImpl();
     }
 };

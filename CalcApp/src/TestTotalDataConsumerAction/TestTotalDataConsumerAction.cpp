@@ -52,10 +52,6 @@ QString TestTotalDataConsumerAction::GetName()
 {
 }*/
 
-void TestTotalDataConsumerAction::CleanupAtFailure()
-{
-}
-
 void TestTotalDataConsumerAction::ProcessStartImpl()
 {
     ContextPtr context = GetContext();
@@ -68,6 +64,10 @@ void TestTotalDataConsumerAction::ProcessStartImpl()
 void TestTotalDataConsumerAction::ProcessStopImpl()
 {
     // do nothing
+}
+
+void TestTotalDataConsumerAction::CleanupNonFinished()
+{
 }
 
 void TestTotalDataConsumerAction::ProcessTotalData()
