@@ -18,6 +18,7 @@ public:
     explicit TransportLowLevel(TransportConfig const &config, QObject *parent = nullptr);
     virtual void Connect() override;
     virtual void Send(MessagePtr message) override;
+    virtual void Disconnect() override;
 
 private:
     TcpTransport *_tcpTransport;

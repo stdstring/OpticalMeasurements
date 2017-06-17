@@ -1,3 +1,4 @@
+#include <QAbstractSocket>
 #include <QByteArray>
 #include <QDataStream>
 #include <QHostAddress>
@@ -69,12 +70,18 @@ TcpTransport::TcpTransport(TransportConfig const &transportConfig, QObject *pare
 
 void TcpTransport::Connect()
 {
-    _socket->connectToHost(QHostAddress(_address), _port);
+    if (_socket->state() != QAbstractSocket::UnconnectedState)
+        _socket->connectToHost(QHostAddress(_address), _port);
 }
 
 void TcpTransport::Send(MessagePtr message)
 {
     SendData(_socket, message);
+}
+
+void TcpTransport::Disconnect()
+{
+    _socket->disconnectFromHost();
 }
 
 void TcpTransport::ProcessRead()

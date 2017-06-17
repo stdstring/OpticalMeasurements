@@ -32,4 +32,10 @@ void TransportLowLevel::Send(MessagePtr message)
     _tcpTransport->Send(message);
 }
 
+void TransportLowLevel::Disconnect()
+{
+    _tcpTransport->Disconnect();
+    _udpTransport->Disconnect();
+}
+
 }

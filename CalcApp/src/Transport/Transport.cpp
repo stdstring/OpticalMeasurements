@@ -33,6 +33,11 @@ void Transport::Send(MessagePtr message)
     _transportLowLevel->Send(message);
 }
 
+void Transport::Disconnect()
+{
+    _transportLowLevel->Disconnect();
+}
+
 void Transport::ReceiveData(MessagePtr message)
 {
     MessageInfo messageInfo = CreateMessageInfo(message);

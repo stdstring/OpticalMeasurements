@@ -55,6 +55,10 @@ void UdpTransport::Connect()
     _socket->bind(_port);
 }
 
+void UdpTransport::Disconnect()
+{
+}
+
 void UdpTransport::ProcessRead()
 {
     QList<QByteArray> result = ReadData(_socket);

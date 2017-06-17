@@ -28,6 +28,7 @@ signals:
     // for interaction with TransportService
     void Connect();
     void Send(MessagePtr message);
+    void Disconnect();
     // for interaction with Transport
     void ResponseReceived(MessagePtr message);
     void DataReceived(MessagePtr message);
@@ -41,6 +42,7 @@ public slots:
 private slots:
     void ProcessConnect();
     void ProcessSend(MessagePtr message);
+    void ProcessDisconnect();
 };
 
 class TransportService : public ITransport
@@ -51,6 +53,7 @@ public:
 
     virtual void Connect() override;
     virtual void Send(MessagePtr message) override;
+    virtual void Disconnect() override;
 
 private:
     std::shared_ptr<QThread> _workerThread;

@@ -75,7 +75,6 @@ void TestInteractionAction::ProcessStartImpl()
 
 void TestInteractionAction::ProcessStopImpl()
 {
-    //_transport->Disconnect();
     QObject::disconnect(_transport, &ITransport::ResponseReceived, this, &TestInteractionAction::ProcessResponseReceived);
     QObject::disconnect(_transport, &ITransport::DataReceived, this, &TestInteractionAction::ProcessDataReceived);
     QObject::disconnect(_transport, &ITransport::DataProcessFailed, this, &TestInteractionAction::ProcessDataProcessFailed);

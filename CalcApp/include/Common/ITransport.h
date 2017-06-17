@@ -15,6 +15,7 @@ public:
     explicit ITransport(QObject *parent = nullptr) : QObject(parent) {}
     virtual void Connect() = 0;
     virtual void Send(MessagePtr message) = 0;
+    virtual void Disconnect() = 0;
 
 signals:
     void ResponseReceived(MessagePtr message);

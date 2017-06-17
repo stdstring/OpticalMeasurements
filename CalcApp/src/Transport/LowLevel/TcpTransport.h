@@ -18,6 +18,7 @@ public:
     TcpTransport(TransportConfig const &transportConfig, QObject *parent);
     void Connect();
     void Send(MessagePtr message);
+    void Disconnect();
 
 signals:
     void ResponseReceived(MessagePtr message);

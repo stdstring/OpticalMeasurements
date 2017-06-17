@@ -15,6 +15,7 @@ class UdpTransport : public QObject
 public:
     UdpTransport(TransportConfig const &transportConfig, QObject *parent);
     void Connect();
+    void Disconnect();
 
 signals:
     void DataReceived(MessagePtr message);

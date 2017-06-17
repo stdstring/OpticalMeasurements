@@ -17,6 +17,7 @@ TransportServiceWorker::TransportServiceWorker(ITransportFactory *transportFacto
 {
     QObject::connect(this, &TransportServiceWorker::Connect, this, &TransportServiceWorker::ProcessConnect);
     QObject::connect(this, &TransportServiceWorker::Send, this, &TransportServiceWorker::ProcessSend);
+    QObject::connect(this, &TransportServiceWorker::Disconnect, this, &TransportServiceWorker::ProcessDisconnect);
 }
 
 void TransportServiceWorker::ProcessStart()
@@ -45,6 +46,11 @@ void TransportServiceWorker::ProcessConnect()
 void TransportServiceWorker::ProcessSend(MessagePtr message)
 {
     _transport.get()->Send(message);
+}
+
+void TransportServiceWorker::ProcessDisconnect()
+{
+    _transport.get()->Disconnect();
 }
 
 TransportService::TransportService(ITransportFactory *transportFactory, TransportConfig const &transportConfig, QObject *parent) :
@@ -82,6 +88,11 @@ void TransportService::Connect()
 void TransportService::Send(MessagePtr message)
 {
     emit _worker.get()->Send(message);
+}
+
+void TransportService::Disconnect()
+{
+    emit _worker.get()->Disconnect();
 }
 
 }
