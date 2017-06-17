@@ -20,7 +20,8 @@ SOURCES += Logger/LoggerService.cpp \
            TransportSerialization.cpp \
            ServiceLocator.cpp \
            TransportService.cpp \
-           TransportServiceFactory.cpp
+           TransportServiceFactory.cpp \
+           IAction.cpp
 
 HEADERS += ../../include/Common/Exception/NotImplementedException.h \
            ../../include/Common/Logger/ILogger.h \
