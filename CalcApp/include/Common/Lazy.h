@@ -29,6 +29,12 @@ public:
 
     bool HasValue() const { return _initialized; }
 
+    Lazy() = delete;
+    Lazy(Lazy<T> const&) = delete;
+    Lazy(Lazy<T>&&) = delete;
+    Lazy<T>& operator=(Lazy<T> const&) = delete;
+    Lazy<T>& operator=(Lazy<T>&&) = delete;
+
 private:
     std::function<T()> _generator;
     volatile bool _initialized;
