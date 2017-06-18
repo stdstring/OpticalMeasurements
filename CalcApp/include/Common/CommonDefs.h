@@ -11,7 +11,7 @@ namespace CalcApp
 // forward definitions
 class ComponentStorage;
 class Context;
-class ExecutionContext;
+class ExecutionState;
 class IAction;
 class IActionFactory;
 class IContextItem;
@@ -25,7 +25,7 @@ class TransportConfig;
 // ptr definitions
 typedef std::shared_ptr<ComponentStorage> ComponentStoragePtr;
 typedef std::shared_ptr<Context> ContextPtr;
-typedef std::shared_ptr<ExecutionContext> ExecutionContextPtr;
+typedef std::shared_ptr<ExecutionState> ExecutionStatePtr;
 typedef std::shared_ptr<IAction> ActionPtr;
 typedef std::shared_ptr<IContextItem> ContextItemPtr;
 typedef std::shared_ptr<ILogger> LoggerPtr;

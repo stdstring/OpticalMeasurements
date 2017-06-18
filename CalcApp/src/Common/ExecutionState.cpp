@@ -2,22 +2,22 @@
 #include "ITransportFactory.h"
 #include "Lazy.h"
 #include "TransportConfig.h"
-#include "ExecutionContext.h"
+#include "ExecutionState.h"
 
 namespace CalcApp
 {
 
-ExecutionContext::ExecutionContext(ITransportFactory *transportFactory, TransportConfig const &transportConfig) :
+ExecutionState::ExecutionState(ITransportFactory *transportFactory, TransportConfig const &transportConfig) :
     _transport([transportFactory, transportConfig](){ return TransportPtr(transportFactory->Create(transportConfig, nullptr)); })
 {
 }
 
-bool ExecutionContext::HasTransport() const
+bool ExecutionState::HasTransport() const
 {
     return _transport.HasValue();
 }
 
-TransportPtr ExecutionContext::GetTransport()
+TransportPtr ExecutionState::GetTransport()
 {
     return _transport.GetValue();
 }
