@@ -26,6 +26,8 @@ public:
     void Clear();
 
 private:
+    void FinishActionChain();
+
     ServiceLocatorPtr _serviceLocator;
     QList<std::shared_ptr<ActionExecuter>> _chain;
     ContextPtr _context;

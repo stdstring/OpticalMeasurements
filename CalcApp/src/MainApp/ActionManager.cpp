@@ -105,8 +105,9 @@ void ActionManager::ProcessActionCompleted(QString name)
 {
     emit ActionCompleted(name);
     _runningCount--;
-    if (_runningCount == 0)
-        emit (_hasAborted ? ActionChainAborted() : ActionChainCompleted());
+    FinishActionChain();
+    /*if (_runningCount == 0)
+        emit (_hasAborted ? ActionChainAborted() : ActionChainCompleted());*/
 }
 
 void ActionManager::ProcessActionAborted(QString name)
@@ -114,8 +115,9 @@ void ActionManager::ProcessActionAborted(QString name)
     emit ActionAborted(name);
     _hasAborted = true;
     _runningCount--;
-    if (_runningCount == 0)
-        emit ActionChainAborted();
+    FinishActionChain();
+    /*if (_runningCount == 0)
+        emit ActionChainAborted();*/
 }
 
 void ActionManager::ProcessActionFailed(QString name, ExceptionData exception)
@@ -124,8 +126,18 @@ void ActionManager::ProcessActionFailed(QString name, ExceptionData exception)
     _hasAborted = true;
     Stop();
     _runningCount--;
+    FinishActionChain();
+    /*if (_runningCount == 0)
+        emit ActionChainAborted();*/
+}
+
+void ActionManager::FinishActionChain()
+{
     if (_runningCount == 0)
-        emit ActionChainAborted();
+    {
+        emit (_hasAborted ? ActionChainAborted() : ActionChainCompleted());
+        _chain.clear();
+    }
 }
 
 }
