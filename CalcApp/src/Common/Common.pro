@@ -21,7 +21,8 @@ SOURCES += Logger/LoggerService.cpp \
            ServiceLocator.cpp \
            TransportService.cpp \
            TransportServiceFactory.cpp \
-           IAction.cpp
+           IAction.cpp \
+           ExecutionContext.cpp
 
 HEADERS += ../../include/Common/Exception/NotImplementedException.h \
            ../../include/Common/Logger/ILogger.h \
@@ -34,6 +35,7 @@ HEADERS += ../../include/Common/Exception/NotImplementedException.h \
            ../../include/Common/ComponentLoader.h \
            ../../include/Common/ComponentStorage.h \
            ../../include/Common/Context.h \
+           ../../include/Common/ExecutionContext.h \
            ../../include/Common/IAction.h \
            ../../include/Common/IActionFactory.h \
            ../../include/Common/IComponentInfo.h \

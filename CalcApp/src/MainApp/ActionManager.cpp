@@ -92,6 +92,7 @@ void ActionManager::Clear()
     if (_runningCount != 0)
         throw std::logic_error("There are running actions in the chain");
     _chain.clear();
+    _context.get()->Clear();
 }
 
 void ActionManager::ProcessActionRunning(QString name)

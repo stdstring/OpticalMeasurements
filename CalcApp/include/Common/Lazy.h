@@ -21,7 +21,8 @@ public:
             QMutexLocker locker(&_mutex);
             if (_initialized)
                 return _value;
-            _value(generator());
+            //_value(_generator()); ??
+            _value = _generator();
             _initialized = true;
             return _value;
         }

@@ -52,6 +52,7 @@ void Context::Set(QString const &key, ContextItemPtr item)
 
 void Context::Clear()
 {
+    QWriteLocker locker(&_lock);
     _storage.clear();
 }
 
