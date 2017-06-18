@@ -25,7 +25,11 @@ QString TestDataGeneratorActionFactory::GetType()
     return "TestDataGeneratorAction";
 }
 
-ActionPtr TestDataGeneratorActionFactory::Create(QString const &name, const QMultiMap<QString, QString> &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestDataGeneratorActionFactory::Create(QString const &name,
+                                                 QMultiMap<QString, QString> const &args,
+                                                 ServiceLocatorPtr serviceLocator,
+                                                 ContextPtr context,
+                                                 ExecutionStatePtr state)
 {
     const QString keyName = "key";
     const QString sleepTimeName = "sleep_time";
@@ -48,7 +52,7 @@ ActionPtr TestDataGeneratorActionFactory::Create(QString const &name, const QMul
     int dataCount = dataCountData[0].toInt(&ok);
     if (!ok)
         throw std::invalid_argument(dataCountName.toStdString());
-    return ActionPtr(new TestDataGeneratorAction(name, key, sleepTime, dataCount, context));
+    return ActionPtr(new TestDataGeneratorAction(name, key, sleepTime, dataCount, context, state));
 }
 
 }

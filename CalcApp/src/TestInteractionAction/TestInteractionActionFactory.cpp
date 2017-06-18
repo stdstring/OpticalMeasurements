@@ -22,7 +22,11 @@ QString TestInteractionActionFactory::GetType()
     return "TestInteractionAction";
 }
 
-ActionPtr TestInteractionActionFactory::Create(QString const &name, QMultiMap<QString, QString> const &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestInteractionActionFactory::Create(QString const &name,
+                                               QMultiMap<QString, QString> const &args,
+                                               ServiceLocatorPtr serviceLocator,
+                                               ContextPtr context,
+                                               ExecutionStatePtr state)
 {
     const QString keyName = "key";
     QList<QString> keyData = args.values(keyName);
@@ -31,7 +35,7 @@ ActionPtr TestInteractionActionFactory::Create(QString const &name, QMultiMap<QS
     QString key = keyData[0];
     ComponentStoragePtr storage = serviceLocator.get()->GetStorage();
     MainConfigPtr config = serviceLocator.get()->GetConfig();
-    return ActionPtr(new TestInteractionAction(name, key, storage.get()->GetTransport(), config.get()->Transport, context));
+    return ActionPtr(new TestInteractionAction(name, key, context, state));
 }
 
 }

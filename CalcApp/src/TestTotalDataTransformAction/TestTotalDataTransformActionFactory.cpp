@@ -25,7 +25,11 @@ QString TestTotalDataTransformActionFactory::GetType()
     return "TestTotalDataTransformAction";
 }
 
-ActionPtr TestTotalDataTransformActionFactory::Create(QString const &name, const QMultiMap<QString, QString> &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestTotalDataTransformActionFactory::Create(QString const &name,
+                                                      QMultiMap<QString, QString> const &args,
+                                                      ServiceLocatorPtr serviceLocator,
+                                                      ContextPtr context,
+                                                      ExecutionStatePtr state)
 {
     const QString sourceKeyName = "source_key";
     const QString destKeyName = "dest_key";
@@ -38,7 +42,7 @@ ActionPtr TestTotalDataTransformActionFactory::Create(QString const &name, const
     if (destKeyData.size() != 1)
         throw std::invalid_argument(destKeyName.toStdString());
     QString destKey = destKeyData[0];
-    return ActionPtr(new TestTotalDataTransformAction(name, sourceKey, destKey, context));
+    return ActionPtr(new TestTotalDataTransformAction(name, sourceKey, destKey, context, state));
 }
 
 }

@@ -32,8 +32,12 @@ void TransformData(IntContextItem *sourceItem, IntContextItem *destItem)
 
 }
 
-TestTotalDataTransformAction::TestTotalDataTransformAction(QString const &name, QString const &sourceKey, QString const &destKey, ContextPtr context) :
-    IAction(context),
+TestTotalDataTransformAction::TestTotalDataTransformAction(QString const &name,
+                                                           QString const &sourceKey,
+                                                           QString const &destKey,
+                                                           ContextPtr context,
+                                                           ExecutionStatePtr state) :
+    IAction(context, state),
     _name(name),
     _sourceKey(sourceKey),
     _destKey(destKey)

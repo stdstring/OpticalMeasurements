@@ -43,8 +43,8 @@ void SaveData(QString const &filename, IntContextItem *item, int start, bool las
 
 }
 
-TestPartDataConsumerAction::TestPartDataConsumerAction(QString const &name, QString const &key, QString const &filename, ContextPtr context) :
-    IAction(context),
+TestPartDataConsumerAction::TestPartDataConsumerAction(QString const &name, QString const &key, QString const &filename, ContextPtr context, ExecutionStatePtr state) :
+    IAction(context, state),
     _name(name),
     _key(key),
     _filename(filename)

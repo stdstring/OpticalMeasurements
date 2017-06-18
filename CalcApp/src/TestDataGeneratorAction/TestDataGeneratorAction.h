@@ -13,7 +13,7 @@ namespace CalcApp
 class TestDataGeneratorAction : public IAction
 {
 public:
-    TestDataGeneratorAction(QString const &name, QString const &key, int sleepTime, int dataCount, ContextPtr context);
+    TestDataGeneratorAction(QString const &name, QString const &key, int sleepTime, int dataCount, ContextPtr context, ExecutionStatePtr state);
 
     virtual QString GetName() override;
     //virtual void StartAction(Context &context) override;

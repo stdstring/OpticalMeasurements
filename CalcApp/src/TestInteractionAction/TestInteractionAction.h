@@ -15,7 +15,7 @@ namespace CalcApp
 class TestInteractionAction : public IAction
 {
 public:
-    TestInteractionAction(QString const &name, QString const &key, ITransportFactory *factory, TransportConfig const &config, ContextPtr context);
+    TestInteractionAction(QString const &name, QString const &key, ContextPtr context, ExecutionStatePtr state);
 
     virtual QString GetName() override;
     /*virtual void StartAction(Context &context) override;*/
@@ -35,12 +35,10 @@ private slots:
 private:
     QString _name;
     QString _key;
-    ITransportFactory *_factory;
-    TransportConfig const &_config;
     // TODO (std_string) : probably move into separate state object
-    enum ExecutionState {STARTED = 0, FINISHED = 1};
-    ITransport *_transport;
-    ExecutionState _state;
+    // TODO (std_string) : think about name of enum
+    enum InteractionState {STARTED = 0, FINISHED = 1};
+    InteractionState _state;
 };
 
 }

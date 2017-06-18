@@ -25,7 +25,11 @@ QString TestPartDataConsumerActionFactory::GetType()
     return "TestPartDataConsumerAction";
 }
 
-ActionPtr TestPartDataConsumerActionFactory::Create(QString const &name, const QMultiMap<QString, QString> &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestPartDataConsumerActionFactory::Create(QString const &name,
+                                                    QMultiMap<QString, QString> const &args,
+                                                    ServiceLocatorPtr serviceLocator,
+                                                    ContextPtr context,
+                                                    ExecutionStatePtr state)
 {
     const QString keyName = "key";
     const QString filenameName = "filename";
@@ -39,7 +43,7 @@ ActionPtr TestPartDataConsumerActionFactory::Create(QString const &name, const Q
     if (filenameData.size() != 1)
         throw std::invalid_argument(filenameName.toStdString());
     QString filename = filenameData[0];
-    return ActionPtr(new TestPartDataConsumerAction(name, key, filename, context));
+    return ActionPtr(new TestPartDataConsumerAction(name, key, filename, context, state));
 }
 
 }

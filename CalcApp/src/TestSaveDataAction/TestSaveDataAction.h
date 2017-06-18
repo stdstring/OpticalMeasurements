@@ -12,7 +12,7 @@ namespace CalcApp
 class TestSaveDataAction : public IAction
 {
 public:
-    TestSaveDataAction(QString const &actionName, QString const &key, QString const &filename, ContextPtr context);
+    TestSaveDataAction(QString const &actionName, QString const &key, QString const &filename, ContextPtr context, ExecutionStatePtr state);
 
     virtual QString GetName() override;
     //virtual void StartAction(Context &context) override;

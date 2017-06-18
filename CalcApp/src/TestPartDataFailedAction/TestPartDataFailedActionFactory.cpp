@@ -24,7 +24,11 @@ QString TestPartDataFailedActionFactory::GetType()
     return "TestPartDataFailedAction";
 }
 
-ActionPtr TestPartDataFailedActionFactory::Create(QString const &name, const QMultiMap<QString, QString> &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestPartDataFailedActionFactory::Create(QString const &name,
+                                                  QMultiMap<QString, QString> const &args,
+                                                  ServiceLocatorPtr serviceLocator,
+                                                  ContextPtr context,
+                                                  ExecutionStatePtr state)
 {
     const QString sourceKeyName = "source_key";
     const QString destKeyName = "dest_key";
@@ -45,7 +49,7 @@ ActionPtr TestPartDataFailedActionFactory::Create(QString const &name, const QMu
     int failedIteration = failedIterationData[0].toInt(&ok);
     if (!ok)
         throw std::invalid_argument(failedIterationName.toStdString());
-    return ActionPtr(new TestPartDataFailedAction(name, sourceKey, destKey, failedIteration, context));
+    return ActionPtr(new TestPartDataFailedAction(name, sourceKey, destKey, failedIteration, context, state));
 }
 
 }

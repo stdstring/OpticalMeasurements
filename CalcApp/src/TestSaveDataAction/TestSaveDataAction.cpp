@@ -41,8 +41,8 @@ void SaveData(QString const &filename, QStringListContextItem *item, int start, 
 
 }
 
-TestSaveDataAction::TestSaveDataAction(QString const &actionName, QString const &key, QString const &filename, ContextPtr context) :
-    IAction(context),
+TestSaveDataAction::TestSaveDataAction(QString const &actionName, QString const &key, QString const &filename, ContextPtr context, ExecutionStatePtr state) :
+    IAction(context, state),
     _actionName(actionName),
     _key(key),
     _filename(filename)

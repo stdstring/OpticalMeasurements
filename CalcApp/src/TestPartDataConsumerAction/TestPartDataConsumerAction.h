@@ -12,7 +12,7 @@ namespace CalcApp
 class TestPartDataConsumerAction : public IAction
 {
 public:
-    TestPartDataConsumerAction(QString const &name, QString const &key, QString const &filename, ContextPtr context);
+    TestPartDataConsumerAction(QString const &name, QString const &key, QString const &filename, ContextPtr context, ExecutionStatePtr state);
 
     virtual QString GetName() override;
     //virtual void StartAction(Context &context) override;

@@ -13,6 +13,7 @@
 #include "Common/ActionChainFactory.h"
 #include "Common/ActionsConfig.h"
 #include "Common/Context.h"
+#include "Common/ExecutionState.h"
 #include "Common/ExceptionData.h"
 #include "Common/IAction.h"
 #include "Common/ServiceLocator.h"
@@ -52,8 +53,11 @@ QStringList ActionManager::Create(QString const &chainName)
             throw std::logic_error("Action's chain isn't empty");
     _runningCount = 0;
     _hasAborted = false;
-    ActionChainDef const &chain = FindActionChain(_serviceLocator.get()->GetConfig()->Actions, chainName);
-    QList<ActionPtr> actions = ActionChainFactory::Create(chain, _serviceLocator, _context);
+    MainConfigPtr config = _serviceLocator.get()->GetConfig();
+    ITransportFactory *transportFactory = _serviceLocator.get()->GetStorage()->GetTransport();
+    ActionChainDef const &chain = FindActionChain(config->Actions, chainName);
+    ExecutionStatePtr executionState(std::make_shared<ExecutionState>(transportFactory, config.get()->Transport));
+    QList<ActionPtr> actions = ActionChainFactory::Create(chain, _serviceLocator, _context, executionState);
     std::function<std::shared_ptr<ActionExecuter>(ActionPtr)> executerFactory = [this](ActionPtr action)
     {
         std::shared_ptr<ActionExecuter> executer(new ActionExecuter(action));
@@ -106,8 +110,6 @@ void ActionManager::ProcessActionCompleted(QString name)
     emit ActionCompleted(name);
     _runningCount--;
     FinishActionChain();
-    /*if (_runningCount == 0)
-        emit (_hasAborted ? ActionChainAborted() : ActionChainCompleted());*/
 }
 
 void ActionManager::ProcessActionAborted(QString name)
@@ -116,8 +118,6 @@ void ActionManager::ProcessActionAborted(QString name)
     _hasAborted = true;
     _runningCount--;
     FinishActionChain();
-    /*if (_runningCount == 0)
-        emit ActionChainAborted();*/
 }
 
 void ActionManager::ProcessActionFailed(QString name, ExceptionData exception)
@@ -127,8 +127,6 @@ void ActionManager::ProcessActionFailed(QString name, ExceptionData exception)
     Stop();
     _runningCount--;
     FinishActionChain();
-    /*if (_runningCount == 0)
-        emit ActionChainAborted();*/
 }
 
 void ActionManager::FinishActionChain()

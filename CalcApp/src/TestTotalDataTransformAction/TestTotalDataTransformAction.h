@@ -12,7 +12,7 @@ namespace CalcApp
 class TestTotalDataTransformAction : public IAction
 {
 public:
-    TestTotalDataTransformAction(QString const &name, QString const &sourceKey, QString const &destKey, ContextPtr context);
+    TestTotalDataTransformAction(QString const &name, QString const &sourceKey, QString const &destKey, ContextPtr context, ExecutionStatePtr state);
 
     virtual QString GetName() override;
     //virtual void StartAction(Context &context) override;

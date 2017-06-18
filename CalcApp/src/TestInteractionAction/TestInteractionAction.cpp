@@ -11,6 +11,7 @@
 #include "Common/CommonDefs.h"
 #include "Common/Context.h"
 #include "Common/ExceptionData.h"
+#include "Common/ExecutionState.h"
 #include "Common/IAction.h"
 #include "Common/ITransportFactory.h"
 #include "Common/Message.h"
@@ -36,14 +37,11 @@ void ProcessData(QStringListContextItem *item, QByteArray const &data)
 
 }
 
-TestInteractionAction::TestInteractionAction(QString const &name, QString const &key, ITransportFactory *factory, TransportConfig const &config, ContextPtr context) :
-    IAction(context),
+TestInteractionAction::TestInteractionAction(QString const &name, QString const &key, ContextPtr context, ExecutionStatePtr state) :
+    IAction(context, state),
     _name(name),
     _key(key),
-    _factory(factory),
-    _config(config),
-    _transport(nullptr),
-    _state(ExecutionState::STARTED)
+    _state(InteractionState::STARTED)
 {
     context.get()->Set(_key, std::make_shared<QStringListContextItem>());
 }
@@ -63,27 +61,28 @@ QString TestInteractionAction::GetName()
 
 void TestInteractionAction::ProcessStartImpl()
 {
-    // TODO (std_string) : think about place of creation and hold of transport
-    _transport = _factory->Create(_config, this);
-    QObject::connect(_transport, &ITransport::ResponseReceived, this, &TestInteractionAction::ProcessResponseReceived);
-    QObject::connect(_transport, &ITransport::DataReceived, this, &TestInteractionAction::ProcessDataReceived);
-    QObject::connect(_transport, &ITransport::DataProcessFailed, this, &TestInteractionAction::ProcessDataProcessFailed);
-    QObject::connect(_transport, &ITransport::EventReceived, this, &TestInteractionAction::ProcessEventReceived);
-    _transport->Connect();
-    _transport->Send(std::make_shared<Message>(MessageType::REQUEST, StartCommand.toUtf8()));
+    TransportPtr transport = GetExecutionState().get()->GetTransport();
+    QObject::connect(transport.get(), &ITransport::ResponseReceived, this, &TestInteractionAction::ProcessResponseReceived);
+    QObject::connect(transport.get(), &ITransport::DataReceived, this, &TestInteractionAction::ProcessDataReceived);
+    QObject::connect(transport.get(), &ITransport::DataProcessFailed, this, &TestInteractionAction::ProcessDataProcessFailed);
+    QObject::connect(transport.get(), &ITransport::EventReceived, this, &TestInteractionAction::ProcessEventReceived);
+    transport.get()->Connect();
+    transport.get()->Send(std::make_shared<Message>(MessageType::REQUEST, StartCommand.toUtf8()));
 }
 
 void TestInteractionAction::ProcessStopImpl()
 {
-    QObject::disconnect(_transport, &ITransport::ResponseReceived, this, &TestInteractionAction::ProcessResponseReceived);
-    QObject::disconnect(_transport, &ITransport::DataReceived, this, &TestInteractionAction::ProcessDataReceived);
-    QObject::disconnect(_transport, &ITransport::DataProcessFailed, this, &TestInteractionAction::ProcessDataProcessFailed);
-    QObject::disconnect(_transport, &ITransport::EventReceived, this, &TestInteractionAction::ProcessEventReceived);
+    TransportPtr transport = GetExecutionState().get()->GetTransport();
+    QObject::disconnect(transport.get(), &ITransport::ResponseReceived, this, &TestInteractionAction::ProcessResponseReceived);
+    QObject::disconnect(transport.get(), &ITransport::DataReceived, this, &TestInteractionAction::ProcessDataReceived);
+    QObject::disconnect(transport.get(), &ITransport::DataProcessFailed, this, &TestInteractionAction::ProcessDataProcessFailed);
+    QObject::disconnect(transport.get(), &ITransport::EventReceived, this, &TestInteractionAction::ProcessEventReceived);
 }
 
 void TestInteractionAction::CleanupNonFinished()
 {
-    _transport->Send(std::make_shared<Message>(MessageType::REQUEST, StopCommand.toUtf8()));
+    TransportPtr transport = GetExecutionState().get()->GetTransport();
+    transport.get()->Send(std::make_shared<Message>(MessageType::REQUEST, StopCommand.toUtf8()));
 }
 
 void TestInteractionAction::ProcessResponseReceived(MessagePtr message)
@@ -95,7 +94,7 @@ void TestInteractionAction::ProcessResponseReceived(MessagePtr message)
         emit ErrorOccured(exceptionData);
         return;
     }
-    if (ExecutionState::FINISHED == _state)
+    if (InteractionState::FINISHED == _state)
     {
         emit GetContext().get()->DataCompleted(_key);
         emit ActionFinished();
@@ -125,8 +124,9 @@ void TestInteractionAction::ProcessEventReceived(MessagePtr message)
     QString event(QString::fromUtf8(message.get()->GetData()));
     if (FinishEvent == event)
     {
-        _state = ExecutionState::FINISHED;
-        _transport->Send(std::make_shared<Message>(MessageType::REQUEST, StopCommand.toUtf8()));
+        TransportPtr transport = GetExecutionState().get()->GetTransport();
+        _state = InteractionState::FINISHED;
+        transport.get()->Send(std::make_shared<Message>(MessageType::REQUEST, StopCommand.toUtf8()));
     }
 }
 

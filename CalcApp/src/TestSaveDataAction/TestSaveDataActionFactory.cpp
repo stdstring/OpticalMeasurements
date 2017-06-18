@@ -23,7 +23,11 @@ QString TestSaveDataActionFactory::GetType()
     return "TestSaveDataAction";
 }
 
-ActionPtr TestSaveDataActionFactory::Create(QString const &name, const QMultiMap<QString, QString> &args, ServiceLocatorPtr serviceLocator, ContextPtr context)
+ActionPtr TestSaveDataActionFactory::Create(QString const &name,
+                                            QMultiMap<QString, QString> const &args,
+                                            ServiceLocatorPtr serviceLocator,
+                                            ContextPtr context,
+                                            ExecutionStatePtr state)
 {
     const QString keyName = "key";
     const QString filenameName = "filename";
@@ -36,7 +40,7 @@ ActionPtr TestSaveDataActionFactory::Create(QString const &name, const QMultiMap
     if (filenameData.size() != 1)
         throw std::invalid_argument(filenameName.toStdString());
     QString filename = filenameData[0];
-    return ActionPtr(new TestSaveDataAction(name, key, filename, context));
+    return ActionPtr(new TestSaveDataAction(name, key, filename, context, state));
 }
 
 }

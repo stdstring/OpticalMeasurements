@@ -12,7 +12,7 @@ namespace CalcApp
 class ActionChainFactory
 {
 public:
-    static QList<ActionPtr> Create(ActionChainDef const &chainDef, ServiceLocatorPtr serviceLocator, ContextPtr context);
+    static QList<ActionPtr> Create(ActionChainDef const &chainDef, ServiceLocatorPtr serviceLocator, ContextPtr context, ExecutionStatePtr state);
 
     ActionChainFactory() = delete;
     ActionChainFactory(ActionChainFactory const&) = delete;

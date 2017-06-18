@@ -43,8 +43,13 @@ void Process(IntContextItem *sourceItem, IntContextItem *destItem, int start, in
 
 }
 
-TestPartDataFailedAction::TestPartDataFailedAction(QString const &name, QString const &sourceKey, QString const &destKey, int failedIteration, ContextPtr context) :
-    IAction(context),
+TestPartDataFailedAction::TestPartDataFailedAction(QString const &name,
+                                                   QString const &sourceKey,
+                                                   QString const &destKey,
+                                                   int failedIteration,
+                                                   ContextPtr context,
+                                                   ExecutionStatePtr state) :
+    IAction(context, state),
     _name(name),
     _sourceKey(sourceKey),
     _destKey(destKey),

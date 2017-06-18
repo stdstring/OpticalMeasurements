@@ -19,7 +19,11 @@ public:
     explicit TestPartDataConsumerActionFactory(QObject *parent = nullptr);
 
     virtual QString GetType() override;
-    virtual ActionPtr Create(QString const &name, QMultiMap<QString, QString> const &args, ServiceLocatorPtr serviceLocator, ContextPtr context) override;
+    virtual ActionPtr Create(QString const &name,
+                             QMultiMap<QString, QString> const &args,
+                             ServiceLocatorPtr serviceLocator,
+                             ContextPtr context,
+                             ExecutionStatePtr state) override;
 };
 
 }

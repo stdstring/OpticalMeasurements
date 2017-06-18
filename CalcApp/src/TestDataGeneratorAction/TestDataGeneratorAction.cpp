@@ -26,8 +26,8 @@ void ProcessValue(IntContextItem *item, int value)
 
 }
 
-TestDataGeneratorAction::TestDataGeneratorAction(QString const &name, QString const &key, int sleepTime, int dataCount, ContextPtr context) :
-    IAction(context),
+TestDataGeneratorAction::TestDataGeneratorAction(QString const &name, QString const &key, int sleepTime, int dataCount, ContextPtr context, ExecutionStatePtr state) :
+    IAction(context, state),
     _name(name),
     _key(key),
     _sleepTime(sleepTime)
