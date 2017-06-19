@@ -70,7 +70,7 @@ TcpTransport::TcpTransport(TransportConfig const &transportConfig, QObject *pare
 
 void TcpTransport::Connect()
 {
-    if (_socket->state() != QAbstractSocket::UnconnectedState)
+    if (_socket->state() == QAbstractSocket::UnconnectedState)
         _socket->connectToHost(QHostAddress(_address), _port);
 }
 

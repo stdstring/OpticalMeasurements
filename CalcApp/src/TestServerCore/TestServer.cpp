@@ -136,6 +136,8 @@ void TestServer::Stop()
 
 void TestServer::ProcessTimeout()
 {
+    if (_tcpSocket->state() != QAbstractSocket::SocketState::ConnectedState)
+        return;
     // TODO (std_string) : use more functional approach
     if (_messages.first().get()->GetType() == MessageType::DATA)
     {
@@ -160,6 +162,8 @@ void TestServer::TcpClientConnected()
 
 void TestServer::ProcessClientRead()
 {
+    if (_tcpSocket->state() != QAbstractSocket::SocketState::ConnectedState)
+        return;
     forever
     {
         QPair<MessageHeader, QByteArray> data = ReadTcpData(_tcpSocket, _tcpMessageHeader);
@@ -190,8 +194,16 @@ void TestServer::ProcessClientRead()
 
 void TestServer::TcpClientDisconnected()
 {
+    if (_messages.empty())
+        _logger.get()->WriteInfo("Client disconnected. All messages are processed");
+    else
+    {
+        _logger.get()->WriteWarning(QString("Client disconnected. Not all messages are processed (%1 left)").arg(_messages.size()));
+        _messages.clear();
+    }
     QObject::disconnect(_tcpSocket, &QTcpSocket::disconnected, this, &TestServer::TcpClientDisconnected);
     QObject::disconnect(_tcpSocket, &QTcpSocket::readyRead, this, &TestServer::ProcessClientRead);
+    _timer->stop();
 }
 
 void TestServer::CheckAndStartTimer()
