@@ -6,6 +6,7 @@ SUBDIRS += src/Common \
            src/TestServerCore \
            src/TestServerApp \
            src/MainApp \
+           # Test actions
            src/TestSaveDataAction \
            src/TestInteractionAction \
            src/TestDataGeneratorAction \
@@ -14,7 +15,9 @@ SUBDIRS += src/Common \
            src/TestTotalDataTransformAction \
            src/TestPartDataTransformAction \
            src/TestTotalDataFailedAction \
-           src/TestPartDataFailedAction
+           src/TestPartDataFailedAction \
+           # Stage2 actions
+           src/SaveVertexDataAction
 
 # tests
 #SUBDIRS += tests/TransportTests
