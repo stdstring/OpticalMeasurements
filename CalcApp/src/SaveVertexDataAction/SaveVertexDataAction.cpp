@@ -1,15 +1,15 @@
-#include <QDateTime>
+//#include <QDateTime>
 #include <QFile>
-#include <QIODevice>
+//#include <QIODevice>
 #include <QObject>
-#include <QReadLocker>
-#include <QString>
-#include <QTextStream>
+//#include <QReadLocker>
+//#include <QString>
+//#include <QTextStream>
 
 #include "Common/CommonDefs.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
-#include "TestSaveDataAction.h"
+#include "SaveVertexDataAction.h"
 
 namespace CalcApp
 {
@@ -17,7 +17,7 @@ namespace CalcApp
 namespace
 {
 
-void SaveData(QTextStream &stream, QStringListContextItem *item, int start)
+/*void SaveData(QTextStream &stream, QStringListContextItem *item, int start)
 {
     QReadLocker locker(&item->Lock);
     for (int index = start; index < item->Data.length(); ++index)
@@ -37,11 +37,11 @@ void SaveData(QString const &filename, QStringListContextItem *item, int start, 
     SaveData(stream, item, start);
     if (lastSave)
         stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : finish" << endl;
-}
+}*/
 
 }
 
-TestSaveDataAction::TestSaveDataAction(QString const &actionName, QString const &key, QString const &filename, ContextPtr context, ExecutionStatePtr state) :
+SaveVertexDataAction::SaveVertexDataAction(QString const &actionName, QString const &key, QString const &filename, ContextPtr context, ExecutionStatePtr state) :
     IAction(context, state),
     _actionName(actionName),
     _key(key),
@@ -49,20 +49,20 @@ TestSaveDataAction::TestSaveDataAction(QString const &actionName, QString const 
 {
 }
 
-QString TestSaveDataAction::GetName()
+QString SaveVertexDataAction::GetName()
 {
     return _actionName;
 }
 
-/*void TestSaveDataAction::StartAction(Context &context)
+/*void SaveVertexDataAction::StartAction(Context &context)
 {
 }*/
 
-/*void TestSaveDataAction::Run(Context &context)
+/*void SaveVertexDataAction::Run(Context &context)
 {
 }*/
 
-void TestSaveDataAction::ProcessStartImpl()
+void SaveVertexDataAction::ProcessStartImpl()
 {
     ContextPtr context = GetContext();
     QObject::connect(context.get(), &Context::DataChanged, this, [this](QString const &key){
@@ -76,32 +76,32 @@ void TestSaveDataAction::ProcessStartImpl()
     _index = -1;
 }
 
-void TestSaveDataAction::ProcessStopImpl()
+void SaveVertexDataAction::ProcessStopImpl()
 {
 }
 
-void TestSaveDataAction::CleanupNonFinished()
+void SaveVertexDataAction::CleanupNonFinished()
 {
     QFile::remove(_filename);
 }
 
-void TestSaveDataAction::ProcessData()
+void SaveVertexDataAction::ProcessData()
 {
     ProcessData(false);
 }
 
-void TestSaveDataAction::FinishProcessData()
+void SaveVertexDataAction::FinishProcessData()
 {
     ProcessData(true);
     emit ActionFinished();
 }
 
-void TestSaveDataAction::ProcessData(bool last)
+void SaveVertexDataAction::ProcessData(bool last)
 {
-    ContextPtr context = GetContext();
+    /*ContextPtr context = GetContext();
     QStringListContextItem *item = context.get()->GetValue<QStringListContextItem>(_key);
     SaveData(_filename, item, _index + 1, last);
-    _index = item->Data.length() - 1;
+    _index = item->Data.length() - 1;*/
 }
 
 }
