@@ -19,6 +19,9 @@ namespace
 
 typedef QListContextItem<Vertex3D> Vertex3DContextItem;
 
+// TODO (std_string) : think about location and value of this const
+constexpr int RealNumberPrecision = 8;
+
 void SaveData(QTextStream &stream, Vertex3DContextItem *item, int start)
 {
     QReadLocker locker(&item->Lock);
@@ -36,6 +39,9 @@ void SaveData(QString const &filename, Vertex3DContextItem *item, int start)
     QTextStream stream(&file);
     // we using C locale
     stream.setLocale(QLocale::c());
+    // set real number params
+    stream.setRealNumberNotation(QTextStream::RealNumberNotation::FixedNotation);
+    stream.setRealNumberPrecision(RealNumberPrecision);
     if (start == 0)
         stream << "# vertex 3D data" << endl;
     SaveData(stream, item, start);
