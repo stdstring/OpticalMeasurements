@@ -1,16 +1,17 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2017-06-27T21:42:04
-#
-#-------------------------------------------------
+include( ../../common.pri )
+include( ../../lib.pri )
 
-QT       += core gui
+QT += core
 
-TARGET = DataReceiverAction
+TARGET = DataReceiverAction$${LIB_SUFFIX}
 TEMPLATE = lib
 CONFIG += plugin
 
-DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
+DEFINES += DATA_RECEIVER_ACTION_LIBRARY
+
+LIBS += -lCommon
+
+#DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -23,10 +24,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES +=
+SOURCES += DataReceiverAction.cpp \
+           DataReceiverActionFactory.cpp
 
-HEADERS +=
-DISTFILES += DataReceiverAction.json 
+HEADERS += DataReceiverAction.h \
+           DataReceiverActionFactory.h
+
+DISTFILES += DataReceiverAction.json
 
 unix {
     target.path = /usr/lib
