@@ -18,7 +18,7 @@ SUBDIRS += src/Common \
            src/TestPartDataFailedAction \
            # Stage2 actions
            src/SaveVertexDataAction \
-    src/DataReceiverAction
+           src/DataReceiverAction
 
 # tests
 #SUBDIRS += tests/TransportTests
