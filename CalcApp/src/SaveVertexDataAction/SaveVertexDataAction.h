@@ -9,6 +9,16 @@
 namespace CalcApp
 {
 
+struct Vertex3D
+{
+public:
+    Vertex3D(double x, double y, double z);
+
+    double X;
+    double Y;
+    double Z;
+};
+
 class SaveVertexDataAction : public IAction
 {
 public:
@@ -26,7 +36,7 @@ protected:
 private:
     void ProcessData();
     void FinishProcessData();
-    void ProcessData(bool last);
+    void ProcessDataImpl();
 
 private:
     QString _actionName;

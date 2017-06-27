@@ -1,10 +1,10 @@
-//#include <QDateTime>
 #include <QFile>
-//#include <QIODevice>
+#include <QIODevice>
+#include <QLocale>
 #include <QObject>
-//#include <QReadLocker>
-//#include <QString>
-//#include <QTextStream>
+#include <QReadLocker>
+#include <QString>
+#include <QTextStream>
 
 #include "Common/CommonDefs.h"
 #include "Common/Context.h"
@@ -17,28 +17,34 @@ namespace CalcApp
 namespace
 {
 
-/*void SaveData(QTextStream &stream, QStringListContextItem *item, int start)
+typedef QListContextItem<Vertex3D> Vertex3DContextItem;
+
+void SaveData(QTextStream &stream, Vertex3DContextItem *item, int start)
 {
     QReadLocker locker(&item->Lock);
     for (int index = start; index < item->Data.length(); ++index)
     {
-        QString value  = item->Data[index];
-        stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : " << value << endl;
+        Vertex3D value  = item->Data[index];
+        stream << value.X << " " << value.Y << " " << value.Z << endl;
     }
 }
 
-void SaveData(QString const &filename, QStringListContextItem *item, int start, bool lastSave)
+void SaveData(QString const &filename, Vertex3DContextItem *item, int start)
 {
     QFile file(filename);
     file.open(start == 0 ? QIODevice::WriteOnly : QIODevice::WriteOnly | QIODevice::Append);
     QTextStream stream(&file);
+    // we using C locale
+    stream.setLocale(QLocale::c());
     if (start == 0)
-        stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : start" << endl;
+        stream << "# vertex 3D data" << endl;
     SaveData(stream, item, start);
-    if (lastSave)
-        stream << QDateTime::currentDateTime().toString("dd-MM-yyyy HH:mm:ss:zzz") << " : finish" << endl;
-}*/
+}
 
+}
+
+Vertex3D::Vertex3D(double x, double y, double z) : X(x), Y(y), Z(z)
+{
 }
 
 SaveVertexDataAction::SaveVertexDataAction(QString const &actionName, QString const &key, QString const &filename, ContextPtr context, ExecutionStatePtr state) :
@@ -87,21 +93,21 @@ void SaveVertexDataAction::CleanupNonFinished()
 
 void SaveVertexDataAction::ProcessData()
 {
-    ProcessData(false);
+    ProcessDataImpl();
 }
 
 void SaveVertexDataAction::FinishProcessData()
 {
-    ProcessData(true);
+    ProcessDataImpl();
     emit ActionFinished();
 }
 
-void SaveVertexDataAction::ProcessData(bool last)
+void SaveVertexDataAction::ProcessDataImpl()
 {
-    /*ContextPtr context = GetContext();
-    QStringListContextItem *item = context.get()->GetValue<QStringListContextItem>(_key);
-    SaveData(_filename, item, _index + 1, last);
-    _index = item->Data.length() - 1;*/
+    ContextPtr context = GetContext();
+    Vertex3DContextItem *item = context.get()->GetValue<Vertex3DContextItem>(_key);
+    SaveData(_filename, item, _index + 1);
+    _index = item->Data.length() - 1;
 }
 
 }
