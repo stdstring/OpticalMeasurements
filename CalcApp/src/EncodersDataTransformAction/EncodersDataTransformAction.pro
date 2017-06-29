@@ -1,16 +1,17 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2017-06-29T11:08:55
-#
-#-------------------------------------------------
+include( ../../common.pri )
+include( ../../lib.pri )
 
-QT       += core gui
+QT       += core
 
-TARGET = EncodersDataTransformAction
+TARGET = EncodersDataTransformAction$${LIB_SUFFIX}
 TEMPLATE = lib
 CONFIG += plugin
 
-DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
+DEFINES += ENCODERS_DATA_TRANSFORM_ACTION_LIBRARY
+
+LIBS += -lCommon
+
+#DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -23,10 +24,28 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES +=
+SOURCES += EncodersDataTransformAction.cpp \
+           EncodersDataTransformActionFactory.cpp
 
-HEADERS +=
-DISTFILES += EncodersDataTransformAction.json 
+#HEADERS += ../../include/Common/Context.h \
+#           ../../include/Common/IAction.h \
+#           ../../include/Common/IActionFactory.h \
+#           ../../include/Common/IComponentInfo.h \
+#           ../../include/Common/MainConfig.h \
+#           TestPartDataTransformAction.h \
+#           TestPartDataTransformActionFactory.h
+
+HEADERS += ../../include/Common/Data/EncodersData.h \
+           ../../include/Common/Data/Vertex3D.h \
+           ../../include/Common/Context.h \
+           ../../include/Common/IAction.h \
+           ../../include/Common/IActionFactory.h \
+           ../../include/Common/IComponentInfo.h \
+           ../../include/Common/MainConfig.h \
+           EncodersDataTransformAction.h \
+           EncodersDataTransformActionFactory.h
+
+DISTFILES += EncodersDataTransformAction.json
 
 unix {
     target.path = /usr/lib

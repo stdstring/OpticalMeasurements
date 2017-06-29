@@ -38,6 +38,8 @@ public:
 template <typename TItem> class QListContextItem : public IContextItem
 {
 public:
+    explicit QListContextItem(QObject *parent = nullptr) : IContextItem(parent) {}
+
     QList<TItem> Data;
 };
 
