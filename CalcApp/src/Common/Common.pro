@@ -8,9 +8,12 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 INCLUDEPATH += ../../include/Common
+INCLUDEPATH += ../../include/Common/Data
 INCLUDEPATH += ../../include/Common/Logger
 
-SOURCES += Logger/LoggerService.cpp \
+SOURCES += Data/EncodersData.cpp \
+           Data/Vertex3D.cpp \
+           Logger/LoggerService.cpp \
            Logger/QMessageLoggerWrapper.cpp \
            Logger/ConsoleLogger.cpp \
            ComponentLoader.cpp \
@@ -24,7 +27,9 @@ SOURCES += Logger/LoggerService.cpp \
            IAction.cpp \
            ExecutionState.cpp
 
-HEADERS += ../../include/Common/Exception/NotImplementedException.h \
+HEADERS += ../../include/Common/Data/EncodersData.h \
+           ../../include/Common/Data/Vertex3D.h \
+           ../../include/Common/Exception/NotImplementedException.h \
            ../../include/Common/Logger/ILogger.h \
            ../../include/Common/Logger/LoggerService.h \
            ../../include/Common/Logger/NullLogger.h \

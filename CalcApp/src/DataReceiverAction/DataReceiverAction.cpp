@@ -9,6 +9,7 @@
 #include <stdexcept>
 
 #include "Common/CommonDefs.h"
+#include "Common/Data/EncodersData.h"
 #include "Common/Context.h"
 #include "Common/ExceptionData.h"
 #include "Common/ExecutionState.h"

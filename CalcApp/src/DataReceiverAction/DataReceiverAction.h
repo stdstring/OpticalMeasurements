@@ -12,10 +12,6 @@
 namespace CalcApp
 {
 
-struct EncodersData
-{
-};
-
 class DataReceiverAction : public IAction
 {
 public:

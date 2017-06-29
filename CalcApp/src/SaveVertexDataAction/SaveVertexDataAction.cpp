@@ -7,6 +7,7 @@
 #include <QTextStream>
 
 #include "Common/CommonDefs.h"
+#include "Common/Data/Vertex3D.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
 #include "SaveVertexDataAction.h"
@@ -47,10 +48,6 @@ void SaveData(QString const &filename, Vertex3DContextItem *item, int start)
     SaveData(stream, item, start);
 }
 
-}
-
-Vertex3D::Vertex3D(double x, double y, double z) : X(x), Y(y), Z(z)
-{
 }
 
 SaveVertexDataAction::SaveVertexDataAction(QString const &actionName, QString const &key, QString const &filename, ContextPtr context, ExecutionStatePtr state) :
