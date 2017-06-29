@@ -12,6 +12,10 @@
 namespace CalcApp
 {
 
+struct EncodersData
+{
+};
+
 class DataReceiverAction : public IAction
 {
 public:
@@ -26,9 +30,18 @@ protected:
     virtual void ProcessStopImpl() override;
     virtual void CleanupNonFinished() override;
 
+private slots:
+    void ProcessResponseReceived(MessagePtr message);
+    void ProcessDataReceived(MessagePtr message);
+    void ProcessDataProcessFailed();
+    void ProcessEventReceived(MessagePtr message);
+
 private:
     QString _name;
     QString _key;
+    // TODO (std_string) : probably move into separate state object
+    enum ExchangeState {STARTED = 0, FINISHED = 1};
+    ExchangeState _state;
 };
 
 }

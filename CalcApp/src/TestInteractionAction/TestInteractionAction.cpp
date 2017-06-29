@@ -13,7 +13,6 @@
 #include "Common/ExceptionData.h"
 #include "Common/ExecutionState.h"
 #include "Common/IAction.h"
-#include "Common/ITransportFactory.h"
 #include "Common/Message.h"
 #include "Common/TransportConfig.h"
 #include "TestInteractionAction.h"
