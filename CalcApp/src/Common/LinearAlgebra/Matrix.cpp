@@ -1,11 +1,23 @@
+#define ARMA_USE_CXX11
+
 #include<QtGlobal>
 
 #include <initializer_list>
+
+#include <armadillo>
 
 #include "Matrix.h"
 
 namespace CalcApp
 {
+
+class Matrix::MatrixImpl
+{
+public:
+    arma::Mat<double> Matrix;
+    unsigned int ColumnCount;
+    unsigned int RowCount;
+};
 
 Matrix::Matrix(unsigned int columnCount, unsigned int rowCount, double fillValue)
 {
@@ -26,23 +38,22 @@ Matrix::Matrix(std::initializer_list<std::initializer_list<double>> const &data)
 
 unsigned int Matrix::GetColumnCount() const
 {
+    return _impl.get()->ColumnCount;
 }
 
 unsigned int Matrix::GetRowCount() const
 {
+    return _impl.get()->RowCount;
 }
 
 double Matrix::GetValue(unsigned row, unsigned column) const
 {
-    Q_UNUSED(row);
-    Q_UNUSED(column);
+    return _impl.get()->Matrix.at(row, column);
 }
 
 void Matrix::SetValue(unsigned row, unsigned column, double value)
 {
-    Q_UNUSED(row);
-    Q_UNUSED(column);
-    Q_UNUSED(value);
+    _impl.get()->Matrix.at(row, column) = value;
 }
 
 Matrix operator+(Matrix const &left, Matrix const &right)

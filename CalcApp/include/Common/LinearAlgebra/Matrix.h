@@ -1,6 +1,7 @@
 #pragma once
 
 #include <initializer_list>
+#include <memory>
 
 namespace CalcApp
 {
@@ -21,6 +22,10 @@ public:
     unsigned int GetRowCount() const;
     double GetValue(unsigned row, unsigned column) const;
     void SetValue(unsigned row, unsigned column, double value);
+
+private:
+    class MatrixImpl;
+    std::shared_ptr<MatrixImpl> _impl;
 };
 
 Matrix operator+(Matrix const &left, Matrix const &right);
