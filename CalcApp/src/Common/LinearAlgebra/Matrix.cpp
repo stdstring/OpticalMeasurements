@@ -3,6 +3,7 @@
 #include<QtGlobal>
 
 #include <initializer_list>
+#include <stdexcept>
 
 #include <armadillo>
 
@@ -11,39 +12,47 @@
 namespace CalcApp
 {
 
-class Matrix::MatrixImpl
+class MatrixImpl
 {
 public:
+    explicit MatrixImpl(arma::Mat<double> const &matrix);
+
     arma::Mat<double> Matrix;
-    unsigned int ColumnCount;
-    unsigned int RowCount;
 };
 
-Matrix::Matrix(unsigned int columnCount, unsigned int rowCount, double fillValue)
+MatrixImpl::MatrixImpl(arma::Mat<double> const &matrix) :
+    Matrix(matrix)
 {
-    Q_UNUSED(columnCount);
-    Q_UNUSED(rowCount);
-    Q_UNUSED(fillValue);
 }
 
-Matrix::Matrix(std::initializer_list<double> const &data)
+Matrix::Matrix(unsigned int rowCount, unsigned int columnCount, double fillValue) :
+     _impl(std::make_shared<MatrixImpl>(arma::Mat<double>(rowCount, columnCount)))
 {
-    Q_UNUSED(data);
+    _impl.get()->Matrix.fill(fillValue);
 }
 
-Matrix::Matrix(std::initializer_list<std::initializer_list<double>> const &data)
+Matrix::Matrix(std::initializer_list<double> const &data) :
+    _impl(std::make_shared<MatrixImpl>(arma::Mat<double>(data)))
 {
-    Q_UNUSED(data);
+}
+
+Matrix::Matrix(std::initializer_list<std::initializer_list<double>> const &data) :
+    _impl(std::make_shared<MatrixImpl>(arma::Mat<double>(data)))
+{
+}
+
+Matrix::Matrix(std::shared_ptr<MatrixImpl> impl) : _impl(impl)
+{
 }
 
 unsigned int Matrix::GetColumnCount() const
 {
-    return _impl.get()->ColumnCount;
+    return _impl.get()->Matrix.n_cols;
 }
 
 unsigned int Matrix::GetRowCount() const
 {
-    return _impl.get()->RowCount;
+    return _impl.get()->Matrix.n_rows;
 }
 
 double Matrix::GetValue(unsigned row, unsigned column) const
@@ -56,40 +65,62 @@ void Matrix::SetValue(unsigned row, unsigned column, double value)
     _impl.get()->Matrix.at(row, column) = value;
 }
 
+std::shared_ptr<MatrixImpl> Matrix::GetMatrixImpl() const
+{
+    return _impl;
+}
+
 Matrix operator+(Matrix const &left, Matrix const &right)
 {
-    Q_UNUSED(left);
-    Q_UNUSED(right);
+    if (left.GetRowCount() != right.GetRowCount())
+        throw std::invalid_argument("RowCount");
+    if (left.GetColumnCount() != right.GetColumnCount())
+        throw std::invalid_argument("ColumnCount");
+    return Matrix(std::make_shared<MatrixImpl>(left.GetMatrixImpl().get()->Matrix + right.GetMatrixImpl().get()->Matrix));
 }
 
 Matrix operator-(Matrix const &left, Matrix const &right)
 {
-    Q_UNUSED(left);
-    Q_UNUSED(right);
+    if (left.GetRowCount() != right.GetRowCount())
+        throw std::invalid_argument("RowCount");
+    if (left.GetColumnCount() != right.GetColumnCount())
+        throw std::invalid_argument("ColumnCount");
+    return Matrix(std::make_shared<MatrixImpl>(left.GetMatrixImpl().get()->Matrix - right.GetMatrixImpl().get()->Matrix));
 }
 
 Matrix operator*(Matrix const &left, Matrix const &right)
 {
-    Q_UNUSED(left);
-    Q_UNUSED(right);
+    if (left.GetColumnCount() != right.GetRowCount())
+        throw std::invalid_argument("ColumnCount/RowCount");
+    return Matrix(std::make_shared<MatrixImpl>(left.GetMatrixImpl().get()->Matrix * right.GetMatrixImpl().get()->Matrix));
 }
 
 Matrix& operator+=(Matrix& left, Matrix const& right)
 {
-    Q_UNUSED(left);
-    Q_UNUSED(right);
+    if (left.GetRowCount() != right.GetRowCount())
+        throw std::invalid_argument("RowCount");
+    if (left.GetColumnCount() != right.GetColumnCount())
+        throw std::invalid_argument("ColumnCount");
+    left.GetMatrixImpl().get()->Matrix += right.GetMatrixImpl().get()->Matrix;
+    return left;
 }
 
 Matrix& operator-=(Matrix& left, Matrix const& right)
 {
-    Q_UNUSED(left);
-    Q_UNUSED(right);
+    if (left.GetRowCount() != right.GetRowCount())
+        throw std::invalid_argument("RowCount");
+    if (left.GetColumnCount() != right.GetColumnCount())
+        throw std::invalid_argument("ColumnCount");
+    left.GetMatrixImpl().get()->Matrix -= right.GetMatrixImpl().get()->Matrix;
+    return left;
 }
 
 Matrix& operator*=(Matrix& left, Matrix const& right)
 {
-    Q_UNUSED(left);
-    Q_UNUSED(right);
+    if (left.GetColumnCount() != right.GetRowCount())
+        throw std::invalid_argument("ColumnCount/RowCount");
+    left.GetMatrixImpl().get()->Matrix *= right.GetMatrixImpl().get()->Matrix;
+    return left;
 }
 
 }

@@ -6,15 +6,19 @@
 namespace CalcApp
 {
 
+class MatrixImpl;
+
 class Matrix
 {
 public:
-    Matrix(unsigned int columnCount, unsigned int rowCount, double fillValue = 0);
+    Matrix(unsigned int rowCount, unsigned int columnCount, double fillValue = 0);
     explicit Matrix(std::initializer_list<double> const &data);
     explicit Matrix(std::initializer_list<std::initializer_list<double>> const &data);
+    explicit Matrix(std::shared_ptr<MatrixImpl> impl);
+
     // TODO (std_string) : think about default/custom impl
-    explicit Matrix(Matrix const &other) = default;
-    explicit Matrix(Matrix &&other) = default;
+    Matrix(Matrix const &other) = default;
+    Matrix(Matrix &&other) = default;
     Matrix& operator=(Matrix const &other) = default;
     Matrix& operator=(Matrix &&other) = default;
 
@@ -22,9 +26,9 @@ public:
     unsigned int GetRowCount() const;
     double GetValue(unsigned row, unsigned column) const;
     void SetValue(unsigned row, unsigned column, double value);
+    std::shared_ptr<MatrixImpl> GetMatrixImpl() const;
 
 private:
-    class MatrixImpl;
     std::shared_ptr<MatrixImpl> _impl;
 };
 
