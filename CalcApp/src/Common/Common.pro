@@ -19,6 +19,7 @@ INCLUDEPATH += ../../../external/armadillo/include
 SOURCES += Data/EncodersData.cpp \
            Data/Vertex3D.cpp \
            LinearAlgebra/Matrix.cpp \
+           LinearAlgebra/MatrixFactory.cpp \
            Logger/LoggerService.cpp \
            Logger/QMessageLoggerWrapper.cpp \
            Logger/ConsoleLogger.cpp \
@@ -37,6 +38,7 @@ HEADERS += ../../include/Common/Data/EncodersData.h \
            ../../include/Common/Data/Vertex3D.h \
            ../../include/Common/Exception/NotImplementedException.h \
            ../../include/Common/LinearAlgebra/Matrix.h \
+           ../../include/Common/LinearAlgebra/MatrixFactory.h \
            ../../include/Common/Logger/ILogger.h \
            ../../include/Common/Logger/LoggerService.h \
            ../../include/Common/Logger/NullLogger.h \
