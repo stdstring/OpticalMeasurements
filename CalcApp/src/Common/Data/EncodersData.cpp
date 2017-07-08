@@ -3,6 +3,7 @@
 namespace CalcApp
 {
 
+// TODO (std_string) : This set of encoders is specific for Stage2 only. Think about location of it
 EncodersData::EncodersData() :
     GlobalRotationX(0),
     GlobalTransferX(0),
@@ -14,6 +15,21 @@ EncodersData::EncodersData() :
     LocalTransfer(0),
     SensorTransfer(0),
     Value(0)
+{
+}
+
+// TODO (std_string) : This set of encoders is specific for Stage2 only. Think about location of it
+EncodersConstraints::EncodersConstraints() :
+    GlobalTransferStep(0),
+    GlobalTransferMaxValue(0),
+    GlobalRotationStep(0),
+    GlobalRotationLength(0),
+    LocalTransferStep(0),
+    LocalTransferMaxValue(0),
+    LocalRotationStep(0),
+    LocalRotationLength(0),
+    SensorTransferStep(0),
+    SensorTransferMaxValue(0)
 {
 }
 

@@ -3,6 +3,7 @@
 namespace CalcApp
 {
 
+// TODO (std_string) : This set of encoders is specific for Stage2 only. Think about location of it
 struct EncodersData
 {
 public:
@@ -18,6 +19,24 @@ public:
     int LocalTransfer;
     int SensorTransfer;
     int Value;
+};
+
+// TODO (std_string) : This set of encoders is specific for Stage2 only. Think about location of it
+struct EncodersConstraints
+{
+public:
+    EncodersConstraints();
+
+    double GlobalTransferStep;
+    int GlobalTransferMaxValue;
+    double GlobalRotationStep;
+    int GlobalRotationLength;
+    double LocalTransferStep;
+    int LocalTransferMaxValue;
+    double LocalRotationStep;
+    int LocalRotationLength;
+    double SensorTransferStep;
+    int SensorTransferMaxValue;
 };
 
 }
