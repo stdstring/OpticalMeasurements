@@ -33,8 +33,21 @@ const QString FinishEvent("EOF");
 void ProcessData(EncodersDataContextItem *item, QByteArray const &data)
 {
     Q_UNUSED(data);
+    QDataStream stream(data);
+    stream.setVersion(DataStreamVersion);
+    EncodersData encodersData;
+    stream >> encodersData.GlobalRotationX
+           >> encodersData.GlobalTransferX
+           >> encodersData.GlobalRotationY
+           >> encodersData.GlobalTransferY
+           >> encodersData.GlobalRotationZ
+           >> encodersData.GlobalTransferZ
+           >> encodersData.LocalRotation
+           >> encodersData.LocalTransfer
+           >> encodersData.SensorTransfer
+           >> encodersData.Value;
     QWriteLocker locker(&item->Lock);
-    item->Data.append(EncodersData());
+    item->Data.append(encodersData);
 }
 
 }
