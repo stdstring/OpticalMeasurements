@@ -37,6 +37,8 @@ public:
     int LocalRotationLength;
     double SensorTransferStep;
     int SensorTransferMaxValue;
+    double SensorResolution;
+
 };
 
 }

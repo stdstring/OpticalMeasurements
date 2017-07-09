@@ -11,7 +11,10 @@ DEFINES += ENCODERS_DATA_TRANSFORM_ACTION_LIBRARY
 
 LIBS += -lCommon
 
-#DESTDIR = $$[QT_INSTALL_PLUGINS]/generic
+# Armadillo
+#LIBS += -L../../../external/armadillo/lib -larmadillo.dll -lblas -llapack -ltmglib ???
+#LIBS += -L../../../external/armadillo/lib -larmadillo.dll -lblas ???
+LIBS += -L../../../external/armadillo/lib -larmadillo.dll
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -26,14 +29,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += EncodersDataTransformAction.cpp \
            EncodersDataTransformActionFactory.cpp
-
-#HEADERS += ../../include/Common/Context.h \
-#           ../../include/Common/IAction.h \
-#           ../../include/Common/IActionFactory.h \
-#           ../../include/Common/IComponentInfo.h \
-#           ../../include/Common/MainConfig.h \
-#           TestPartDataTransformAction.h \
-#           TestPartDataTransformActionFactory.h
 
 HEADERS += ../../include/Common/Data/EncodersData.h \
            ../../include/Common/Data/Vertex3D.h \

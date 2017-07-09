@@ -13,7 +13,6 @@ INCLUDEPATH += ../../include/Common/Logger
 INCLUDEPATH += ../../include/Common/LinearAlgebra
 
 # Armadillo
-LIBS += -L../../../external/armadillo/lib -larmadillo.dll
 INCLUDEPATH += ../../../external/armadillo/include
 
 SOURCES += Data/EncodersData.cpp \

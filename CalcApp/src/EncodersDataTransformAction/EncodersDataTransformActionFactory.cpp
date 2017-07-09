@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 #include "Common/CommonDefs.h"
+#include "Common/Data/EncodersData.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
 #include "Common/IActionFactory.h"
@@ -41,7 +42,9 @@ ActionPtr EncodersDataTransformActionFactory::Create(QString const &name,
     if (destKeyData.size() != 1)
         throw std::invalid_argument(destKeyName.toStdString());
     QString destKey = destKeyData[0];
-    return ActionPtr(new EncodersDataTransformAction(name, sourceKey, destKey, context, state));
+    // TODO (std_string) : create reading data for encoders constraints
+    EncodersConstraints constraints;
+    return ActionPtr(new EncodersDataTransformAction(name, sourceKey, destKey, constraints, context, state));
 }
 
 }

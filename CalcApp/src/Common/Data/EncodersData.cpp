@@ -29,7 +29,8 @@ EncodersConstraints::EncodersConstraints() :
     LocalRotationStep(0),
     LocalRotationLength(0),
     SensorTransferStep(0),
-    SensorTransferMaxValue(0)
+    SensorTransferMaxValue(0),
+    SensorResolution(0)
 {
 }
 

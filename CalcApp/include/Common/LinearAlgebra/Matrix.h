@@ -28,6 +28,9 @@ public:
     void SetValue(unsigned row, unsigned column, double value);
     std::shared_ptr<MatrixImpl> GetMatrixImpl() const;
 
+    static Matrix CreateRowMatrix(std::initializer_list<double> const &data);
+    static Matrix CreateColumnMatrix(std::initializer_list<double> const &data);
+
 private:
     std::shared_ptr<MatrixImpl> _impl;
 };

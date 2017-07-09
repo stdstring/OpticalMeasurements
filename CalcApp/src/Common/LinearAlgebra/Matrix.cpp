@@ -1,4 +1,11 @@
 #define ARMA_USE_CXX11
+#define ARMA_DONT_USE_LAPACK
+#define ARMA_DONT_USE_BLAS
+#define ARMA_DONT_USE_NEWARP
+#define ARMA_DONT_USE_ARPACK
+#define ARMA_DONT_USE_SUPERLU
+#define ARMA_DONT_USE_HDF5
+#define ARMA_DONT_USE_OPENMP
 
 #include<QtGlobal>
 
@@ -68,6 +75,14 @@ void Matrix::SetValue(unsigned row, unsigned column, double value)
 std::shared_ptr<MatrixImpl> Matrix::GetMatrixImpl() const
 {
     return _impl;
+}
+
+Matrix Matrix::CreateRowMatrix(std::initializer_list<double> const &data)
+{
+}
+
+Matrix Matrix::CreateColumnMatrix(std::initializer_list<double> const &data)
+{
 }
 
 Matrix operator+(Matrix const &left, Matrix const &right)
