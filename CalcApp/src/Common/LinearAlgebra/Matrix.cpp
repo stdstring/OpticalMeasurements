@@ -79,10 +79,19 @@ std::shared_ptr<MatrixImpl> Matrix::GetMatrixImpl() const
 
 Matrix Matrix::CreateRowMatrix(std::initializer_list<double> const &data)
 {
+    return Matrix(data);
 }
 
 Matrix Matrix::CreateColumnMatrix(std::initializer_list<double> const &data)
 {
+    Matrix matrix(data.size(), 1, 0);
+    int row = 0;
+    for (std::initializer_list<double>::iterator iterator = data.begin(); iterator != data.end(); ++iterator)
+    {
+        matrix.SetValue(row, 0, *iterator);
+        ++row;
+    }
+    return matrix;
 }
 
 Matrix operator+(Matrix const &left, Matrix const &right)
