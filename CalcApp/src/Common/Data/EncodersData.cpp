@@ -46,4 +46,18 @@ EncodersConstraints::EncodersConstraints() :
 {
 }
 
+EncodersConstraints::EncodersConstraints(double globalTransferStep,
+                                         double localTransferStep,
+                                         int localRotationLength,
+                                         double sensorTransferStep,
+                                         double SensorResolution) :
+    GlobalTransferStep(globalTransferStep),
+    LocalTransferStep(localTransferStep),
+    LocalRotationLength(localRotationLength),
+    SensorTransferStep(sensorTransferStep),
+    SensorResolution(SensorResolution)
+{
+
+}
+
 }

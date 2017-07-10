@@ -33,6 +33,7 @@ struct EncodersConstraints
 {
 public:
     EncodersConstraints();
+    EncodersConstraints(double globalTransferStep, double localTransferStep, int localRotationLength, double sensorTransferStep, double SensorResolution);
 
     /*double GlobalTransferStep;
     int GlobalTransferMaxValue;
