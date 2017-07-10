@@ -18,6 +18,5 @@ SOURCES += main.cpp \
 HEADERS += ConfigReader.h \
            CommandLineDefs.h
 
-DISTFILES += \
-    TestServer.conf \
-    TestServerWithBadData.conf
+DISTFILES += TestServer.conf \
+             TestServerWithBadData.conf

@@ -19,7 +19,8 @@ SUBDIRS += src/Common \
            # Stage2 actions
            src/SaveVertexDataAction \
            src/DataReceiverAction \
-    src/EncodersDataTransformAction
+           src/EncodersDataTransformAction \
+           src/Stage2DataGenerator
 
 # tests
 #SUBDIRS += tests/TransportTests
