@@ -29,7 +29,7 @@ typedef QListContextItem<Vertex3D> Vertex3DContextItem;
 
 Vertex3D CreateVertex(EncodersData const &data, EncodersConstraints const &constraints)
 {
-    double globalTransferX = data.GlobalTransferX * constraints.GlobalTransferStep;
+    /*double globalTransferX = data.GlobalTransferX * constraints.GlobalTransferStep;
     double globalTransferY = data.GlobalTransferY * constraints.GlobalTransferStep;
     double globalTransferZ = data.GlobalTransferZ * constraints.GlobalTransferStep;
     double globalRotationLength = constraints.GlobalRotationLength * constraints.GlobalRotationStep;
@@ -51,6 +51,22 @@ Vertex3D CreateVertex(EncodersData const &data, EncodersConstraints const &const
                                CreateZRotationMatrix(localRotation) *
                                CreateXTransferMatrix(localTransfer) *
                                CreateXTransferMatrix(sensorTransfer) *
+                               localValueColumn;
+    return Vertex3D(globalValueColumn.GetValue(0, 0), globalValueColumn.GetValue(1, 0), globalValueColumn.GetValue(2, 0));*/
+    double globalTransferX = data.GlobalTransferX * constraints.GlobalTransferStep;
+    double globalTransferY = data.GlobalTransferY * constraints.GlobalTransferStep;
+    double globalTransferZ = data.GlobalTransferZ * constraints.GlobalTransferStep;
+    double localRotation = (2 * M_PI * data.LocalRotation) / constraints.LocalRotationLength;
+    double localTransfer = data.LocalTransfer * constraints.LocalTransferStep;
+    double sensorTransfer = data.SensorTransfer * constraints.SensorTransferStep;
+    double sensorValue = data.Value * constraints.SensorResolution;
+    Matrix localValueColumn = Matrix::CreateColumnMatrix({sensorValue, 0, 0, 1});
+    Matrix globalValueColumn = CreateXTransferMatrix(globalTransferX) *
+                               CreateYTransferMatrix(globalTransferY) *
+                               CreateZTransferMatrix(globalTransferZ) *
+                               CreateZRotationMatrix(localRotation) *
+                               CreateXTransferMatrix(localTransfer) *
+                               CreateYTransferMatrix(sensorTransfer) *
                                localValueColumn;
     return Vertex3D(globalValueColumn.GetValue(0, 0), globalValueColumn.GetValue(1, 0), globalValueColumn.GetValue(2, 0));
 }

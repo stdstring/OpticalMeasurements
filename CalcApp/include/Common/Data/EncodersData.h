@@ -9,11 +9,18 @@ struct EncodersData
 public:
     EncodersData();
 
-    int GlobalRotationX;
+    /*int GlobalRotationX;
     int GlobalTransferX;
     int GlobalRotationY;
     int GlobalTransferY;
     int GlobalRotationZ;
+    int GlobalTransferZ;
+    int LocalRotation;
+    int LocalTransfer;
+    int SensorTransfer;
+    int Value;*/
+    int GlobalTransferX;
+    int GlobalTransferY;
     int GlobalTransferZ;
     int LocalRotation;
     int LocalTransfer;
@@ -27,7 +34,7 @@ struct EncodersConstraints
 public:
     EncodersConstraints();
 
-    double GlobalTransferStep;
+    /*double GlobalTransferStep;
     int GlobalTransferMaxValue;
     double GlobalRotationStep;
     int GlobalRotationLength;
@@ -37,6 +44,11 @@ public:
     int LocalRotationLength;
     double SensorTransferStep;
     int SensorTransferMaxValue;
+    double SensorResolution;*/
+    double GlobalTransferStep;
+    double LocalTransferStep;
+    int LocalRotationLength;
+    double SensorTransferStep;
     double SensorResolution;
 
 };
