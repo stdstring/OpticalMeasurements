@@ -87,6 +87,8 @@ int main(int argc, char *argv[])
         stream << "DATA HEX "
                << GetNumber(packageNumber)
                << GetNumber(calcNumber)
+               // TODO (std_string) : fix this big WTF !!!
+               << GetNumber(7 * 4)
                << GetNumber(encoders.GlobalTransferX)
                << GetNumber(encoders.GlobalTransferY)
                << GetNumber(encoders.GlobalTransferZ)
