@@ -26,6 +26,24 @@ EncodersData::EncodersData() :
 }
 
 // TODO (std_string) : This set of encoders is specific for Stage2 only. Think about location of it
+EncodersData::EncodersData(int globalTransferX,
+                           int globalTransferY,
+                           int globalTransferZ,
+                           int localRotation,
+                           int localTransfer,
+                           int sensorTransfer,
+                           int value) :
+    GlobalTransferX(globalTransferX),
+    GlobalTransferY(globalTransferY),
+    GlobalTransferZ(globalTransferZ),
+    LocalRotation(localRotation),
+    LocalTransfer(localTransfer),
+    SensorTransfer(sensorTransfer),
+    Value(value)
+{
+}
+
+// TODO (std_string) : This set of encoders is specific for Stage2 only. Think about location of it
 EncodersConstraints::EncodersConstraints() :
     /*GlobalTransferStep(0),
     GlobalTransferMaxValue(0),
@@ -46,6 +64,7 @@ EncodersConstraints::EncodersConstraints() :
 {
 }
 
+// TODO (std_string) : This set of encoders is specific for Stage2 only. Think about location of it
 EncodersConstraints::EncodersConstraints(double globalTransferStep,
                                          double localTransferStep,
                                          int localRotationLength,

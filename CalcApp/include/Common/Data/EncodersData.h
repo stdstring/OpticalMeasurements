@@ -8,6 +8,7 @@ struct EncodersData
 {
 public:
     EncodersData();
+    EncodersData(int globalTransferX, int globalTransferY, int globalTransferZ, int localRotation, int localTransfer, int sensorTransfer, int value);
 
     /*int GlobalRotationX;
     int GlobalTransferX;
