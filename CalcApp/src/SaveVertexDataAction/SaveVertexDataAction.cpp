@@ -29,6 +29,7 @@ void SaveData(QTextStream &stream, Vertex3DContextItem *item, int start)
     for (int index = start; index < item->Data.length(); ++index)
     {
         Vertex3D value  = item->Data[index];
+        stream << "# vertex " << index + 1 << endl;
         stream << value.X << " " << value.Y << " " << value.Z << endl;
     }
 }

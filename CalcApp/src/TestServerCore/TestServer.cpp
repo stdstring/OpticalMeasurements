@@ -81,7 +81,7 @@ void LogProcessedDataMessage(LoggerPtr logger, QByteArray const &messageData)
     QByteArray messageBody;
     stream >> packageNumber >> calcNumber >> messageBody;
     QString infoTemplate("Processing DATA message with packageNumber = %1, calcNumber =%2, data = \"%3\"");
-    logger.get()->WriteInfo(infoTemplate.arg(packageNumber).arg(calcNumber).arg(QString::fromUtf8(messageBody)));
+    logger.get()->WriteInfo(infoTemplate.arg(packageNumber).arg(calcNumber).arg(QString::fromUtf8(messageBody.toHex())));
 }
 
 void LogProcessedMessage(LoggerPtr logger, QString const &messageType, QByteArray const &messageData)
