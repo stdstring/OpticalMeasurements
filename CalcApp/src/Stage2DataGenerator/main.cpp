@@ -104,6 +104,14 @@ int main(int argc, char *argv[])
         CalcApp::Vertex3D vertex = data.first;
         CalcApp::EncodersData encoders = data.second;
         stream << "# vertex " << vertexNumber << " : x = " << vertex.X << " y = " << vertex.Y << " z = " << vertex.Z << endl;
+        stream << "# encoders : GlobalTransferX = " << encoders.GlobalTransferX
+               << " GlobalTransferY = " << encoders.GlobalTransferY
+               << " GlobalTransferZ = " << encoders.GlobalTransferZ
+               << " LocalRotation = " << encoders.LocalRotation
+               << " LocalTransfer = " << encoders.LocalTransfer
+               << " SensorTransfer = " << encoders.SensorTransfer
+               << " SensorValue = " << encoders.Value
+               << endl;
         stream << "DATA HEX " << QString::fromUtf8(GetDataBody(packageNumber, calcNumber, encoders).toHex()) << endl;
     }
 }
