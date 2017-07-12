@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
 
-#include <QCoreApplication>
+#include <QByteArray>
+#include <QDataStream>
 #include <QFile>
 #include <QIODevice>
 #include <QList>
@@ -14,6 +15,7 @@
 
 #include "Common/Data/EncodersData.h"
 #include "Common/Data/Vertex3D.h"
+#include "Common/CommonDefs.h"
 
 // encoders constraints
 constexpr double GlobalTransferStep = 1.0;
@@ -36,17 +38,35 @@ constexpr int SensorHMax = 80;
 // output params
 const QString filename = "data.conf";
 
-// TODO (std_string) : think about this WTF
-QString GetNumber(int number)
+QByteArray GetEncodersData(CalcApp::EncodersData const &encoders)
 {
-    QString numberStr = QString::number(static_cast<uint>(number), 16);
-    return QString(8 - numberStr.size(), '0') + numberStr;
+    QByteArray dest;
+    QDataStream stream(&dest, QIODevice::WriteOnly);
+    stream.setVersion(CalcApp::DataStreamVersion);
+    stream << encoders.GlobalTransferX
+           << encoders.GlobalTransferY
+           << encoders.GlobalTransferZ
+           << encoders.LocalRotation
+           << encoders.LocalTransfer
+           << encoders.SensorTransfer
+           << encoders.Value;
+    return dest;
+}
+
+QByteArray GetDataBody(int packageNumber, int calcNumber, CalcApp::EncodersData const &encoders)
+{
+    QByteArray dest;
+    QDataStream stream(&dest, QIODevice::WriteOnly);
+    stream.setVersion(CalcApp::DataStreamVersion);
+    stream << packageNumber << calcNumber << GetEncodersData(encoders);
+    return dest;
 }
 
 // Generate only for cylinder
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    Q_UNUSED(argc);
+    Q_UNUSED(argv);
     srand(time(nullptr));
     QList<QPair<CalcApp::Vertex3D, CalcApp::EncodersData>> dest;
     for (int layerIndex = 0; layerIndex < LayerCount; ++layerIndex)
@@ -84,19 +104,6 @@ int main(int argc, char *argv[])
         CalcApp::Vertex3D vertex = data.first;
         CalcApp::EncodersData encoders = data.second;
         stream << "# vertex " << vertexNumber << " : x = " << vertex.X << " y = " << vertex.Y << " z = " << vertex.Z << endl;
-        stream << "DATA HEX "
-               << GetNumber(packageNumber)
-               << GetNumber(calcNumber)
-               // TODO (std_string) : fix this big WTF !!!
-               << GetNumber(7 * 4)
-               << GetNumber(encoders.GlobalTransferX)
-               << GetNumber(encoders.GlobalTransferY)
-               << GetNumber(encoders.GlobalTransferZ)
-               << GetNumber(encoders.LocalRotation)
-               << GetNumber(encoders.LocalTransfer)
-               << GetNumber(encoders.SensorTransfer)
-               << GetNumber(encoders.Value)
-               << endl;
+        stream << "DATA HEX " << QString::fromUtf8(GetDataBody(packageNumber, calcNumber, encoders).toHex()) << endl;
     }
-    return a.exec();
 }
