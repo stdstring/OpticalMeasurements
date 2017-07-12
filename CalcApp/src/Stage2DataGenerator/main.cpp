@@ -34,6 +34,7 @@ constexpr int SensorXMin = 100;
 constexpr int SensorXMax = 200;
 constexpr int SensorHMin = 10;
 constexpr int SensorHMax = 80;
+constexpr bool UseRandomData = true;
 
 // output params
 const QString filename = "data.conf";
@@ -67,7 +68,8 @@ int main(int argc, char *argv[])
 {
     Q_UNUSED(argc);
     Q_UNUSED(argv);
-    srand(time(nullptr));
+    if (UseRandomData)
+        srand(time(nullptr));
     QList<QPair<CalcApp::Vertex3D, CalcApp::EncodersData>> dest;
     for (int layerIndex = 0; layerIndex < LayerCount; ++layerIndex)
     {
@@ -79,9 +81,12 @@ int main(int argc, char *argv[])
             double angle = (2 * M_PI * rotationIndex) / RotationCount;
             double xCoord = CylinderRadius * GlobalTransferStep * cos(angle);
             double yCoord = CylinderRadius * GlobalTransferStep * sin(angle);
-            // TODO (std_string) : think about randomizing of data
-            int sensorShift = SensorXMin + (SensorXMax - SensorXMin) / 2;
-            int sensorValue = SensorHMin + (SensorHMax - SensorHMin) / 2;
+            int sensorShift = UseRandomData ?
+                              SensorXMin + rand() % (SensorXMax - SensorXMin + 1) :
+                              SensorXMin + (SensorXMax - SensorXMin) / 2;
+            int sensorValue = UseRandomData ?
+                              SensorHMin + rand() % (SensorHMax - SensorHMin + 1) :
+                              SensorHMin + (SensorHMax - SensorHMin) / 2;
             int transferRadius = CylinderRadius - sensorShift - sensorValue;
             double xTransferCoord = transferRadius * GlobalTransferStep * cos(angle);
             double yTransferCoord = transferRadius * GlobalTransferStep * sin(angle);
