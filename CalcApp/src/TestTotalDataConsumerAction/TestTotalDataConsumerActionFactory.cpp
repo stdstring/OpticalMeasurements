@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 #include "Common/CommonDefs.h"
+#include "Common/Utils/ActionArgumentsHelper.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
 #include "Common/IActionFactory.h"
@@ -33,16 +34,9 @@ ActionPtr TestTotalDataConsumerActionFactory::Create(QString const &name,
 {
     const QString keyName = "key";
     const QString filenameName = "filename";
-    Q_UNUSED(args);
     Q_UNUSED(serviceLocator);
-    QList<QString> keyData = args.values(keyName);
-    if (keyData.size() != 1)
-        throw std::invalid_argument(keyName.toStdString());
-    QString key = keyData[0];
-    QList<QString> filenameData = args.values(filenameName);
-    if (filenameData.size() != 1)
-        throw std::invalid_argument(filenameName.toStdString());
-    QString filename = filenameData[0];
+    QString key = GetStringArgValue(args, keyName);
+    QString filename = GetStringArgValue(args, filenameName);
     return ActionPtr(new TestTotalDataConsumerAction(name, key, filename, context, state));
 }
 

@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 #include "Common/CommonDefs.h"
+#include "Common/Utils/ActionArgumentsHelper.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
 #include "Common/IActionFactory.h"
@@ -34,21 +35,9 @@ ActionPtr TestPartDataFailedActionFactory::Create(QString const &name,
     const QString destKeyName = "dest_key";
     const QString failedIterationName = "failed_iteration";
     Q_UNUSED(serviceLocator);
-    bool ok;
-    QList<QString> sourceKeyData = args.values(sourceKeyName);
-    if (sourceKeyData.size() != 1)
-        throw std::invalid_argument(sourceKeyName.toStdString());
-    QString sourceKey = sourceKeyData[0];
-    QList<QString> destKeyData = args.values(destKeyName);
-    if (destKeyData.size() != 1)
-        throw std::invalid_argument(destKeyName.toStdString());
-    QString destKey = destKeyData[0];
-    QList<QString> failedIterationData = args.values(failedIterationName);
-    if (failedIterationData.size() != 1)
-        throw std::invalid_argument(failedIterationName.toStdString());
-    int failedIteration = failedIterationData[0].toInt(&ok);
-    if (!ok)
-        throw std::invalid_argument(failedIterationName.toStdString());
+    QString sourceKey = GetStringArgValue(args, sourceKeyName);
+    QString destKey = GetStringArgValue(args, destKeyName);
+    int failedIteration = GetIntArgValue(args, failedIterationName);
     return ActionPtr(new TestPartDataFailedAction(name, sourceKey, destKey, failedIteration, context, state));
 }
 

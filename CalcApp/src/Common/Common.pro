@@ -11,6 +11,7 @@ INCLUDEPATH += ../../include/Common
 INCLUDEPATH += ../../include/Common/Data
 INCLUDEPATH += ../../include/Common/Logger
 INCLUDEPATH += ../../include/Common/LinearAlgebra
+INCLUDEPATH += ../../include/Common/Utils
 
 # Armadillo
 INCLUDEPATH += ../../../external/armadillo/include
@@ -22,6 +23,7 @@ SOURCES += Data/EncodersData.cpp \
            Logger/LoggerService.cpp \
            Logger/QMessageLoggerWrapper.cpp \
            Logger/ConsoleLogger.cpp \
+           Utils/ActionArgumentsHelper.cpp \
            ComponentLoader.cpp \
            Context.cpp \
            ComponentStorage.cpp \
@@ -43,6 +45,7 @@ HEADERS += ../../include/Common/Data/EncodersData.h \
            ../../include/Common/Logger/NullLogger.h \
            ../../include/Common/Logger/QMessageLoggerWrapper.h \
            ../../include/Common/Logger/ConsoleLogger.h \
+           ../../include/Common/Utils/ActionArgumentsHelper.h \
            ../../include/Common/ActionChainFactory.h \
            ../../include/Common/ActionsConfig.h \
            ../../include/Common/ComponentLoader.h \

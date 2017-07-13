@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 #include "Common/CommonDefs.h"
+#include "Common/Utils/ActionArgumentsHelper.h"
 #include "Common/Context.h"
 #include "Common/IAction.h"
 #include "Common/IActionFactory.h"
@@ -35,23 +36,9 @@ ActionPtr TestDataGeneratorActionFactory::Create(QString const &name,
     const QString sleepTimeName = "sleep_time";
     const QString dataCountName = "data_count";
     Q_UNUSED(serviceLocator);
-    bool ok;
-    QList<QString> keyData = args.values(keyName);
-    if (keyData.size() != 1)
-        throw std::invalid_argument(keyName.toStdString());
-    QString key = keyData[0];
-    QList<QString> sleepTimeData = args.values(sleepTimeName);
-    if (sleepTimeData.size() != 1)
-        throw std::invalid_argument(sleepTimeName.toStdString());
-    int sleepTime = sleepTimeData[0].toInt(&ok);
-    if (!ok)
-        throw std::invalid_argument(sleepTimeName.toStdString());
-    QList<QString> dataCountData = args.values(dataCountName);
-    if (dataCountData.size() != 1)
-        throw std::invalid_argument(dataCountName.toStdString());
-    int dataCount = dataCountData[0].toInt(&ok);
-    if (!ok)
-        throw std::invalid_argument(dataCountName.toStdString());
+    QString key = GetStringArgValue(args, keyName);
+    int sleepTime = GetIntArgValue(args, sleepTimeName);
+    int dataCount = GetIntArgValue(args, dataCountName);
     return ActionPtr(new TestDataGeneratorAction(name, key, sleepTime, dataCount, context, state));
 }
 
