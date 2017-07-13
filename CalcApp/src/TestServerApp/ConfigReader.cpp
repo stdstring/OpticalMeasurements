@@ -1,4 +1,5 @@
 #include <QByteArray>
+#include <QDataStream>
 #include <QFile>
 #include <QIODevice>
 #include <QList>
@@ -24,11 +25,12 @@ namespace CalcApp
 namespace
 {
 
-const QChar CommentStart = '#';
+constexpr QChar CommentStart = '#';
 
-const int ServerConfigLinesCount = 4;
+constexpr int ServerConfigLinesCount = 4;
 
-const int ExpectedMessageDefParts = 3;
+//const int ExpectedMessageDefParts = 3;
+constexpr int MinMessageDefParts = 3;
 
 typedef std::map<QString, MessageType> MessageTypeMapType;
 
@@ -40,9 +42,9 @@ MessageTypeMapType MessageTypeMap =
     {"EVENT", MessageType::EVENT}
 };
 
-typedef std::map<QString, std::function<QByteArray(QString const&)>> MessageBodyConvertMapType;
+typedef std::map<QString, std::function<QByteArray(QString const&)>> DataConvertMapType;
 
-MessageBodyConvertMapType MessageBodyConvertMap =
+DataConvertMapType DataConvertMap =
 {
     {"HEX", [](QString const &source){ return QByteArray::fromHex(source.toUtf8()); }},
     {"BASE64", [](QString const &source){ return QByteArray::fromBase64(source.toUtf8()); }}
@@ -92,7 +94,101 @@ bool IsResponseRequired(QList<MessagePtr> const &messages)
     return (messages.size() > 0) && (messages.last().get()->GetType() == MessageType::REQUEST);
 }
 
+void ProcessResponseRequired(QList<MessagePtr> &messages)
+{
+    if (IsResponseRequired(messages))
+        messages.append(std::make_shared<Message>(MessageType::RESPONSE, QByteArray()));
+}
+
+void ProcessRequest(QList<MessagePtr> &messages, QString const &dataType, QStringList &parts)
+{
+    constexpr int partsCount = 1;
+    if (parts.size() != partsCount)
+        return;
+    ProcessResponseRequired(messages);
+    DataConvertMapType::const_iterator dataIterator = DataConvertMap.find(dataType);
+    if (DataConvertMap.cend() == dataIterator)
+        return;
+    QByteArray messageBody = dataIterator->second(parts[0]);
+    messages.append(std::make_shared<Message>(MessageType::REQUEST, messageBody));
+}
+
+void ProcessResponse(QList<MessagePtr> &messages, QString const &dataType, QStringList &parts)
+{
+    constexpr int partsCount = 1;
+    if (parts.size() != partsCount)
+        return;
+    if (!IsResponseRequired(messages))
+        return;
+    DataConvertMapType::const_iterator dataIterator = DataConvertMap.find(dataType);
+    if (DataConvertMap.cend() == dataIterator)
+        return;
+    QByteArray messageBody = dataIterator->second(parts[0]);
+    messages.append(std::make_shared<Message>(MessageType::RESPONSE, messageBody));
+}
+
+void ProcessEvent(QList<MessagePtr> &messages, QString const &dataType, QStringList &parts)
+{
+    constexpr int partsCount = 1;
+    if (parts.size() != partsCount)
+        return;
+    ProcessResponseRequired(messages);
+    DataConvertMapType::const_iterator dataIterator = DataConvertMap.find(dataType);
+    if (DataConvertMap.cend() == dataIterator)
+        return;
+    QByteArray messageBody = dataIterator->second(parts[0]);
+    messages.append(std::make_shared<Message>(MessageType::EVENT, messageBody));
+}
+
+void ProcessData(QList<MessagePtr> &messages, QString const &dataType, QStringList &parts)
+{
+    constexpr int partsCount = 3;
+    if (parts.size() != partsCount)
+        return;
+    ProcessResponseRequired(messages);
+    int packageNumber = Convert<int>(parts[0]);
+    int calcNumber = Convert<int>(parts[1]);
+    DataConvertMapType::const_iterator dataIterator = DataConvertMap.find(dataType);
+    if (DataConvertMap.cend() == dataIterator)
+        return;
+    QByteArray data = dataIterator->second(parts[2]);
+    QByteArray messageBody;
+    QDataStream stream(&messageBody, QIODevice::WriteOnly);
+    stream.setVersion(DataStreamVersion);
+    stream << packageNumber << calcNumber << data;
+    messages.append(std::make_shared<Message>(MessageType::DATA, messageBody));
+}
+
+typedef std::map<MessageType, std::function<void(QList<MessagePtr>&, QString const&, QStringList&)>> MessageProcessMapType;
+
+MessageProcessMapType MessageProcessMap =
+{
+    {MessageType::REQUEST, ProcessRequest},
+    {MessageType::RESPONSE, ProcessResponse},
+    {MessageType::EVENT, ProcessEvent},
+    {MessageType::DATA, ProcessData}
+};
+
 void ProcessMessageLine(QList<MessagePtr> &messages, QString const &line)
+{
+    if (line.isEmpty())
+        return;
+    QStringList parts = line.split(QRegExp("\\s+"));
+    // TODO (std_string) : write some warning
+    if (parts.size() < MinMessageDefParts)
+        return;
+    MessageTypeMapType::const_iterator messageTypeIterator = MessageTypeMap.find(parts.takeFirst());
+    if (messageTypeIterator == MessageTypeMap.cend())
+        return;
+    MessageType messageType = messageTypeIterator->second;
+    QString dataType = parts.takeFirst();
+    MessageProcessMapType::const_iterator messageProcessIterator = MessageProcessMap.find(messageType);
+    if (messageProcessIterator == MessageProcessMap.cend())
+        return;
+    messageProcessIterator->second(messages, dataType, parts);
+}
+
+/*void ProcessMessageLine(QList<MessagePtr> &messages, QString const &line)
 {
     if (line.isEmpty())
         return;
@@ -114,7 +210,7 @@ void ProcessMessageLine(QList<MessagePtr> &messages, QString const &line)
         return;
     QByteArray messageBody = messageBodyIterator->second(parts[2]);
     messages.append(std::make_shared<Message>(messageType, messageBody));
-}
+}*/
 
 }
 
