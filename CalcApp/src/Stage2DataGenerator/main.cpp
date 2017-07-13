@@ -54,15 +54,6 @@ QByteArray GetEncodersData(CalcApp::EncodersData const &encoders)
     return dest;
 }
 
-/*QByteArray GetDataBody(int packageNumber, int calcNumber, CalcApp::EncodersData const &encoders)
-{
-    QByteArray dest;
-    QDataStream stream(&dest, QIODevice::WriteOnly);
-    stream.setVersion(CalcApp::DataStreamVersion);
-    stream << packageNumber << calcNumber << GetEncodersData(encoders);
-    return dest;
-}*/
-
 // Generate only for cylinder
 int main(int argc, char *argv[])
 {

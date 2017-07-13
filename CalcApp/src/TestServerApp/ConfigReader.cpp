@@ -29,7 +29,6 @@ constexpr QChar CommentStart = '#';
 
 constexpr int ServerConfigLinesCount = 4;
 
-//const int ExpectedMessageDefParts = 3;
 constexpr int MinMessageDefParts = 3;
 
 typedef std::map<QString, MessageType> MessageTypeMapType;
@@ -187,30 +186,6 @@ void ProcessMessageLine(QList<MessagePtr> &messages, QString const &line)
         return;
     messageProcessIterator->second(messages, dataType, parts);
 }
-
-/*void ProcessMessageLine(QList<MessagePtr> &messages, QString const &line)
-{
-    if (line.isEmpty())
-        return;
-    QStringList parts = line.split(QRegExp("\\s+"));
-    // TODO (std_string) : write some warning
-    if (parts.size() != ExpectedMessageDefParts)
-        return;
-    MessageTypeMapType::const_iterator messageTypeIterator = MessageTypeMap.find(parts[0]);
-    if (messageTypeIterator == MessageTypeMap.cend())
-        return;
-    MessageType messageType = messageTypeIterator->second;
-    bool responseRequired = IsResponseRequired(messages);
-    if (!responseRequired && messageType == MessageType::RESPONSE)
-        return;
-    if (responseRequired && messageType != MessageType::RESPONSE)
-        messages.append(std::make_shared<Message>(MessageType::RESPONSE, QByteArray()));
-    MessageBodyConvertMapType::const_iterator messageBodyIterator = MessageBodyConvertMap.find(parts[1]);
-    if (messageBodyIterator == MessageBodyConvertMap.cend())
-        return;
-    QByteArray messageBody = messageBodyIterator->second(parts[2]);
-    messages.append(std::make_shared<Message>(messageType, messageBody));
-}*/
 
 }
 
