@@ -54,14 +54,14 @@ QByteArray GetEncodersData(CalcApp::EncodersData const &encoders)
     return dest;
 }
 
-QByteArray GetDataBody(int packageNumber, int calcNumber, CalcApp::EncodersData const &encoders)
+/*QByteArray GetDataBody(int packageNumber, int calcNumber, CalcApp::EncodersData const &encoders)
 {
     QByteArray dest;
     QDataStream stream(&dest, QIODevice::WriteOnly);
     stream.setVersion(CalcApp::DataStreamVersion);
     stream << packageNumber << calcNumber << GetEncodersData(encoders);
     return dest;
-}
+}*/
 
 // Generate only for cylinder
 int main(int argc, char *argv[])
@@ -117,6 +117,12 @@ int main(int argc, char *argv[])
                << " SensorTransfer = " << encoders.SensorTransfer
                << " SensorValue = " << encoders.Value
                << endl;
-        stream << "DATA HEX " << QString::fromUtf8(GetDataBody(packageNumber, calcNumber, encoders).toHex()) << endl;
+        stream << "DATA HEX "
+               << packageNumber
+               << " "
+               << calcNumber
+               << " "
+               << QString::fromUtf8(GetEncodersData(encoders).toHex())
+               << endl;
     }
 }
