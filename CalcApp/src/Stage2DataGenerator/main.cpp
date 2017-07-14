@@ -25,9 +25,9 @@ constexpr double SensorTransferStep = 1.0;
 constexpr double SensorResolution = 1.0;
 
 // generation params
-constexpr int RotationCount = 20;
+constexpr int RotationCount = 50;
 constexpr int RotationDelta = LocalRotationLength / RotationCount;
-constexpr int LayerCount = 10;
+constexpr int LayerCount = 50;
 constexpr int LayerDelta = 5;
 constexpr int CylinderRadius = 1000;
 constexpr int SensorXMin = 100;

@@ -20,4 +20,5 @@ HEADERS += ConfigReader.h \
 
 DISTFILES += TestServer.conf \
              TestServerWithBadData.conf \
-    TestServerSmallCylinderData.conf
+             TestServerCylinderLargeData.conf \
+             TestServerCylinderSmallData.conf
