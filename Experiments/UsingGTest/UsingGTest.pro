@@ -1,8 +1,8 @@
 QT += core
 QT -= gui
 
-LIBS += -L../../gtest/lib -lgtest -lgtest_main -lgmock -lgmock_main
-INCLUDEPATH += ../../gtest/include
+LIBS += -L../../external/gtest/lib -lgtest -lgtest_main -lgmock -lgmock_main
+INCLUDEPATH += ../../external/gtest/include
 
 TARGET = UsingGTest
 CONFIG += console
