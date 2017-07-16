@@ -23,4 +23,4 @@ SUBDIRS += src/Common \
            src/Stage2DataGenerator
 
 # tests
-#SUBDIRS += tests/TransportTests
+SUBDIRS += tests/TransportTests
