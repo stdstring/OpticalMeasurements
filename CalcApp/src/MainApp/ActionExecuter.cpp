@@ -33,6 +33,11 @@ ActionExecuter::ActionExecuter(ActionPtr action, QObject *parent) :
     });
 }
 
+/*QString ActionExecuter::GetName()
+{
+    return _actionName;
+}*/
+
 void ActionExecuter::Start()
 {
     _thread->start();

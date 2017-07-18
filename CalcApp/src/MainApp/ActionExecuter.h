@@ -18,6 +18,7 @@ class ActionExecuter : public QObject
     Q_OBJECT
 public:
     ActionExecuter(ActionPtr action, QObject *parent = nullptr);
+    /*QString GetName();*/
     void Start();
     void Stop(/*bool hardStop = true*/);
     virtual ~ActionExecuter() override;

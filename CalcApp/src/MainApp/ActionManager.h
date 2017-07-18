@@ -29,6 +29,8 @@ private:
     void FinishActionChain();
 
     ServiceLocatorPtr _serviceLocator;
+    LoggerPtr _logger;
+    QString _chainName;
     QList<std::shared_ptr<ActionExecuter>> _chain;
     ContextPtr _context;
     int _runningCount;
@@ -46,7 +48,7 @@ private slots:
     void ProcessActionRunning(QString name);
     void ProcessActionCompleted(QString name);
     void ProcessActionAborted(QString name);
-    void ProcessActionFailed(QString name, ExceptionData exception);
+    void ProcessActionFailed(QString name, ExceptionData data);
 };
 
 }
