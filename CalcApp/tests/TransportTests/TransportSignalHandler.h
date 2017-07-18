@@ -3,8 +3,9 @@
 #include <QList>
 #include <QObject>
 
+#include "Common/CommonDefs.h"
 #include "Common/ITransport.h"
-#include "Common/Message.h"
+//#include "Common/Message.h"
 
 namespace CalcApp
 {
@@ -14,12 +15,12 @@ class TransportSignalHandler : public QObject
     Q_OBJECT
 public:
     TransportSignalHandler(ITransport *transport, QObject *parent = nullptr);
-    QList<Message> Messages;
+    QList<MessagePtr> Messages;
 
 private slots:
-    void ProcessResponse(Message const &message);
-    void ProcessData(Message const &message);
-    void ProcessEvent(Message const &message);
+    void ProcessResponse(MessagePtr message);
+    void ProcessData(MessagePtr message);
+    void ProcessEvent(MessagePtr message);
 };
 
 }

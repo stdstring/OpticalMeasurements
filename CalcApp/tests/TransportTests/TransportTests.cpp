@@ -3,11 +3,12 @@
 
 #include <memory>
 #include <stdexcept>
-#include <vector>
+//#include <vector>
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
+#include "Common/CommonDefs.h"
 #include "Common/ITransport.h"
 #include "Common/Message.h"
 #include "EqualityOperators.h"
@@ -24,7 +25,8 @@ class TransportLowLevelMock : public ITransport
 {
 public:
     MOCK_METHOD0(Connect, void());
-    MOCK_METHOD1(Send, void(Message const &message));
+    MOCK_METHOD1(Send, void(MessagePtr message));
+    MOCK_METHOD0(Disconnect, void());
 };
 
 const quint32 MaxDelayedCount = 2;
@@ -64,110 +66,110 @@ TEST_F(TransportTests, Connect)
 TEST_F(TransportTests, SendWithoutResponse)
 {
     EXPECT_CALL(*_transportLowLevel.get(), Connect()).Times(1);
-    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST))).Times(1);
+    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST, {13}))).Times(1);
     Transport transport(_transportLowLevel.get(), _messageCheckStrategy.get());
     TransportSignalHandler signalHandler(&transport);
     transport.Connect();
-    transport.Send(CreateMessage(MessageType::REQUEST));
+    transport.Send(CreateMessage(MessageType::REQUEST, {13}));
     ASSERT_EQ(signalHandler.Messages.size(), 0);
 }
 
 TEST_F(TransportTests, SendWithResponse)
 {
     EXPECT_CALL(*_transportLowLevel.get(), Connect()).Times(1);
-    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST)))
+    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST, {13})))
             .Times(1)
-            .WillOnce(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE)); }));
+            .WillOnce(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE, {19})); }));
     Transport transport(_transportLowLevel.get(), _messageCheckStrategy.get());
     TransportSignalHandler signalHandler(&transport);
     transport.Connect();
-    transport.Send(CreateMessage(MessageType::REQUEST));
+    transport.Send(CreateMessage(MessageType::REQUEST, {13}));
     ASSERT_EQ(signalHandler.Messages.size(), 1);
-    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE));
+    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE, {19}));
 }
 
 TEST_F(TransportTests, SendWithResponseAndEvent)
 {
     EXPECT_CALL(*_transportLowLevel.get(), Connect()).Times(1);
-    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST)))
+    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST, {13})))
             .Times(1)
-            .WillOnce(testing::DoAll(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE)); }),
-                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->EventReceived(CreateMessage(MessageType::EVENT)); })));
+            .WillOnce(testing::DoAll(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE, {19})); }),
+                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->EventReceived(CreateMessage(MessageType::EVENT, {99})); })));
     Transport transport(_transportLowLevel.get(), _messageCheckStrategy.get());
     TransportSignalHandler signalHandler(&transport);
     transport.Connect();
-    transport.Send(CreateMessage(MessageType::REQUEST));
+    transport.Send(CreateMessage(MessageType::REQUEST, {13}));
     ASSERT_EQ(signalHandler.Messages.size(), 2);
-    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE));
-    ASSERT_EQ(signalHandler.Messages[1], CreateMessage(MessageType::EVENT));
+    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE, {19}));
+    ASSERT_EQ(signalHandler.Messages[1], CreateMessage(MessageType::EVENT, {99}));
 }
 
 TEST_F(TransportTests, SendWithResponseAndData)
 {
     EXPECT_CALL(*_transportLowLevel.get(), Connect()).Times(1);
-    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST)))
+    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST, {13})))
             .Times(1)
-            .WillOnce(testing::DoAll(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE)); }),
+            .WillOnce(testing::DoAll(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE, {19})); }),
                                      testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(1, 0, {6, 6, 6})); })));
     Transport transport(_transportLowLevel.get(), _messageCheckStrategy.get());
     TransportSignalHandler signalHandler(&transport);
     transport.Connect();
-    transport.Send(CreateMessage(MessageType::REQUEST));
+    transport.Send(CreateMessage(MessageType::REQUEST, {13}));
     ASSERT_EQ(signalHandler.Messages.size(), 2);
-    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE));
+    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE, {19}));
     ASSERT_EQ(signalHandler.Messages[1], CreateDataMessage(1, 0, {6, 6, 6}));
 }
 
 TEST_F(TransportTests, UnorderedData)
 {
     EXPECT_CALL(*_transportLowLevel.get(), Connect()).Times(1);
-    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST)))
+    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST, {13})))
             .Times(1)
-            .WillOnce(testing::DoAll(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE)); }),
-                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(2, 0, {13})); }),
-                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(1, 0, {13})); })));
+            .WillOnce(testing::DoAll(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE, {19})); }),
+                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(2, 0, {67})); }),
+                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(1, 0, {66})); })));
     Transport transport(_transportLowLevel.get(), _messageCheckStrategy.get());
     TransportSignalHandler signalHandler(&transport);
     transport.Connect();
-    transport.Send(CreateMessage(MessageType::REQUEST));
+    transport.Send(CreateMessage(MessageType::REQUEST, {13}));
     ASSERT_EQ(signalHandler.Messages.size(), 3);
-    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE));
-    ASSERT_EQ(signalHandler.Messages[1], CreateDataMessage(1, 0, {13}));
-    ASSERT_EQ(signalHandler.Messages[2], CreateDataMessage(2, 0, {13}));
+    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE, {19}));
+    ASSERT_EQ(signalHandler.Messages[1], CreateDataMessage(1, 0, {66}));
+    ASSERT_EQ(signalHandler.Messages[2], CreateDataMessage(2, 0, {67}));
 }
 
 TEST_F(TransportTests, DelayedData)
 {
     EXPECT_CALL(*_transportLowLevel.get(), Connect()).Times(1);
-    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST)))
+    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST, {13})))
             .Times(1)
-            .WillOnce(testing::DoAll(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE)); }),
-                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(9, 0, {10, 11, 12})); }),
-                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(1, 0, {10, 11, 12})); })));
+            .WillOnce(testing::DoAll(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE, {19})); }),
+                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(9, 0, {77})); }),
+                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(1, 0, {66})); })));
     Transport transport(_transportLowLevel.get(), _messageCheckStrategy.get());
     TransportSignalHandler signalHandler(&transport);
     transport.Connect();
-    transport.Send(CreateMessage(MessageType::REQUEST));
+    transport.Send(CreateMessage(MessageType::REQUEST, {13}));
     ASSERT_EQ(signalHandler.Messages.size(), 2);
-    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE));
-    ASSERT_EQ(signalHandler.Messages[1], CreateDataMessage(1, 0, {10, 11, 12}));
+    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE, {19}));
+    ASSERT_EQ(signalHandler.Messages[1], CreateDataMessage(1, 0, {66}));
 }
 
 TEST_F(TransportTests, DelayedDataGreaterMaxDelayedCount)
 {
     EXPECT_CALL(*_transportLowLevel.get(), Connect()).Times(1);
-    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST)))
+    EXPECT_CALL(*_transportLowLevel.get(), Send(CreateMessage(MessageType::REQUEST, {13})))
             .Times(1)
-            .WillOnce(testing::DoAll(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE)); }),
-                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(9, 0, {13, 14})); }),
-                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(4, 0, {13, 14})); }),
-                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(3, 0, {13, 14})); })));
+            .WillOnce(testing::DoAll(testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->ResponseReceived(CreateMessage(MessageType::RESPONSE, {19})); }),
+                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(9, 0, {99})); }),
+                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(4, 0, {44})); }),
+                                     testing::InvokeWithoutArgs([this](){ emit _transportLowLevel.get()->DataReceived(CreateDataMessage(3, 0, {33})); })));
     Transport transport(_transportLowLevel.get(), _messageCheckStrategy.get());
     TransportSignalHandler signalHandler(&transport);
     transport.Connect();
-    ASSERT_THROW(transport.Send(CreateMessage(MessageType::REQUEST)), std::logic_error);
+    ASSERT_THROW(transport.Send(CreateMessage(MessageType::REQUEST, {13})), std::logic_error);
     ASSERT_EQ(signalHandler.Messages.size(), 1);
-    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE));
+    ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE, {19}));
 }
 
 }

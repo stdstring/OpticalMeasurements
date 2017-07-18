@@ -11,8 +11,8 @@ TEST(SimpleMessageCheckStrategyTests, Check)
 {
     SimpleMessageCheckStrategy strategy(2);
     ASSERT_TRUE(strategy.Check(MessageInfo(10, 1), {}));
-    ASSERT_TRUE(strategy.Check(MessageInfo(10, 1), {CreateMessageData(7, 2)}));
-    ASSERT_FALSE(strategy.Check(MessageInfo(10, 1), {CreateMessageData(7, 2), CreateMessageData(6, 1)}));
+    ASSERT_TRUE(strategy.Check(MessageInfo(10, 1), {CreateMessageData(7, 2, {1})}));
+    ASSERT_FALSE(strategy.Check(MessageInfo(10, 1), {CreateMessageData(7, 2, {2}), CreateMessageData(6, 1, {2})}));
 }
 
 TEST(SimpleMessageCheckStrategyTests, CheckZeroMaxDelayedCount)

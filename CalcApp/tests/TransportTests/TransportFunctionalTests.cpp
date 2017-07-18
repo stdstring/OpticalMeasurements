@@ -2,6 +2,7 @@
 
 #include "gtest/gtest.h"
 
+#include "Common/CommonDefs.h"
 #include "Common/Message.h"
 #include "Common/TransportConfig.h"
 #include "TestServerCore/TestServerRunner.h"
@@ -29,8 +30,8 @@ const TransportConfig transportConfig(MaxDelayedCount, ServerAddress, TcpPortNum
 
 TEST(TransportFunctionalTests, RequestResponse)
 {
-    QList<Message> messages = {CreateMessage(MessageType::REQUEST, {66}),
-                               CreateMessage(MessageType::RESPONSE, {11, 12, 13})};
+    QList<MessagePtr> messages = {CreateMessage(MessageType::REQUEST, {66}),
+                                  CreateMessage(MessageType::RESPONSE, {11, 12, 13})};
     TestServerRunner server(serverConfig);
     server.Start(messages);
     ClientHandler::Check(transportConfig, messages);
@@ -39,7 +40,7 @@ TEST(TransportFunctionalTests, RequestResponse)
 
 TEST(TransportFunctionalTests, Event)
 {
-    QList<Message> messages = {CreateMessage(MessageType::EVENT, {66, 13, 66})};
+    QList<MessagePtr> messages = {CreateMessage(MessageType::EVENT, {66, 13, 66})};
     TestServerRunner server(serverConfig);
     server.Start(messages);
     ClientHandler::Check(transportConfig, messages);
@@ -48,9 +49,9 @@ TEST(TransportFunctionalTests, Event)
 
 TEST(TransportFunctionalTests, RequestResponseEvent)
 {
-    QList<Message> messages = {CreateMessage(MessageType::REQUEST, {66}),
-                               CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
-                               CreateMessage(MessageType::EVENT, {66, 13, 66})};
+    QList<MessagePtr> messages = {CreateMessage(MessageType::REQUEST, {66}),
+                                  CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+                                  CreateMessage(MessageType::EVENT, {66, 13, 66})};
     TestServerRunner server(serverConfig);
     server.Start(messages);
     ClientHandler::Check(transportConfig, messages);
@@ -59,7 +60,7 @@ TEST(TransportFunctionalTests, RequestResponseEvent)
 
 TEST(TransportFunctionalTests, SingleData)
 {
-    QList<Message> messages = {CreateDataMessage(1, 0, {11, 10, 11})};
+    QList<MessagePtr> messages = {CreateDataMessage(1, 0, {11, 10, 11})};
     TestServerRunner server(serverConfig);
     server.Start(messages);
     ClientHandler::Check(transportConfig, messages);
@@ -68,7 +69,7 @@ TEST(TransportFunctionalTests, SingleData)
 
 TEST(TransportFunctionalTests, SeveralData)
 {
-    QList<Message> messages = {CreateDataMessage(1, 0, {11, 10, 11}), CreateDataMessage(2, 0, {13, 66})};
+    QList<MessagePtr> messages = {CreateDataMessage(1, 0, {11, 10, 11}), CreateDataMessage(2, 0, {13, 66})};
     TestServerRunner server(serverConfig);
     server.Start(messages);
     ClientHandler::Check(transportConfig, messages);
@@ -77,13 +78,13 @@ TEST(TransportFunctionalTests, SeveralData)
 
 TEST(TransportFunctionalTests, SeveralDataWithRepeats)
 {
-    QList<Message> serverMessages = {CreateDataMessage(1, 0, {11, 10, 11}),
-                                     CreateDataMessage(2, 0, {13, 66}),
-                                     CreateDataMessage(2, 0, {13, 66}),
-                                     CreateDataMessage(1, 0, {11, 10, 11})};
+    QList<MessagePtr> serverMessages = {CreateDataMessage(1, 0, {11, 10, 11}),
+                                        CreateDataMessage(2, 0, {13, 66}),
+                                        CreateDataMessage(2, 0, {13, 66}),
+                                        CreateDataMessage(1, 0, {11, 10, 11})};
     TestServerRunner server(serverConfig);
-    QList<Message> clientMessages = {CreateDataMessage(1, 0, {11, 10, 11}),
-                                     CreateDataMessage(2, 0, {13, 66})};
+    QList<MessagePtr> clientMessages = {CreateDataMessage(1, 0, {11, 10, 11}),
+                                        CreateDataMessage(2, 0, {13, 66})};
     server.Start(serverMessages);
     ClientHandler::Check(transportConfig, clientMessages);
     server.Stop();
@@ -91,9 +92,9 @@ TEST(TransportFunctionalTests, SeveralDataWithRepeats)
 
 TEST(TransportFunctionalTests, SeveralDataInWrongOrder)
 {
-    QList<Message> serverMessages = {CreateDataMessage(2, 0, {13, 66}), CreateDataMessage(1, 0, {11, 10, 11})};
+    QList<MessagePtr> serverMessages = {CreateDataMessage(2, 0, {13, 66}), CreateDataMessage(1, 0, {11, 10, 11})};
     TestServerRunner server(serverConfig);
-    QList<Message> clientMessages = {CreateDataMessage(1, 0, {11, 10, 11}), CreateDataMessage(2, 0, {13, 66})};
+    QList<MessagePtr> clientMessages = {CreateDataMessage(1, 0, {11, 10, 11}), CreateDataMessage(2, 0, {13, 66})};
     server.Start(serverMessages);
     ClientHandler::Check(transportConfig, clientMessages);
     server.Stop();
@@ -101,9 +102,9 @@ TEST(TransportFunctionalTests, SeveralDataInWrongOrder)
 
 TEST(TransportFunctionalTests, SeveralDataWithGap)
 {
-    QList<Message> serverMessages = {CreateDataMessage(1, 0, {11, 10, 11}), CreateDataMessage(3, 0, {13, 66})};
+    QList<MessagePtr> serverMessages = {CreateDataMessage(1, 0, {11, 10, 11}), CreateDataMessage(3, 0, {13, 66})};
     TestServerRunner server(serverConfig);
-    QList<Message> clientMessages = {CreateDataMessage(1, 0, {11, 10, 11})};
+    QList<MessagePtr> clientMessages = {CreateDataMessage(1, 0, {11, 10, 11})};
     server.Start(serverMessages);
     ClientHandler::Check(transportConfig, clientMessages);
     server.Stop();
@@ -111,9 +112,9 @@ TEST(TransportFunctionalTests, SeveralDataWithGap)
 
 /*TEST(TransportFunctionalTests, TooManyDataInWrongOrder)
 {
-    QList<Message> messages = {CreateDataMessage(2, 0, {11, 10, 11}),
-                               CreateDataMessage(3, 0, {13, 66}),
-                               CreateDataMessage(6, 0, {67})};
+    QList<MessagePtr> messages = {CreateDataMessage(2, 0, {11, 10, 11}),
+                                  CreateDataMessage(3, 0, {13, 66}),
+                                  CreateDataMessage(6, 0, {67})};
     TestServerRunner server(serverConfig);
     server.Start(messages);
     ClientHandler::Check(transportConfig, {});
@@ -122,12 +123,12 @@ TEST(TransportFunctionalTests, SeveralDataWithGap)
 
 TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralData)
 {
-    QList<Message> messages = {CreateMessage(MessageType::REQUEST, {66}),
-                               CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
-                               CreateMessage(MessageType::EVENT, {66, 13, 66}),
-                               CreateDataMessage(1, 0, {11, 10, 11}),
-                               CreateMessage(MessageType::EVENT, {99, 99}),
-                               CreateDataMessage(2, 0, {13, 66})};
+    QList<MessagePtr> messages = {CreateMessage(MessageType::REQUEST, {66}),
+                                  CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+                                  CreateMessage(MessageType::EVENT, {66, 13, 66}),
+                                  CreateDataMessage(1, 0, {11, 10, 11}),
+                                  CreateMessage(MessageType::EVENT, {99, 99}),
+                                  CreateDataMessage(2, 0, {13, 66})};
     TestServerRunner server(serverConfig);
     server.Start(messages);
     ClientHandler::Check(transportConfig, messages);
@@ -136,21 +137,21 @@ TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralData)
 
 TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataWithRepeats)
 {
-    QList<Message> serverMessages = {CreateMessage(MessageType::REQUEST, {66}),
-                                     CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
-                                     CreateMessage(MessageType::EVENT, {66, 13, 66}),
-                                     CreateDataMessage(1, 0, {11, 10, 11}),
-                                     CreateMessage(MessageType::EVENT, {99, 99}),
-                                     CreateDataMessage(2, 0, {13, 66}),
-                                     CreateDataMessage(2, 0, {13, 66}),
-                                     CreateDataMessage(1, 0, {11, 10, 11})};
+    QList<MessagePtr> serverMessages = {CreateMessage(MessageType::REQUEST, {66}),
+                                        CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+                                        CreateMessage(MessageType::EVENT, {66, 13, 66}),
+                                        CreateDataMessage(1, 0, {11, 10, 11}),
+                                        CreateMessage(MessageType::EVENT, {99, 99}),
+                                        CreateDataMessage(2, 0, {13, 66}),
+                                        CreateDataMessage(2, 0, {13, 66}),
+                                        CreateDataMessage(1, 0, {11, 10, 11})};
     TestServerRunner server(serverConfig);
-    QList<Message> clientMessages = {CreateMessage(MessageType::REQUEST, {66}),
-                                     CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
-                                     CreateMessage(MessageType::EVENT, {66, 13, 66}),
-                                     CreateDataMessage(1, 0, {11, 10, 11}),
-                                     CreateMessage(MessageType::EVENT, {99, 99}),
-                                     CreateDataMessage(2, 0, {13, 66})};
+    QList<MessagePtr> clientMessages = {CreateMessage(MessageType::REQUEST, {66}),
+                                        CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+                                        CreateMessage(MessageType::EVENT, {66, 13, 66}),
+                                        CreateDataMessage(1, 0, {11, 10, 11}),
+                                        CreateMessage(MessageType::EVENT, {99, 99}),
+                                        CreateDataMessage(2, 0, {13, 66})};
     server.Start(serverMessages);
     ClientHandler::Check(transportConfig, clientMessages);
     server.Stop();
@@ -158,19 +159,19 @@ TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataWithRepeat
 
 TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataInWrongOrder)
 {
-    QList<Message> serverMessages = {CreateMessage(MessageType::REQUEST, {66}),
-                                     CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
-                                     CreateMessage(MessageType::EVENT, {66, 13, 66}),
-                                     CreateDataMessage(2, 0, {13, 66}),
-                                     CreateMessage(MessageType::EVENT, {99, 99}),
-                                     CreateDataMessage(1, 0, {11, 10, 11})};
+    QList<MessagePtr> serverMessages = {CreateMessage(MessageType::REQUEST, {66}),
+                                        CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+                                        CreateMessage(MessageType::EVENT, {66, 13, 66}),
+                                        CreateDataMessage(2, 0, {13, 66}),
+                                        CreateMessage(MessageType::EVENT, {99, 99}),
+                                        CreateDataMessage(1, 0, {11, 10, 11})};
     TestServerRunner server(serverConfig);
-    QList<Message> clientMessages = {CreateMessage(MessageType::REQUEST, {66}),
-                                     CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
-                                     CreateMessage(MessageType::EVENT, {66, 13, 66}),
-                                     CreateMessage(MessageType::EVENT, {99, 99}),
-                                     CreateDataMessage(1, 0, {11, 10, 11}),
-                                     CreateDataMessage(2, 0, {13, 66})};
+    QList<MessagePtr> clientMessages = {CreateMessage(MessageType::REQUEST, {66}),
+                                        CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+                                        CreateMessage(MessageType::EVENT, {66, 13, 66}),
+                                        CreateMessage(MessageType::EVENT, {99, 99}),
+                                        CreateDataMessage(1, 0, {11, 10, 11}),
+                                        CreateDataMessage(2, 0, {13, 66})};
     server.Start(serverMessages);
     ClientHandler::Check(transportConfig, clientMessages);
     server.Stop();
@@ -178,21 +179,21 @@ TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataInWrongOrd
 
 /*TEST(TransportFunctionalTests, RequestResponseSeveralEventsTooManyDataInWrongOrder)
 {
-    QList<Message> serverMessages = {CreateMessage(MessageType::REQUEST, {66}),
-                                     CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
-                                     CreateMessage(MessageType::EVENT, {66, 13, 66}),
-                                     CreateDataMessage(2, 0, {11, 10, 11}),
-                                     CreateDataMessage(3, 0, {13, 66}),
-                                     CreateMessage(MessageType::EVENT, {99, 99}),
-                                     CreateDataMessage(6, 0, {67})};
+    QList<MessagePtr> serverMessages = {CreateMessage(MessageType::REQUEST, {66}),
+                                        CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+                                        CreateMessage(MessageType::EVENT, {66, 13, 66}),
+                                        CreateDataMessage(2, 0, {11, 10, 11}),
+                                        CreateDataMessage(3, 0, {13, 66}),
+                                        CreateMessage(MessageType::EVENT, {99, 99}),
+                                        CreateDataMessage(6, 0, {67})};
     TestServerRunner server(serverConfig);
     server.Start(serverMessages);
-    QList<Message> clientMessages = {CreateMessage(MessageType::REQUEST, {66}),
-                                     CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
-                                     CreateMessage(MessageType::EVENT, {66, 13, 66}),
-                                     CreateMessage(MessageType::EVENT, {99, 99}),
-                                     // ???
-                                     CreateDataMessage(1, 0, {13, 66})};
+    QList<MessagePtr> clientMessages = {CreateMessage(MessageType::REQUEST, {66}),
+                                        CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+                                        CreateMessage(MessageType::EVENT, {66, 13, 66}),
+                                        CreateMessage(MessageType::EVENT, {99, 99}),
+                                        // ???
+                                        CreateDataMessage(1, 0, {13, 66})};
     ClientHandler::Check(transportConfig, clientMessages);
     server.Stop();
 }*/

@@ -1,6 +1,7 @@
 #include <QList>
 #include <QObject>
 
+#include "Common/CommonDefs.h"
 #include "Common/ITransport.h"
 #include "Common/Message.h"
 #include "TransportSignalHandler.h"
@@ -16,17 +17,17 @@ TransportSignalHandler::TransportSignalHandler(ITransport *transport, QObject *p
     QObject::connect(transport, &ITransport::DataReceived, this, &TransportSignalHandler::ProcessData);
 }
 
-void TransportSignalHandler::ProcessResponse(Message const &message)
+void TransportSignalHandler::ProcessResponse(MessagePtr message)
 {
     Messages.append(message);
 }
 
-void TransportSignalHandler::ProcessData(Message const &message)
+void TransportSignalHandler::ProcessData(MessagePtr message)
 {
     Messages.append(message);
 }
 
-void TransportSignalHandler::ProcessEvent(Message const &message)
+void TransportSignalHandler::ProcessEvent(MessagePtr message)
 {
     Messages.append(message);
 }

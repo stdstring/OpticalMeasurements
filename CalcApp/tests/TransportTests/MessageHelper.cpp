@@ -1,21 +1,40 @@
 #include <QByteArray>
-#include <QDataStream>
-#include <QIODevice>
-#include <QtGlobal>
+//#include <QDataStream>
+//#include <QIODevice>
+//#include <QtGlobal>
 #include <QVector>
 
 #include <memory>
 
 #include "Common/CommonDefs.h"
 #include "Common/Message.h"
+//#include "MessageInfo.h"
+//#include "MessageInfoFactory.h"
 #include "MessageHelper.h"
-#include "MessageInfo.h"
-#include "MessageInfoFactory.h"
 
 namespace CalcApp
 {
 
-Message CreateMessage(MessageType messageType, QVector<char> const &data)
+MessagePtr CreateMessage(MessageType messageType, QVector<char> const &data)
+{
+    return std::make_shared<Message>(messageType, QByteArray(data.data(), data.size()));
+}
+
+MessagePtr CreateDataMessage(int packageNumber, int calcNumber, QVector<char> const &data)
+{
+    QByteArray dest;
+    QDataStream stream(&dest, QIODevice::WriteOnly);
+    stream.setVersion(DataStreamVersion);
+    stream << static_cast<quint32>(packageNumber) << static_cast<quint32>(calcNumber) << data;
+    return std::make_shared<Message>(MessageType::DATA, dest);
+}
+
+MessageData CreateMessageData(int packageNumber, int calcNumber, QVector<char> const &data)
+{
+    return MessageData(MessageInfo(packageNumber, calcNumber), CreateDataMessage(packageNumber, calcNumber, data));
+}
+
+/*Message CreateMessage(MessageType messageType, QVector<char> const &data)
 {
     return Message(messageType, QByteArray(data.data(), data.size()));
 }
@@ -42,6 +61,6 @@ MessageData CreateMessageData(quint8 packageNumber, quint8 calcNumber, QVector<c
 MessageInfo CreateMessageInfo(QVector<char> const &data)
 {
     return CreateMessageInfo(Message(MessageType::DATA, QByteArray(data.data(), data.size())));
-}
+}*/
 
 }
