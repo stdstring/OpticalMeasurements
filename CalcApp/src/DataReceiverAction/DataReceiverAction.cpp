@@ -36,16 +36,6 @@ void ProcessData(EncodersDataContextItem *item, QByteArray const &data)
     QDataStream stream(data);
     stream.setVersion(DataStreamVersion);
     EncodersData encodersData;
-    /*stream >> encodersData.GlobalRotationX
-           >> encodersData.GlobalTransferX
-           >> encodersData.GlobalRotationY
-           >> encodersData.GlobalTransferY
-           >> encodersData.GlobalRotationZ
-           >> encodersData.GlobalTransferZ
-           >> encodersData.LocalRotation
-           >> encodersData.LocalTransfer
-           >> encodersData.SensorTransfer
-           >> encodersData.Value;*/
     stream >> encodersData.GlobalTransferX
            >> encodersData.GlobalTransferY
            >> encodersData.GlobalTransferZ

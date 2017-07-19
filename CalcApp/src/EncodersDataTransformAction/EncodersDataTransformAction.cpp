@@ -29,30 +29,6 @@ typedef QListContextItem<Vertex3D> Vertex3DContextItem;
 
 Vertex3D CreateVertex(EncodersData const &data, EncodersConstraints const &constraints)
 {
-    /*double globalTransferX = data.GlobalTransferX * constraints.GlobalTransferStep;
-    double globalTransferY = data.GlobalTransferY * constraints.GlobalTransferStep;
-    double globalTransferZ = data.GlobalTransferZ * constraints.GlobalTransferStep;
-    double globalRotationLength = constraints.GlobalRotationLength * constraints.GlobalRotationStep;
-    double globalRotationX = (2 * M_PI * data.GlobalRotationX * constraints.GlobalRotationStep) / globalRotationLength;
-    double globalRotationY = (2 * M_PI * data.GlobalRotationY * constraints.GlobalRotationStep) / globalRotationLength;
-    double globalRotationZ = (2 * M_PI * data.GlobalRotationZ * constraints.GlobalRotationStep) / globalRotationLength;
-    double localTransfer = data.LocalTransfer * constraints.LocalTransferStep;
-    double localRotationLength = constraints.LocalRotationLength * constraints.LocalRotationStep;
-    double localRotation = (2 * M_PI * data.LocalRotation * constraints.LocalRotationStep) / localRotationLength;
-    double sensorTransfer = data.SensorTransfer * constraints.SensorTransferStep;
-    double sensorValue = data.Value * constraints.SensorResolution;
-    Matrix localValueColumn = Matrix::CreateColumnMatrix({0, 0, sensorValue, 1});
-    Matrix globalValueColumn = CreateXRotationMatrix(globalRotationX) *
-                               CreateXTransferMatrix(globalTransferX) *
-                               CreateYRotationMatrix(globalRotationY) *
-                               CreateYTransferMatrix(globalTransferY) *
-                               CreateZRotationMatrix(globalRotationZ) *
-                               CreateZTransferMatrix(globalTransferZ) *
-                               CreateZRotationMatrix(localRotation) *
-                               CreateXTransferMatrix(localTransfer) *
-                               CreateXTransferMatrix(sensorTransfer) *
-                               localValueColumn;
-    return Vertex3D(globalValueColumn.GetValue(0, 0), globalValueColumn.GetValue(1, 0), globalValueColumn.GetValue(2, 0));*/
     double globalTransferX = data.GlobalTransferX * constraints.GlobalTransferStep;
     double globalTransferY = data.GlobalTransferY * constraints.GlobalTransferStep;
     double globalTransferZ = data.GlobalTransferZ * constraints.GlobalTransferStep;
@@ -80,8 +56,6 @@ void TransformData(EncodersDataContextItem *sourceItem, Vertex3DContextItem *des
     {
         transformed = true;
         EncodersData sourceValue = sourceItem->Data[index];
-        Q_UNUSED(sourceValue);
-        // TODO (std_string) : add transformation from EncodersData into Vertex3D
         destItem->Data.append(CreateVertex(sourceValue, constraints));
     }
     if (transformed)
