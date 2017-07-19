@@ -27,6 +27,8 @@ namespace CalcApp
 namespace
 {
 
+const LoggerCategory category("ActionManager");
+
 ActionChainDef const& FindActionChain(ActionsConfig const &config, QString const &name)
 {
     QList<ActionChainDef>::const_iterator iterator = std::find_if(config.Chains.cbegin(),
@@ -35,6 +37,23 @@ ActionChainDef const& FindActionChain(ActionsConfig const &config, QString const
     if (iterator == config.Chains.cend())
         throw std::invalid_argument("name");
     return *iterator;
+}
+
+void ProcessException(QString const &name, ExceptionData data, LoggerPtr logger)
+{
+    try
+    {
+        std::rethrow_exception(data.Exception);
+    }
+    // TODO (std_string) : think about adding additional catch sections
+    catch (std::exception const &exception)
+    {
+        logger.get()->WriteError(category, QString("Action with name \"%1\" is failed due to the following reason: \"%2\"").arg(name).arg(exception.what()));
+    }
+    catch (...)
+    {
+        logger.get()->WriteError(category, QString("Action with name \"%1\" is failed due to unknown reason").arg(name));
+    }
 }
 
 }
@@ -56,7 +75,7 @@ QStringList ActionManager::Create(QString const &chainName)
     _chainName = chainName;
     _runningCount = 0;
     _hasAborted = false;
-    _logger.get()->WriteInfo(QString("Creation of chain with name \"%1\" is started").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Creation of chain with name \"%1\" is started").arg(_chainName));
     MainConfigPtr config = _serviceLocator.get()->GetConfig();
     ITransportFactory *transportFactory = _serviceLocator.get()->GetStorage()->GetTransport();
     ActionChainDef const &chain = FindActionChain(config->Actions, chainName);
@@ -69,13 +88,13 @@ QStringList ActionManager::Create(QString const &chainName)
         QObject::connect(executer.get(), &ActionExecuter::ActionCompleted, this, &ActionManager::ProcessActionCompleted);
         QObject::connect(executer.get(), &ActionExecuter::ActionAborted, this, &ActionManager::ProcessActionAborted);
         QObject::connect(executer.get(), &ActionExecuter::ActionFailed, this, &ActionManager::ProcessActionFailed);
-        _logger.get()->WriteInfo(QString("Action with name \"%1\" is created").arg(action.get()->GetName()));
+        _logger.get()->WriteInfo(category, QString("Action with name \"%1\" is created").arg(action.get()->GetName()));
         return executer;
     };
     std::transform(actions.cbegin(), actions.cend(), std::back_inserter(_chain), executerFactory);
     QStringList dest;
     std::transform(actions.cbegin(), actions.cend(), std::back_inserter(dest), [](ActionPtr action){ return action.get()->GetName(); });
-    _logger.get()->WriteInfo(QString("Creation of chain with name \"%1\" is completed").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Creation of chain with name \"%1\" is completed").arg(_chainName));
     return dest;
 }
 
@@ -83,22 +102,22 @@ void ActionManager::Run()
 {
     if (_runningCount != 0)
         throw std::logic_error("There are running actions in the chain");
-    _logger.get()->WriteInfo(QString("Running of chain with name \"%1\" is started").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Running of chain with name \"%1\" is started").arg(_chainName));
     for (std::shared_ptr<ActionExecuter> executer : _chain)
     {
         executer->Start();
     }
-    _logger.get()->WriteInfo(QString("Running of chain with name \"%1\" is completed").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Running of chain with name \"%1\" is completed").arg(_chainName));
 }
 
 void ActionManager::Stop()
 {
-    _logger.get()->WriteInfo(QString("Stopping of chain with name \"%1\" is started").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Stopping of chain with name \"%1\" is started").arg(_chainName));
     for (std::shared_ptr<ActionExecuter> executer : _chain)
     {
         executer->Stop(/*false*/);
     }
-    _logger.get()->WriteInfo(QString("Stopping of chain with name \"%1\" is completed").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Stopping of chain with name \"%1\" is completed").arg(_chainName));
 }
 
 void ActionManager::Clear()
@@ -107,19 +126,20 @@ void ActionManager::Clear()
         throw std::logic_error("There are running actions in the chain");
     _chain.clear();
     _context.get()->Clear();
-    _logger.get()->WriteInfo(QString("Chain with name \"%1\" is cleared").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Chain with name \"%1\" is cleared").arg(_chainName));
+    _chainName.clear();
 }
 
 void ActionManager::ProcessActionRunning(QString name)
 {
     _runningCount++;
-    _logger.get()->WriteInfo(QString("Action with name \"%1\" is running").arg(name));
+    _logger.get()->WriteInfo(category, QString("Action with name \"%1\" is running").arg(name));
     emit ActionRunning(name);
 }
 
 void ActionManager::ProcessActionCompleted(QString name)
 {
-    _logger.get()->WriteInfo(QString("Action with name \"%1\" is completed").arg(name));
+    _logger.get()->WriteInfo(category, QString("Action with name \"%1\" is completed").arg(name));
     emit ActionCompleted(name);
     _runningCount--;
     FinishActionChain();
@@ -127,7 +147,7 @@ void ActionManager::ProcessActionCompleted(QString name)
 
 void ActionManager::ProcessActionAborted(QString name)
 {
-    _logger.get()->WriteInfo(QString("Action with name \"%1\" is aborted").arg(name));
+    _logger.get()->WriteInfo(category, QString("Action with name \"%1\" is aborted").arg(name));
     emit ActionAborted(name);
     _hasAborted = true;
     _runningCount--;
@@ -136,19 +156,7 @@ void ActionManager::ProcessActionAborted(QString name)
 
 void ActionManager::ProcessActionFailed(QString name, ExceptionData data)
 {
-    // TODO (std_string) : move into separate fun
-    try
-    {
-        std::rethrow_exception (data.Exception);
-    }
-    catch (std::exception const &exception)
-    {
-        _logger.get()->WriteError(QString("Action with name \"%1\" is failed due to the following reason: \"%2\"").arg(name).arg(exception.what()));
-    }
-    catch (...)
-    {
-        _logger.get()->WriteError(QString("Action with name \"%1\" is failed due to unknown reason").arg(name));
-    }
+    ProcessException(name, data, _logger);
     emit ActionFailed(name, data);
     _hasAborted = true;
     Stop();
@@ -160,18 +168,8 @@ void ActionManager::FinishActionChain()
 {
     if (_runningCount == 0)
     {
-        // TODO (std_string) : think about this
-        if (_hasAborted)
-        {
-            _logger.get()->WriteInfo(QString("Chain with name \"%1\" is aborted").arg(_chainName));
-            emit ActionChainAborted();
-        }
-        else
-        {
-            _logger.get()->WriteInfo(QString("Chain with name \"%1\" is completed").arg(_chainName));
-            emit ActionChainCompleted();
-        }
-        //emit (_hasAborted ? ActionChainAborted() : ActionChainCompleted());
+        _logger.get()->WriteInfo(category, QString(_hasAborted ? "Chain with name \"%1\" is aborted" : "Chain with name \"%1\" is completed").arg(_chainName));
+        emit (_hasAborted ? ActionChainAborted() : ActionChainCompleted());
         _chain.clear();
     }
 }
