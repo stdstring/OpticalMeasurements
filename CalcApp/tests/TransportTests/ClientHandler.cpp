@@ -4,9 +4,13 @@
 #include <QtGlobal>
 #include <QThread>
 
+#include <memory>
+
 #include "gtest/gtest.h"
 
+#include "Common/CommonDefs.h"
 #include "Common/ITransport.h"
+#include "Common/Message.h"
 #include "Common/TransportConfig.h"
 #include "LowLevel/TransportLowLevel.h"
 #include "ClientHandler.h"
@@ -21,15 +25,15 @@ namespace CalcApp
 namespace
 {
 
-void SendOutgoingMessage(ITransport *transport, QList<Message> &messages)
+void SendOutgoingMessage(ITransport *transport, QList<MessagePtr> &messages)
 {
-    if (!messages.isEmpty() && messages.first().GetType() == MessageType::REQUEST)
+    if (!messages.isEmpty() && messages.first().get()->GetType() == MessageType::REQUEST)
         transport->Send(messages.takeFirst());
 }
 
 }
 
-void ClientHandler::Check(TransportConfig const &config, QList<Message> const &messages)
+void ClientHandler::Check(TransportConfig const &config, QList<MessagePtr> const &messages)
 {
     int argc = 0;
     QCoreApplication app(argc, {});
@@ -43,7 +47,7 @@ void ClientHandler::Check(TransportConfig const &config, QList<Message> const &m
     EXPECT_TRUE(thread.wait());
 }
 
-ClientHandler::ClientHandler(TransportConfig const &config, QThread *initThread, QList<Message> const &messages) :
+ClientHandler::ClientHandler(TransportConfig const &config, QThread *initThread, QList<MessagePtr> const &messages) :
     QObject(nullptr),
     _config(config),
     _initThread(initThread),
@@ -69,7 +73,7 @@ void ClientHandler::ProcessFinish()
     this->moveToThread(_initThread);
 }
 
-void ClientHandler::ProcessMessage(Message const &message)
+void ClientHandler::ProcessMessage(MessagePtr message)
 {
     EXPECT_FALSE(_messages.isEmpty());
     EXPECT_EQ(_messages.takeFirst(), message);

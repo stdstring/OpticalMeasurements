@@ -17,20 +17,20 @@ class ClientHandler : public QObject
 {
     Q_OBJECT
 public:
-    static void Check(TransportConfig const &config, QList<Message> const &messages);
+    static void Check(TransportConfig const &config, QList<MessagePtr> const &messages);
 
 private:
-    ClientHandler(TransportConfig const &config, QThread *initThread, QList<Message> const &messages);
+    ClientHandler(TransportConfig const &config, QThread *initThread, QList<MessagePtr> const &messages);
 
     TransportConfig _config;
     std::shared_ptr<ITransport> _transport;
     QThread *_initThread;
-    QList<Message> _messages;
+    QList<MessagePtr> _messages;
 
 private slots:
     void ProcessStart();
     void ProcessFinish();
-    void ProcessMessage(Message const &message);
+    void ProcessMessage(MessagePtr message);
 };
 
 }
