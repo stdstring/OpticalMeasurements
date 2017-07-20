@@ -7,10 +7,16 @@
 #include "IMessageCheckStrategy.h"
 #include "MessageInfo.h"
 
+#if defined(TRANSPORT_LIBRARY)
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_EXPORT
+#else
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_IMPORT
+#endif
+
 namespace CalcApp
 {
 
-class DelayedMessagesProcessor : public QObject
+class TRANSPORT_LIBRARY_DLLSPEC DelayedMessagesProcessor : public QObject
 {
     Q_OBJECT
 public:

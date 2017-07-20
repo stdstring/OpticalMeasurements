@@ -6,10 +6,16 @@
 #include "Common/CommonDefs.h"
 #include "Common/TransportConfig.h"
 
+#if defined(TRANSPORT_LIBRARY)
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_EXPORT
+#else
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_IMPORT
+#endif
+
 namespace CalcApp
 {
 
-class UdpTransport : public QObject
+class TRANSPORT_LIBRARY_DLLSPEC UdpTransport : public QObject
 {
     Q_OBJECT
 public:

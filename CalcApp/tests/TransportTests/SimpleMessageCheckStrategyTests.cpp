@@ -4,7 +4,7 @@
 #include "MessageInfo.h"
 #include "SimpleMessageCheckStrategy.h"
 
-namespace CalcApp
+/*namespace CalcApp
 {
 
 TEST(SimpleMessageCheckStrategyTests, Check)
@@ -21,4 +21,4 @@ TEST(SimpleMessageCheckStrategyTests, CheckZeroMaxDelayedCount)
     ASSERT_FALSE(strategy.Check(MessageInfo(10, 1), {}));
 }
 
-}
+}*/

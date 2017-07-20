@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <stdexcept>
-//#include <vector>
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
@@ -18,7 +17,7 @@
 #include "Transport.h"
 #include "TransportSignalHandler.h"
 
-namespace CalcApp
+/*namespace CalcApp
 {
 
 class TransportLowLevelMock : public ITransport
@@ -172,4 +171,4 @@ TEST_F(TransportTests, DelayedDataGreaterMaxDelayedCount)
     ASSERT_EQ(signalHandler.Messages[0], CreateMessage(MessageType::RESPONSE, {19}));
 }
 
-}
+}*/

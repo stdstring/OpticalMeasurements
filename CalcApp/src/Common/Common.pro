@@ -1,5 +1,5 @@
-include( ../../common.pri )
-include( ../../lib.pri )
+include(../../common.pri)
+include(../../lib.pri)
 
 QT += core
 

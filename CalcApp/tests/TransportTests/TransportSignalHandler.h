@@ -5,7 +5,6 @@
 
 #include "Common/CommonDefs.h"
 #include "Common/ITransport.h"
-//#include "Common/Message.h"
 
 namespace CalcApp
 {

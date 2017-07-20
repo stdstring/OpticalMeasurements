@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    //testing::GTEST_FLAG(throw_on_failure) = true;
+    testing::GTEST_FLAG(throw_on_failure) = false;
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

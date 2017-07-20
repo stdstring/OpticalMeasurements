@@ -14,7 +14,7 @@
 #include "ClientHandler.h"
 #include "MessageHelper.h"
 
-namespace CalcApp
+/*namespace CalcApp
 {
 
 namespace
@@ -116,16 +116,16 @@ TEST(TransportFunctionalTests, SeveralDataWithGap)
     server.Stop();
 }
 
-/*TEST(TransportFunctionalTests, TooManyDataInWrongOrder)
-{
-    QList<MessagePtr> messages = {CreateDataMessage(2, 0, {11, 10, 11}),
-                                  CreateDataMessage(3, 0, {13, 66}),
-                                  CreateDataMessage(6, 0, {67})};
-    TestServerRunner server(serverConfig, logger);
-    server.Start(messages);
-    ClientHandler::Check(transportConfig, {});
-    server.Stop();
-}*/
+//TEST(TransportFunctionalTests, TooManyDataInWrongOrder)
+//{
+//    QList<MessagePtr> messages = {CreateDataMessage(2, 0, {11, 10, 11}),
+//                                  CreateDataMessage(3, 0, {13, 66}),
+//                                  CreateDataMessage(6, 0, {67})};
+//    TestServerRunner server(serverConfig, logger);
+//    server.Start(messages);
+//    ClientHandler::Check(transportConfig, {});
+//    server.Stop();
+//}
 
 TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralData)
 {
@@ -183,25 +183,25 @@ TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataInWrongOrd
     server.Stop();
 }
 
-/*TEST(TransportFunctionalTests, RequestResponseSeveralEventsTooManyDataInWrongOrder)
-{
-    QList<MessagePtr> serverMessages = {CreateMessage(MessageType::REQUEST, {66}),
-                                        CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
-                                        CreateMessage(MessageType::EVENT, {66, 13, 66}),
-                                        CreateDataMessage(2, 0, {11, 10, 11}),
-                                        CreateDataMessage(3, 0, {13, 66}),
-                                        CreateMessage(MessageType::EVENT, {99, 99}),
-                                        CreateDataMessage(6, 0, {67})};
-    TestServerRunner server(serverConfig);
-    server.Start(serverMessages, logger);
-    QList<MessagePtr> clientMessages = {CreateMessage(MessageType::REQUEST, {66}),
-                                        CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
-                                        CreateMessage(MessageType::EVENT, {66, 13, 66}),
-                                        CreateMessage(MessageType::EVENT, {99, 99}),
-                                        // ???
-                                        CreateDataMessage(1, 0, {13, 66})};
-    ClientHandler::Check(transportConfig, clientMessages);
-    server.Stop();
-}*/
+//TEST(TransportFunctionalTests, RequestResponseSeveralEventsTooManyDataInWrongOrder)
+//{
+//    QList<MessagePtr> serverMessages = {CreateMessage(MessageType::REQUEST, {66}),
+//                                        CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+//                                        CreateMessage(MessageType::EVENT, {66, 13, 66}),
+//                                        CreateDataMessage(2, 0, {11, 10, 11}),
+//                                        CreateDataMessage(3, 0, {13, 66}),
+//                                        CreateMessage(MessageType::EVENT, {99, 99}),
+//                                        CreateDataMessage(6, 0, {67})};
+//    TestServerRunner server(serverConfig);
+//    server.Start(serverMessages, logger);
+//    QList<MessagePtr> clientMessages = {CreateMessage(MessageType::REQUEST, {66}),
+//                                        CreateMessage(MessageType::RESPONSE, {11, 12, 13}),
+//                                        CreateMessage(MessageType::EVENT, {66, 13, 66}),
+//                                        CreateMessage(MessageType::EVENT, {99, 99}),
+//                                        // ???
+//                                        CreateDataMessage(1, 0, {13, 66})};
+//    ClientHandler::Check(transportConfig, clientMessages);
+//    server.Stop();
+//}
 
-}
+}*/

@@ -8,11 +8,16 @@
 #include "IMessageCheckStrategy.h"
 #include "MessageInfo.h"
 
+#if defined(TRANSPORT_LIBRARY)
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_EXPORT
+#else
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_IMPORT
+#endif
 
 namespace CalcApp
 {
 
-class Transport : public ITransport
+class TRANSPORT_LIBRARY_DLLSPEC Transport : public ITransport
 {
     Q_OBJECT
 public:

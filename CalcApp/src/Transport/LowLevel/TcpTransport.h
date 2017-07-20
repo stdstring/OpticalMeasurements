@@ -8,10 +8,16 @@
 #include "Common/TransportConfig.h"
 #include "Common/TransportSerialization.h"
 
+#if defined(TRANSPORT_LIBRARY)
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_EXPORT
+#else
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_IMPORT
+#endif
+
 namespace CalcApp
 {
 
-class TcpTransport : public QObject
+class TRANSPORT_LIBRARY_DLLSPEC TcpTransport : public QObject
 {
     Q_OBJECT
 public:

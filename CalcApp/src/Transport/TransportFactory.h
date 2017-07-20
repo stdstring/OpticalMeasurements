@@ -9,10 +9,16 @@
 #include "Common/ITransportFactory.h"
 #include "Common/TransportConfig.h"
 
+#if defined(TRANSPORT_LIBRARY)
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_EXPORT
+#else
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_IMPORT
+#endif
+
 namespace CalcApp
 {
 
-class TransportFactory : public ITransportFactory
+class TRANSPORT_LIBRARY_DLLSPEC TransportFactory : public ITransportFactory
 {
     Q_OBJECT
     Q_INTERFACES(CalcApp::ITransportFactory)

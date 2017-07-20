@@ -8,10 +8,16 @@
 #include "TcpTransport.h"
 #include "UdpTransport.h"
 
+#if defined(TRANSPORT_LIBRARY)
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_EXPORT
+#else
+#define TRANSPORT_LIBRARY_DLLSPEC Q_DECL_IMPORT
+#endif
+
 namespace CalcApp
 {
 
-class TransportLowLevel : public ITransport
+class TRANSPORT_LIBRARY_DLLSPEC TransportLowLevel : public ITransport
 {
     Q_OBJECT
 public:
