@@ -55,4 +55,5 @@ SOURCES += main.cpp \
            MessageValidationTests.cpp \
            MessageInfoFactoryTests.cpp \
            SimpleMessageCheckStrategyTests.cpp \
-           DelayedMessagesProcessorTests.cpp
+           DelayedMessagesProcessorTests.cpp \
+           TransportTests.cpp
