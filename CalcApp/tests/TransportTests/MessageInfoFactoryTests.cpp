@@ -1,5 +1,3 @@
-#include <QByteArray>
-
 #include "gtest/gtest.h"
 
 #include "EqualityOperators.h"
@@ -7,7 +5,7 @@
 #include "MessageInfo.h"
 #include "MessageInfoFactory.h"
 
-/*namespace CalcApp
+namespace CalcApp
 {
 
 TEST(MessageInfoFactoryTests, Create)
@@ -18,4 +16,4 @@ TEST(MessageInfoFactoryTests, Create)
     ASSERT_EQ(MessageInfo(257, 256), CreateMessageInfo(CreateMessage(MessageType::DATA, {0, 0, 1, 1, 0, 0, 1, 0, 33})));
 }
 
-}*/
+}
