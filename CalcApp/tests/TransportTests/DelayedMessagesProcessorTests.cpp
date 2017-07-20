@@ -1,11 +1,9 @@
-#include <QByteArray>
-
 #include <memory>
 #include <stdexcept>
 
 #include "gtest/gtest.h"
 
-#include "Common/Message.h"
+#include "Common/CommonDefs.h"
 #include "DelayedMessagesProcessor.h"
 #include "EqualityOperators.h"
 #include "IMessageCheckStrategy.h"
@@ -13,7 +11,7 @@
 #include "MessageInfo.h"
 #include "SimpleMessageCheckStrategy.h"
 
-/*namespace CalcApp
+namespace CalcApp
 {
 
 const quint32 MaxDelayedCount = 2;
@@ -87,4 +85,4 @@ TEST_F(DelayedMessagesProcessorTests, Lifecycle)
     ASSERT_NO_THROW(_processor.get()->AddDelayedMessage(MessageInfo(10, 0), CreateDataMessage(10, 0, {2, 2, 2})));
 }
 
-}*/
+}

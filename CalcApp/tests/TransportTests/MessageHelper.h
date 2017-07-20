@@ -10,7 +10,7 @@ namespace CalcApp
 {
 
 MessagePtr CreateMessage(MessageType messageType, QVector<char> const &data);
-MessagePtr CreateDataMessage(int packageNumber, quint8 calcNumber, QVector<char> const &data);
+MessagePtr CreateDataMessage(int packageNumber, int calcNumber, QVector<char> const &data);
 MessageData CreateMessageData(int packageNumber, int calcNumber, QVector<char> const &data);
 
 }
