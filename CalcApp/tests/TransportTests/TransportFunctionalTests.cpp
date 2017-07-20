@@ -14,7 +14,7 @@
 #include "ClientHandler.h"
 #include "MessageHelper.h"
 
-/*namespace CalcApp
+namespace CalcApp
 {
 
 namespace
@@ -204,4 +204,4 @@ TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataInWrongOrd
 //    server.Stop();
 //}
 
-}*/
+}
