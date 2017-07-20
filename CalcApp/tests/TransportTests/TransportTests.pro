@@ -53,4 +53,5 @@ SOURCES += main.cpp \
            TransportSignalHandler.cpp \
            ClientHandler.cpp \
            MessageValidationTests.cpp \
-           MessageInfoFactoryTests.cpp
+           MessageInfoFactoryTests.cpp \
+           SimpleMessageCheckStrategyTests.cpp
