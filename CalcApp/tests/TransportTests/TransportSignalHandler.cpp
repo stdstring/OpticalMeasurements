@@ -10,26 +10,13 @@ namespace CalcApp
 {
 
 TransportSignalHandler::TransportSignalHandler(ITransport *transport, QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    DataProcessFailed(false)
 {
-    QObject::connect(transport, &ITransport::ResponseReceived, this, &TransportSignalHandler::ProcessResponse);
-    QObject::connect(transport, &ITransport::EventReceived, this, &TransportSignalHandler::ProcessEvent);
-    QObject::connect(transport, &ITransport::DataReceived, this, &TransportSignalHandler::ProcessData);
-}
-
-void TransportSignalHandler::ProcessResponse(MessagePtr message)
-{
-    Messages.append(message);
-}
-
-void TransportSignalHandler::ProcessData(MessagePtr message)
-{
-    Messages.append(message);
-}
-
-void TransportSignalHandler::ProcessEvent(MessagePtr message)
-{
-    Messages.append(message);
+    QObject::connect(transport, &ITransport::ResponseReceived, this, [this](MessagePtr message){ Messages.append(message); });
+    QObject::connect(transport, &ITransport::EventReceived, this, [this](MessagePtr message){ Messages.append(message); });
+    QObject::connect(transport, &ITransport::DataReceived, this, [this](MessagePtr message){ Messages.append(message); });
+    QObject::connect(transport, &ITransport::DataProcessFailed, this, [this](){ DataProcessFailed = true; });
 }
 
 }

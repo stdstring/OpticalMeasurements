@@ -14,7 +14,7 @@
 namespace CalcApp
 {
 
-const quint32 MaxDelayedCount = 2;
+/*const quint32 MaxDelayedCount = 2;
 
 class DelayedMessagesProcessorTests : public testing::Test
 {
@@ -83,6 +83,6 @@ TEST_F(DelayedMessagesProcessorTests, Lifecycle)
     ASSERT_TRUE(_processor.get()->CanDeliverMessage(MessageInfo(2, 0)));
     ASSERT_EQ(CreateMessageData(3, 0, {4, 11, 5}), _processor.get()->DeliverMessage(MessageInfo(2, 0)));
     ASSERT_NO_THROW(_processor.get()->AddDelayedMessage(MessageInfo(10, 0), CreateDataMessage(10, 0, {2, 2, 2})));
-}
+}*/
 
 }

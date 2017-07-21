@@ -15,11 +15,7 @@ class TransportSignalHandler : public QObject
 public:
     TransportSignalHandler(ITransport *transport, QObject *parent = nullptr);
     QList<MessagePtr> Messages;
-
-private slots:
-    void ProcessResponse(MessagePtr message);
-    void ProcessData(MessagePtr message);
-    void ProcessEvent(MessagePtr message);
+    bool DataProcessFailed;
 };
 
 }

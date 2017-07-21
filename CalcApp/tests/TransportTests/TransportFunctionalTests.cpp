@@ -17,7 +17,7 @@
 namespace CalcApp
 {
 
-namespace
+/*namespace
 {
 
 // TODO (std_string) : think about location of this data
@@ -202,6 +202,6 @@ TEST(TransportFunctionalTests, RequestResponseSeveralEventsSeveralDataInWrongOrd
 //                                        CreateDataMessage(1, 0, {13, 66})};
 //    ClientHandler::Check(transportConfig, clientMessages);
 //    server.Stop();
-//}
+//}*/
 
 }
