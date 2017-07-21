@@ -21,9 +21,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
            MainWindow.cpp \
-           Vertex3D.cpp
+           Vertex3D.cpp \
+           XYZReader.cpp
 
 HEADERS += MainWindow.h \
-           Vertex3D.h
+           Vertex3D.h \
+           XYZReader.h
 
 FORMS += MainWindow.ui
