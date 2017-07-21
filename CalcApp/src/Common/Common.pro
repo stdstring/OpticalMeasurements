@@ -21,6 +21,7 @@ SOURCES += Data/EncodersData.cpp \
            LinearAlgebra/Matrix.cpp \
            LinearAlgebra/MatrixFactory.cpp \
            Logger/LoggerService.cpp \
+           Logger/NullLogger.cpp \
            Logger/QMessageLoggerWrapper.cpp \
            Logger/ConsoleLogger.cpp \
            Utils/ActionArgumentsHelper.cpp \
