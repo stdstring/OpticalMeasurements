@@ -18,7 +18,8 @@ LIBS += -lTransport$${LIB_SUFFIX} -lTestServerCore -lCommon
 HEADERS += EqualityOperators.h \
            MessageHelper.h \
            TransportSignalHandler.h \
-           ClientHandler.h
+           ClientHandler.h \
+           DelayedMessagesProcessorHandler.h
 
 SOURCES += main.cpp \
            EqualityOperators.cpp \
@@ -30,4 +31,5 @@ SOURCES += main.cpp \
            SimpleMessageCheckStrategyTests.cpp \
            DelayedMessagesProcessorTests.cpp \
            TransportTests.cpp \
-           TransportFunctionalTests.cpp
+           TransportFunctionalTests.cpp \
+           DelayedMessagesProcessorHandler.cpp
