@@ -1,9 +1,13 @@
 QT += core gui
+QT +=  opengl widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = OpenGLDemo
 TEMPLATE = app
+
+INCLUDEPATH += GL
+LIBS += -lglu32 -lopengl32
 
 CONFIG += C++11
 
@@ -22,10 +26,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp \
            MainWindow.cpp \
            Vertex3D.cpp \
-           XYZReader.cpp
+           XYZReader.cpp \
+           OpenGLSphereWidget.cpp
 
 HEADERS += MainWindow.h \
            Vertex3D.h \
-           XYZReader.h
+           XYZReader.h \
+           OpenGLSphereWidget.h
 
 FORMS += MainWindow.ui
