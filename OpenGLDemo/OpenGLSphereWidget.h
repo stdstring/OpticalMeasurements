@@ -24,6 +24,7 @@ protected:
 
 private:
     GLUquadricObj *_quadric;
+    GLuint _displayList;
     double _rotationX;
     double _rotationY;
     double _shiftZ;

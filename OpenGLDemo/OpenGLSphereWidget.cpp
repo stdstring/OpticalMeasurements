@@ -32,6 +32,30 @@ GLdouble Rotate(GLdouble angle, GLdouble delta)
     return newAngle;
 }
 
+GLuint CreateDisplayList(GLUquadricObj *quadric)
+{
+    GLuint displayList = glGenLists(1);
+    glNewList(displayList, GL_COMPILE);
+    glPushMatrix();
+    glTranslated(1.0, 1.0, 0);
+    gluSphere(quadric, 0.2, 32, 32);
+    glPopMatrix();
+    glPushMatrix();
+    glTranslated(1.0, -1.0, 0);
+    gluSphere(quadric, 0.2, 32, 32);
+    glPopMatrix();
+    glPushMatrix();
+    glTranslated(-1.0, -1.0, 0);
+    gluSphere(quadric, 0.2, 32, 32);
+    glPopMatrix();
+    glPushMatrix();
+    glTranslated(-1.0, 1.0, 0);
+    gluSphere(quadric, 0.2f, 32, 32);
+    glPopMatrix();
+    glEndList();
+    return displayList;
+}
+
 }
 
 OpenGLSphereWidget::OpenGLSphereWidget(QWidget *parent) :
@@ -59,6 +83,7 @@ void OpenGLSphereWidget::initializeGL()
     glEnable(GL_COLOR_MATERIAL);
     _quadric = gluNewQuadric();
     gluQuadricNormals(_quadric, GLU_SMOOTH);
+    _displayList = CreateDisplayList(_quadric);
 }
 
 void OpenGLSphereWidget::paintGL()
@@ -67,10 +92,11 @@ void OpenGLSphereWidget::paintGL()
     // TODO (std_string) : think about problems with RGBA
     glColor3d(0.1875, 0.832, 0.7813);
     glLoadIdentity();
+    glPushMatrix();
     glTranslated(0.0, 0.0, _shiftZ);
     glRotated(_rotationX, 1, 0, 0);
     glRotated(_rotationY, 0, 1, 0);
-    glPushMatrix();
+    /*glPushMatrix();
     glTranslated(1.0, 1.0, 0);
     gluSphere(_quadric, 0.2, 32, 32);
     glPopMatrix();
@@ -85,6 +111,8 @@ void OpenGLSphereWidget::paintGL()
     glPushMatrix();
     glTranslated(-1.0, 1.0, 0);
     gluSphere(_quadric, 0.2f, 32, 32);
+    glPopMatrix();*/
+    glCallList(_displayList);
     glPopMatrix();
 }
 
