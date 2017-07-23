@@ -1,9 +1,13 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QWidget>
 
-namespace Ui {
+namespace Ui
+{
+
 class MainWindow;
+
 }
 
 namespace OpenGLDemo
@@ -18,6 +22,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+private slots:
+    void ProcessOpenFile();
 };
 
 }
