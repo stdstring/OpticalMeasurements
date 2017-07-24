@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     //QList<OpenGLDemo::Vertex3D> data = OpenGLDemo::ReadXYZSource("demo.xyz");
     //QList<OpenGLDemo::Vertex3D> data = OpenGLDemo::ReadXYZSource("CylinderSmall.xyz");
     //QList<OpenGLDemo::Vertex3D> data = OpenGLDemo::ReadXYZSource("CylinderLarge.xyz");
-    QList<OpenGLDemo::Vertex3D> data = OpenGLDemo::ReadXYZSource("rp.xyz");
+    QList<OpenGLDemo::Vertex3D> data = OpenGLDemo::ReadXYZSource("ThreadLargeExample.xyz");
     OpenGLDemo::OpenGLXYZWidget widget;
     widget.resize(400, 400);
     widget.show();
