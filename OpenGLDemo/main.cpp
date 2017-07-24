@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
     //w.show();
     //return app.exec();
     //QList<OpenGLDemo::Vertex3D> data = OpenGLDemo::ReadXYZSource("demo.xyz");
-    //QList<OpenGLDemo::Vertex3D> data = OpenGLDemo::ReadXYZSource("VertexDataForCylinderSmall.xyz");
-    QList<OpenGLDemo::Vertex3D> data = OpenGLDemo::ReadXYZSource("VertexDataForCylinderLarge.xyz");
+    //QList<OpenGLDemo::Vertex3D> data = OpenGLDemo::ReadXYZSource("CylinderSmall.xyz");
+    QList<OpenGLDemo::Vertex3D> data = OpenGLDemo::ReadXYZSource("CylinderLarge.xyz");
     OpenGLDemo::OpenGLXYZWidget widget;
     widget.resize(400, 400);
     widget.show();
