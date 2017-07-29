@@ -36,14 +36,16 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                           {{"key", "Generator"}, {"sleep_time", "1000"}, {"data_count", "10"}}),
                                                 ActionDef("Consumer",
                                                           "TestTotalDataConsumerAction",
-                                                          {{"key", "Generator"}, {"filename", "GeneratorTotalCosumer.dat"}})});
+                                                          {{"key", "Generator"}, {"filename", "GeneratorTotalCosumer.dat"}})},
+                                               {});
     ActionChainDef generatorPartConsumerChain("Generator - Part consumer chain",
                                               {ActionDef("Generator",
                                                          "TestDataGeneratorAction",
                                                          {{"key", "Generator"}, {"sleep_time", "1000"}, {"data_count", "10"}}),
                                                ActionDef("Consumer",
                                                          "TestPartDataConsumerAction",
-                                                         {{"key", "Generator"}, {"filename", "GeneratorPartCosumer.dat"}})});
+                                                         {{"key", "Generator"}, {"filename", "GeneratorPartCosumer.dat"}})},
+                                              {});
     ActionChainDef generatorTotalTransformTotalConsumerChain("Generator - Total transform - Total consumer chain",
                                                              {ActionDef("Generator",
                                                                         "TestDataGeneratorAction",
@@ -53,7 +55,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                                         {{"source_key", "Generator"}, {"dest_key", "Transform"}}),
                                                               ActionDef("Consumer",
                                                                         "TestTotalDataConsumerAction",
-                                                                        {{"key", "Transform"}, {"filename", "GeneratorTotalTransformTotalConsumer.dat"}})});
+                                                                        {{"key", "Transform"}, {"filename", "GeneratorTotalTransformTotalConsumer.dat"}})},
+                                                             {});
     ActionChainDef generatorTotalTransformPartConsumerChain("Generator - Total transform - Part consumer chain",
                                                             {ActionDef("Generator",
                                                                        "TestDataGeneratorAction",
@@ -63,7 +66,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                                        {{"source_key", "Generator"}, {"dest_key", "Transform"}}),
                                                              ActionDef("Consumer",
                                                                        "TestPartDataConsumerAction",
-                                                                       {{"key", "Transform"}, {"filename", "GeneratorTotalTransformPartConsumer.dat"}})});
+                                                                       {{"key", "Transform"}, {"filename", "GeneratorTotalTransformPartConsumer.dat"}})},
+                                                            {});
     ActionChainDef generatorPartTransformTotalConsumerChain("Generator - Part transform - Total consumer chain",
                                                             {ActionDef("Generator",
                                                                        "TestDataGeneratorAction",
@@ -73,7 +77,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                                        {{"source_key", "Generator"}, {"dest_key", "Transform"}}),
                                                              ActionDef("Consumer",
                                                                        "TestTotalDataConsumerAction",
-                                                                       {{"key", "Transform"}, {"filename", "GeneratorPartTransformTotalConsumer.dat"}})});
+                                                                       {{"key", "Transform"}, {"filename", "GeneratorPartTransformTotalConsumer.dat"}})},
+                                                            {});
     ActionChainDef generatorPartTransformPartConsumerChain("Generator - Part transform - Part consumer chain",
                                                            {ActionDef("Generator",
                                                                       "TestDataGeneratorAction",
@@ -83,7 +88,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                                       {{"source_key", "Generator"}, {"dest_key", "Transform"}}),
                                                             ActionDef("Consumer",
                                                                       "TestPartDataConsumerAction",
-                                                                      {{"key", "Transform"}, {"filename", "GeneratorPartTransformPartConsumer.dat"}})});
+                                                                      {{"key", "Transform"}, {"filename", "GeneratorPartTransformPartConsumer.dat"}})},
+                                                           {});
     ActionChainDef generatorTwoConsumersChain("Generator - Two consumers chain",
                                               {ActionDef("Generator",
                                                          "TestDataGeneratorAction",
@@ -93,7 +99,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                          {{"key", "Generator"}, {"filename", "GeneratorTotalCosumer.dat"}}),
                                                ActionDef("Part consumer",
                                                          "TestPartDataConsumerAction",
-                                                         {{"key", "Generator"}, {"filename", "GeneratorPartCosumer.dat"}})});
+                                                         {{"key", "Generator"}, {"filename", "GeneratorPartCosumer.dat"}})},
+                                              {});
     ActionChainDef generatorTwoTransformsTotalConsumerChain("Generator - Two transforms - Total consumer chain",
                                                             {ActionDef("Generator",
                                                                        "TestDataGeneratorAction",
@@ -106,7 +113,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                                        {{"source_key", "FirstTransform"}, {"dest_key", "SecondTransform"}}),
                                                              ActionDef("Consumer",
                                                                        "TestTotalDataConsumerAction",
-                                                                       {{"key", "SecondTransform"}, {"filename", "GeneratorTwoTransformsTotalConsumer.dat"}})});
+                                                                       {{"key", "SecondTransform"}, {"filename", "GeneratorTwoTransformsTotalConsumer.dat"}})},
+                                                            {});
     ActionChainDef generatorTwoTransformsPartConsumerChain("Generator - Two transforms - Part consumer chain",
                                                            {ActionDef("Generator",
                                                                       "TestDataGeneratorAction",
@@ -119,7 +127,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                                       {{"source_key", "FirstTransform"}, {"dest_key", "SecondTransform"}}),
                                                             ActionDef("Consumer",
                                                                       "TestPartDataConsumerAction",
-                                                                      {{"key", "SecondTransform"}, {"filename", "GeneratorTwoTransformsPartConsumer.dat"}})});
+                                                                      {{"key", "SecondTransform"}, {"filename", "GeneratorTwoTransformsPartConsumer.dat"}})},
+                                                           {});
     ActionChainDef generatorTwoTransformConsumerBranchesChain("Generator - Two transform consumer branches chain",
                                                               {ActionDef("Generator",
                                                                          "TestDataGeneratorAction",
@@ -135,7 +144,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                                          {{"key", "FirstTransform"}, {"filename", "GeneratorTotalBranchChain.dat"}}),
                                                                ActionDef("Part consumer",
                                                                          "TestPartDataConsumerAction",
-                                                                         {{"key", "SecondTransform"}, {"filename", "GeneratorPartBranchChain.dat"}})});
+                                                                         {{"key", "SecondTransform"}, {"filename", "GeneratorPartBranchChain.dat"}})},
+                                                              {});
     ActionChainDef complexChain("Complex chain",
                                 {ActionDef("Generator1",
                                            "TestDataGeneratorAction",
@@ -196,7 +206,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                            {{"key", "Generator2"}, {"filename", "Complex_Consumer11.dat"}}),
                                  ActionDef("Consumer12",
                                            "TestPartDataConsumerAction",
-                                           {{"key", "Generator2"}, {"filename", "Complex_Consumer12.dat"}})});
+                                           {{"key", "Generator2"}, {"filename", "Complex_Consumer12.dat"}})},
+                                {});
     ActionChainDef generatorTotalFailedChain("Generator - Total failed - Total consumer chain",
                                              {ActionDef("Generator",
                                                         "TestDataGeneratorAction",
@@ -206,7 +217,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                         {{"source_key", "Generator"}, {"dest_key", "Dest"}, {"failed_iteration", "3"}}),
                                               ActionDef("Consumer",
                                                         "TestTotalDataConsumerAction",
-                                                        {{"key", "Dest"}, {"filename", "GeneratorTotalFailed.dat"}})});
+                                                        {{"key", "Dest"}, {"filename", "GeneratorTotalFailed.dat"}})},
+                                             {});
     ActionChainDef generatorPartFailedChain("Generator - Part failed - Part consumer chain",
                                             {ActionDef("Generator",
                                                        "TestDataGeneratorAction",
@@ -216,7 +228,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                        {{"source_key", "Generator"}, {"dest_key", "Dest"}, {"failed_iteration", "3"}}),
                                              ActionDef("Consumer",
                                                        "TestPartDataConsumerAction",
-                                                       {{"key", "Dest"}, {"filename", "GeneratorPartFailed.dat"}})});
+                                                       {{"key", "Dest"}, {"filename", "GeneratorPartFailed.dat"}})},
+                                            {});
     ActionChainDef complexFailedChain("Complex failed chain",
                                       {ActionDef("Generator1",
                                                  "TestDataGeneratorAction",
@@ -241,7 +254,8 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                                  {{"key", "Dest2"}, {"filename", "Complex_GeneratorPartFailed.dat"}}),
                                        ActionDef("Consumer3",
                                                  "TestPartDataConsumerAction",
-                                                 {{"key", "Generator3"}, {"filename", "Complex_GeneratorPartCosumer.dat"}})});
+                                                 {{"key", "Generator3"}, {"filename", "Complex_GeneratorPartCosumer.dat"}})},
+                                      {});
     ActionsConfig actionsConfig({generatorTotalConsumerChain,
                                  generatorPartConsumerChain,
                                  generatorTotalTransformTotalConsumerChain,

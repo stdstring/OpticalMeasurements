@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QList>
 #include <QString>
 
 #include "ActionsConfig.h"
@@ -8,6 +9,7 @@
 namespace CalcApp
 {
 
+// TODO (std_string) : move into another place
 class CommonConfig
 {
 public:
@@ -18,17 +20,52 @@ public:
     QString PluginsCommonDir;
 };
 
+// TODO (std_string) : move into another place
+class ViewerDef
+{
+public:
+    ViewerDef(QString const &name, QString const &filename, QString const &args) :
+        Name(name),
+        Filename(filename),
+        Args(args)
+    {
+    }
+
+    QString Name;
+    QString Filename;
+    QString Args;
+};
+
+// TODO (std_string) : move into another place
+class ViewersConfig
+{
+public:
+    ViewersConfig(QList<ViewerDef> const &viewers) : Viewers(viewers)
+    {
+    }
+
+    QList<ViewerDef> Viewers;
+};
+
 class MainConfig
 {
 public:
-    MainConfig(QString const &pluginsCommonDir, ActionsConfig const &actions, TransportConfig const &transport) :
+    /*MainConfig(QString const &pluginsCommonDir, ActionsConfig const &actions, TransportConfig const &transport) :
         PluginsCommonDir(pluginsCommonDir),
+        Actions(actions),
+        Transport(transport)
+    {
+    }*/
+    MainConfig(CommonConfig const &commonConfig, ActionsConfig const &actions, TransportConfig const &transport) :
+        /*PluginsCommonDir(pluginsCommonDir),*/
+        Common(commonConfig),
         Actions(actions),
         Transport(transport)
     {
     }
 
-    QString PluginsCommonDir;
+    //QString PluginsCommonDir;
+    CommonConfig Common;
     ActionsConfig Actions;
     TransportConfig Transport;
 };

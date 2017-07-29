@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     CalcApp::LoggerService loggerService(CalcApp::LoggerPtr(&logger, [](CalcApp::ILogger*){}));
     loggerService.WriteDebug("app is started");
     loggerService.WriteDebug("loading of components is started");
-    QList<CalcApp::IComponentInfo*> components = CalcApp::ComponentsDirLoader::Load<CalcApp::IComponentInfo>(config.PluginsCommonDir, &app, true);
+    QList<CalcApp::IComponentInfo*> components = CalcApp::ComponentsDirLoader::Load<CalcApp::IComponentInfo>(config.Common.PluginsCommonDir, &app, true);
     CalcApp::ComponentStorage componentStorage;
     componentStorage.AddComponents(components);
     loggerService.WriteDebug("loading of components is finished");

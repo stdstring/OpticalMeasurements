@@ -73,7 +73,7 @@ ActionsConfig ParseActionsConfig(QDomElement const &actionsElement)
             continue;
         QString name = node.attributes().namedItem("name").nodeValue();
         QList<ActionDef> actions(ParseChainActions(node));
-        ActionChainDef chain(name, actions);
+        ActionChainDef chain(name, actions, {});
         chains.append(chain);
     }
     return ActionsConfig(chains);
