@@ -20,7 +20,9 @@ SUBDIRS += src/Common \
            src/SaveVertexDataAction \
            src/DataReceiverAction \
            src/EncodersDataTransformAction \
-           src/Stage2DataGenerator
+           src/Stage2DataGenerator \
+           # Viewers
+           src/SimpleTextViewer
 
 # tests
 SUBDIRS += tests/TransportTests
