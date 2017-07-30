@@ -23,67 +23,7 @@ namespace CalcApp
 namespace
 {
 
-const QString CommonElement("common");
-const QString TransportElement("transport");
-const QString ChainsElement("chains");
-
-/*QMultiMap<QString, QString> ParseActionArgs(QDomNode actionNode)
-{
-    QMultiMap<QString, QString> args;
-    QDomNodeList childNodes = actionNode.childNodes();
-    for (int index = 0; index < childNodes.size(); ++index)
-    {
-        QDomNode node = childNodes.at(index);
-        if (node.nodeType() != QDomNode::ElementNode)
-            continue;
-        if (node.nodeName() != "arg")
-            continue;
-        QString name = node.attributes().namedItem("name").nodeValue();
-        QString value = node.firstChild().nodeValue();
-        args.insert(name, value);
-    }
-    return args;
-}
-
-QList<ActionDef> ParseChainActions(QDomNode chainNode)
-{
-    QList<ActionDef> actions;
-    QDomNodeList childNodes = chainNode.childNodes();
-    for (int index = 0; index < childNodes.size(); ++index)
-    {
-        QDomNode node = childNodes.at(index);
-        if (node.nodeType() != QDomNode::ElementNode)
-            continue;
-        if (node.nodeName() != "action")
-            continue;
-        QString name = node.attributes().namedItem("name").nodeValue();
-        QString type = node.attributes().namedItem("type").nodeValue();
-        QMultiMap<QString, QString> args(ParseActionArgs(node));
-        actions.append(ActionDef(name, type, args));
-    }
-    return actions;
-}
-
-ActionsConfig ParseActionsConfig(QDomElement const &actionsElement)
-{
-    QList<ActionChainDef> chains;
-    QDomNodeList childNodes = actionsElement.childNodes();
-    for (int index = 0; index < childNodes.size(); ++index)
-    {
-        QDomNode node = childNodes.at(index);
-        if (node.nodeType() != QDomNode::ElementNode)
-            continue;
-        if (node.nodeName() != "chain")
-            continue;
-        QString name = node.attributes().namedItem("name").nodeValue();
-        QList<ActionDef> actions(ParseChainActions(node));
-        ActionChainDef chain(name, actions, {});
-        chains.append(chain);
-    }
-    return ActionsConfig(chains);
-}*/
-
-QDomElement GetSingleElement(QDomNode const &parent, QString const &name)
+QDomElement GetSingleChildElement(QDomNode const &parent, QString const &name)
 {
     QDomElement parentElement = parent.toElement();
     if (parentElement.isNull())
@@ -94,61 +34,59 @@ QDomElement GetSingleElement(QDomNode const &parent, QString const &name)
     return children.at(0).toElement();
 }
 
-QMultiMap<QString, QString> ParseActionArgs(QDomNode actionNode)
+QString GetElementValue(QDomElement const &element)
 {
-    //const QString argNodeName("arg");
-    //const QString nameAttr("name");
+    return element.firstChild().nodeValue();
+}
+
+QString GetAttributeValue(QDomNode const &node, QString const &name)
+{
+    return node.attributes().namedItem(name).nodeValue();
+}
+
+QMultiMap<QString, QString> ParseActionArgs(QDomNode const &actionNode)
+{
     QMultiMap<QString, QString> args;
     QDomNodeList argNodes = actionNode.toElement().elementsByTagName("arg");
     for (int index = 0; index < argNodes.size(); ++index)
     {
         QDomNode argNode = argNodes.at(index);
-        QString name = argNode.attributes().namedItem("name").nodeValue();
+        QString name = GetAttributeValue(argNode, "name");
         QString value = argNode.firstChild().nodeValue();
         args.insert(name, value);
     }
-    /*QDomNodeList childNodes = actionNode.childNodes();
-    for (int index = 0; index < childNodes.size(); ++index)
-    {
-        QDomNode node = childNodes.at(index);
-        if (node.nodeType() != QDomNode::ElementNode)
-            continue;
-        if (node.nodeName() != nodeName)
-            continue;
-        QString name = node.attributes().namedItem(nameAttr).nodeValue();
-        QString value = node.firstChild().nodeValue();
-        args.insert(name, value);
-    }*/
     return args;
 }
 
-QList<ActionDef> ParseChainActions(QDomNode chainNode)
+QList<ActionDef> ParseChainActions(QDomNode const &chainNode)
 {
     QList<ActionDef> actions;
-    QDomElement actionsElement = GetSingleElement(chainNode, "actions");
+    QDomElement actionsElement = GetSingleChildElement(chainNode, "actions");
     QDomNodeList actionNodes = actionsElement.elementsByTagName("action");
     for (int index = 0; index < actionNodes.size(); ++index)
     {
         QDomNode actionNode = actionNodes.at(index);
-        QString name = actionNode.attributes().namedItem("name").nodeValue();
-        QString type = actionNode.attributes().namedItem("type").nodeValue();
+        QString name = GetAttributeValue(actionNode, "name");
+        QString type = GetAttributeValue(actionNode, "type");
         QMultiMap<QString, QString> args(ParseActionArgs(actionNode));
         actions.append(ActionDef(name, type, args));
     }
-    /*QDomNodeList childNodes = chainNode.childNodes();
-    for (int index = 0; index < childNodes.size(); ++index)
-    {
-        QDomNode node = childNodes.at(index);
-        if (node.nodeType() != QDomNode::ElementNode)
-            continue;
-        if (node.nodeName() != "action")
-            continue;
-        QString name = node.attributes().namedItem("name").nodeValue();
-        QString type = node.attributes().namedItem("type").nodeValue();
-        QMultiMap<QString, QString> args(ParseActionArgs(node));
-        actions.append(ActionDef(name, type, args));
-    }*/
     return actions;
+}
+
+QList<ResultDef> ParseResults(QDomElement const &resultsElement)
+{
+    QList<ResultDef> results;
+    QDomNodeList resultNodes = resultsElement.elementsByTagName("result");
+    for (int index = 0; index < resultNodes.size(); ++index)
+    {
+        QDomNode resultNode = resultNodes.at(index);
+        QString data = GetAttributeValue(resultNode, "data");
+        QString viewer = GetAttributeValue(resultNode, "viewer");
+        QString descriptor = GetAttributeValue(resultNode, "descriptor");
+        results.append(ResultDef(data, viewer, descriptor));
+    }
+    return results;
 }
 
 ActionsConfig ParseActionsConfig(QDomElement const &chainsElement)
@@ -158,40 +96,28 @@ ActionsConfig ParseActionsConfig(QDomElement const &chainsElement)
     for (int index = 0; index < chainNodes.size(); ++index)
     {
         QDomNode chainNode = chainNodes.at(index);
-        QString name = chainNode.attributes().namedItem("name").nodeValue();
+        QString name = GetAttributeValue(chainNode, "name");
         QList<ActionDef> actions(ParseChainActions(chainNode));
-        ActionChainDef chain(name, actions, {});
+        QList<ResultDef> results(ParseResults(GetSingleChildElement(chainNode, "results")));
+        ActionChainDef chain(name, actions, results);
         chains.append(chain);
     }
-    /*QDomNodeList childNodes = actionsElement.childNodes();
-    for (int index = 0; index < childNodes.size(); ++index)
-    {
-        QDomNode node = childNodes.at(index);
-        if (node.nodeType() != QDomNode::ElementNode)
-            continue;
-        if (node.nodeName() != "chain")
-            continue;
-        QString name = node.attributes().namedItem("name").nodeValue();
-        QList<ActionDef> actions(ParseChainActions(node));
-        ActionChainDef chain(name, actions, {});
-        chains.append(chain);
-    }*/
     return ActionsConfig(chains);
 }
 
 CommonConfig ParseCommonConfig(QDomElement const &commonElement)
 {
-    QString pluginsDir = commonElement.firstChildElement("plugins_dir").firstChild().nodeValue();
+    QString pluginsDir = GetElementValue(GetSingleChildElement(commonElement, "plugins_dir"));
     return CommonConfig(pluginsDir);
 }
 
 TransportConfig ParseTransportConfig(QDomElement const &transportElement)
 {
     bool ok;
-    QString serverAddress = transportElement.firstChildElement("server_address").firstChild().nodeValue();
-    QString tcpPortValue = transportElement.firstChildElement("tcp_port").firstChild().nodeValue();
-    QString udpPortValue = transportElement.firstChildElement("udp_port").firstChild().nodeValue();
-    QString maxDelayedCountValue = transportElement.firstChildElement("max_delayed_count").firstChild().nodeValue();
+    QString serverAddress = GetElementValue(GetSingleChildElement(transportElement, "server_address"));
+    QString tcpPortValue = GetElementValue(GetSingleChildElement(transportElement, "tcp_port"));
+    QString udpPortValue = GetElementValue(GetSingleChildElement(transportElement, "udp_port"));
+    QString maxDelayedCountValue = GetElementValue(GetSingleChildElement(transportElement, "max_delayed_count"));
     int tcpPort = tcpPortValue.toInt(&ok);
     if (!ok)
         throw std::invalid_argument("tcp_port");
@@ -202,6 +128,21 @@ TransportConfig ParseTransportConfig(QDomElement const &transportElement)
     if (!ok)
         throw std::invalid_argument("max_delayed_count");
     return TransportConfig(maxDelayedCount, serverAddress, tcpPort, udpPort);
+}
+
+ViewersConfig ParseViewersConfig(QDomElement const &viewersElement)
+{
+    QList<ViewerDef> viewers;
+    QDomNodeList viewerNodes = viewersElement.elementsByTagName("viewer");
+    for (int index = 0; index < viewerNodes.size(); ++index)
+    {
+        QDomNode viewerNode = viewerNodes.at(index);
+        QString name = GetAttributeValue(viewerNode, "name");
+        QString filename = GetAttributeValue(viewerNode, "filename");
+        QString args = GetAttributeValue(viewerNode, "args");
+        viewers.append(ViewerDef(name, filename, args));
+    }
+    return ViewersConfig(viewers);
 }
 
 }
@@ -220,13 +161,11 @@ MainConfig XmlConfigReader::Read(QCommandLineParser *parser)
     if (!document.setContent(&config, false))
         throw std::logic_error("bad content");
     QDomElement rootElement = document.documentElement();
-    /*CommonConfig commonConfig(ParseCommonConfig(rootElement.firstChildElement("common")));
-    TransportConfig transportConfig(ParseTransportConfig(rootElement.firstChildElement("transport")));
-    ActionsConfig actionsConfig(ParseActionsConfig(rootElement.firstChildElement("actions")));*/
-    CommonConfig commonConfig(ParseCommonConfig(rootElement.firstChildElement(CommonElement)));
-    TransportConfig transportConfig(ParseTransportConfig(rootElement.firstChildElement(TransportElement)));
-    ActionsConfig actionsConfig(ParseActionsConfig(rootElement.firstChildElement(ChainsElement)));
-    return MainConfig(commonConfig.PluginsCommonDir, actionsConfig, transportConfig);
+    CommonConfig commonConfig(ParseCommonConfig(GetSingleChildElement(rootElement, "common")));
+    TransportConfig transportConfig(ParseTransportConfig(GetSingleChildElement(rootElement, "transport")));
+    ViewersConfig viewersConfig(ParseViewersConfig(GetSingleChildElement(rootElement, "viewers")));
+    ActionsConfig actionsConfig(ParseActionsConfig(GetSingleChildElement(rootElement, "chains")));
+    return MainConfig(commonConfig, transportConfig, viewersConfig, actionsConfig);
 }
 
 }

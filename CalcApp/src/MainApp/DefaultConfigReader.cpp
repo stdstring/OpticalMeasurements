@@ -271,7 +271,7 @@ MainConfig DefaultConfigReader::Read(QCommandLineParser *parser)
                                  generatorPartFailedChain,
                                  complexFailedChain});
     QString pluginsCommonDir = ".";
-    return MainConfig(pluginsCommonDir, actionsConfig, transportConfig);
+    return MainConfig(pluginsCommonDir, transportConfig, ViewersConfig({}), actionsConfig);
 }
 
 }

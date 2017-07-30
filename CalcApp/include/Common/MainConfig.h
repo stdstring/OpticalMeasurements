@@ -56,18 +56,21 @@ public:
         Transport(transport)
     {
     }*/
-    MainConfig(CommonConfig const &commonConfig, ActionsConfig const &actions, TransportConfig const &transport) :
-        /*PluginsCommonDir(pluginsCommonDir),*/
+    MainConfig(CommonConfig const &commonConfig,
+               TransportConfig const &transport,
+               ViewersConfig const &viewers,
+               ActionsConfig const &actions) :
         Common(commonConfig),
-        Actions(actions),
-        Transport(transport)
+        Transport(transport),
+        Viewers(viewers),
+        Actions(actions)
     {
     }
 
-    //QString PluginsCommonDir;
     CommonConfig Common;
-    ActionsConfig Actions;
     TransportConfig Transport;
+    ViewersConfig Viewers;
+    ActionsConfig Actions;
 };
 
 }
