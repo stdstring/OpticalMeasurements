@@ -6,6 +6,8 @@
 #include <QList>
 #include <QMultiMap>
 #include <QObject>
+#include <QPair>
+#include <QSet>
 #include <QString>
 
 #include <stdexcept>
@@ -76,6 +78,7 @@ QList<ActionDef> ParseChainActions(QDomNode const &chainNode)
 
 QList<ResultDef> ParseResults(QDomElement const &resultsElement)
 {
+    QSet<QPair<QString, QString>> resultsSet;
     QList<ResultDef> results;
     QDomNodeList resultNodes = resultsElement.elementsByTagName("result");
     for (int index = 0; index < resultNodes.size(); ++index)
@@ -83,6 +86,11 @@ QList<ResultDef> ParseResults(QDomElement const &resultsElement)
         QDomNode resultNode = resultNodes.at(index);
         QString data = GetAttributeValue(resultNode, "data");
         QString viewer = GetAttributeValue(resultNode, "viewer");
+        // TODO (std_string) : probably move this check into another higher layer
+        QPair<QString, QString> result(data, viewer);
+        if (resultsSet.contains(result))
+            continue;
+        resultsSet.insert(result);
         QString descriptor = GetAttributeValue(resultNode, "descriptor");
         results.append(ResultDef(data, viewer, descriptor));
     }
@@ -132,12 +140,17 @@ TransportConfig ParseTransportConfig(QDomElement const &transportElement)
 
 ViewersConfig ParseViewersConfig(QDomElement const &viewersElement)
 {
+    QSet<QString> viewersSet;
     QList<ViewerDef> viewers;
     QDomNodeList viewerNodes = viewersElement.elementsByTagName("viewer");
     for (int index = 0; index < viewerNodes.size(); ++index)
     {
         QDomNode viewerNode = viewerNodes.at(index);
         QString name = GetAttributeValue(viewerNode, "name");
+        // TODO (std_string) : probably move this check into another higher layer
+        if (viewersSet.contains(name))
+            continue;
+        viewersSet.insert(name);
         QString filename = GetAttributeValue(viewerNode, "filename");
         QString args = GetAttributeValue(viewerNode, "args");
         viewers.append(ViewerDef(name, filename, args));
