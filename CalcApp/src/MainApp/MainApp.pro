@@ -27,6 +27,7 @@ HEADERS  += MainWindow.h \
             XmlConfigReader.h \
             CommandLineDefs.h
 
-FORMS    += MainWindow.ui
+FORMS    += MainWindow.ui \
+            ChooseResultDialog.ui
 
 DISTFILES += MainApp_Test.conf
