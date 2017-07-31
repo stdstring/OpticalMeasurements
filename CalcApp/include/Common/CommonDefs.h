@@ -9,6 +9,7 @@ namespace CalcApp
 {
 
 // forward definitions
+class ActionChainDef;
 class ComponentStorage;
 class Context;
 class ExecutionState;
@@ -23,6 +24,7 @@ class ServiceLocator;
 class TransportConfig;
 
 // ptr definitions
+typedef std::shared_ptr<ActionChainDef> ActionChainDefPtr;
 typedef std::shared_ptr<ComponentStorage> ComponentStoragePtr;
 typedef std::shared_ptr<Context> ContextPtr;
 typedef std::shared_ptr<ExecutionState> ExecutionStatePtr;

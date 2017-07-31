@@ -25,12 +25,14 @@ public:
     void Stop();
     void Clear();
 
+    ActionChainDefPtr GetCurrentChainDef() const;
+
 private:
     void FinishActionChain();
 
     ServiceLocatorPtr _serviceLocator;
     LoggerPtr _logger;
-    QString _chainName;
+    ActionChainDefPtr _chainDef;
     QList<std::shared_ptr<ActionExecuter>> _chain;
     ContextPtr _context;
     int _runningCount;

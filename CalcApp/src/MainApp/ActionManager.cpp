@@ -29,12 +29,10 @@ namespace
 
 const LoggerCategory category("ActionManager");
 
-ActionChainDef const& FindActionChain(ActionsConfig const &config, QString const &name)
+ActionChainDef& FindActionChain(ActionsConfig &config, QString const &name)
 {
-    QList<ActionChainDef>::const_iterator iterator = std::find_if(config.Chains.cbegin(),
-                                                                  config.Chains.cend(),
-                                                                  [&name](ActionChainDef const &chain){ return chain.Name == name; });
-    if (iterator == config.Chains.cend())
+    QList<ActionChainDef>::iterator iterator = std::find_if(config.Chains.begin(), config.Chains.end(), [&name](ActionChainDef &chain){ return chain.Name == name; });
+    if (iterator == config.Chains.end())
         throw std::invalid_argument("name");
     return *iterator;
 }
@@ -72,13 +70,13 @@ QStringList ActionManager::Create(QString const &chainName)
 {
     if (!_chain.isEmpty())
             throw std::logic_error("Action's chain isn't empty");
-    _chainName = chainName;
     _runningCount = 0;
     _hasAborted = false;
-    _logger.get()->WriteInfo(category, QString("Creation of chain with name \"%1\" is started").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Creation of chain with name \"%1\" is started").arg(chainName));
     MainConfigPtr config = _serviceLocator.get()->GetConfig();
     ITransportFactory *transportFactory = _serviceLocator.get()->GetStorage()->GetTransport();
-    ActionChainDef const &chain = FindActionChain(config->Actions, chainName);
+    ActionChainDef &chain = FindActionChain(config->Actions, chainName);
+    _chainDef.reset(&chain, [](ActionChainDef*){});
     ExecutionStatePtr executionState(std::make_shared<ExecutionState>(transportFactory, config.get()->Transport));
     QList<ActionPtr> actions = ActionChainFactory::Create(chain, _serviceLocator, _context, executionState);
     std::function<std::shared_ptr<ActionExecuter>(ActionPtr)> executerFactory = [this](ActionPtr action)
@@ -94,7 +92,7 @@ QStringList ActionManager::Create(QString const &chainName)
     std::transform(actions.cbegin(), actions.cend(), std::back_inserter(_chain), executerFactory);
     QStringList dest;
     std::transform(actions.cbegin(), actions.cend(), std::back_inserter(dest), [](ActionPtr action){ return action.get()->GetName(); });
-    _logger.get()->WriteInfo(category, QString("Creation of chain with name \"%1\" is completed").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Creation of chain with name \"%1\" is completed").arg(chainName));
     return dest;
 }
 
@@ -102,22 +100,22 @@ void ActionManager::Run()
 {
     if (_runningCount != 0)
         throw std::logic_error("There are running actions in the chain");
-    _logger.get()->WriteInfo(category, QString("Running of chain with name \"%1\" is started").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Running of chain with name \"%1\" is started").arg(_chainDef.get()->Name));
     for (std::shared_ptr<ActionExecuter> executer : _chain)
     {
         executer->Start();
     }
-    _logger.get()->WriteInfo(category, QString("Running of chain with name \"%1\" is completed").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Running of chain with name \"%1\" is completed").arg(_chainDef.get()->Name));
 }
 
 void ActionManager::Stop()
 {
-    _logger.get()->WriteInfo(category, QString("Stopping of chain with name \"%1\" is started").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Stopping of chain with name \"%1\" is started").arg(_chainDef.get()->Name));
     for (std::shared_ptr<ActionExecuter> executer : _chain)
     {
         executer->Stop(/*false*/);
     }
-    _logger.get()->WriteInfo(category, QString("Stopping of chain with name \"%1\" is completed").arg(_chainName));
+    _logger.get()->WriteInfo(category, QString("Stopping of chain with name \"%1\" is completed").arg(_chainDef.get()->Name));
 }
 
 void ActionManager::Clear()
@@ -126,8 +124,13 @@ void ActionManager::Clear()
         throw std::logic_error("There are running actions in the chain");
     _chain.clear();
     _context.get()->Clear();
-    _logger.get()->WriteInfo(category, QString("Chain with name \"%1\" is cleared").arg(_chainName));
-    _chainName.clear();
+    _logger.get()->WriteInfo(category, QString("Chain with name \"%1\" is cleared").arg(_chainDef.get()->Name));
+    _chainDef.reset();
+}
+
+ActionChainDefPtr ActionManager::GetCurrentChainDef() const
+{
+    return _chainDef;
 }
 
 void ActionManager::ProcessActionRunning(QString name)
@@ -168,7 +171,7 @@ void ActionManager::FinishActionChain()
 {
     if (_runningCount == 0)
     {
-        _logger.get()->WriteInfo(category, QString(_hasAborted ? "Chain with name \"%1\" is aborted" : "Chain with name \"%1\" is completed").arg(_chainName));
+        _logger.get()->WriteInfo(category, QString(_hasAborted ? "Chain with name \"%1\" is aborted" : "Chain with name \"%1\" is completed").arg(_chainDef.get()->Name));
         emit (_hasAborted ? ActionChainAborted() : ActionChainCompleted());
         _chain.clear();
     }
