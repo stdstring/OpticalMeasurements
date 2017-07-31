@@ -1,22 +1,25 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 
-namespace Ui {
+namespace Ui
+{
 class MainWindow;
 }
+
+namespace CalcApp
+{
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QString const &data, QWidget *parent = 0);
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
 };
 
-#endif // MAINWINDOW_H
+}
