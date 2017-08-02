@@ -14,6 +14,8 @@ ChooseResultDialog::ChooseResultDialog(QStringList const &items, QWidget *parent
 {
     _ui->setupUi(this);
     _ui->ResultsListWidget->addItems(items);
+    connect(_ui->ButtonBox, &QDialogButtonBox::accepted, this, &ChooseResultDialog::accept);
+    connect(_ui->ButtonBox, &QDialogButtonBox::rejected, this, &ChooseResultDialog::reject);
 }
 
 int ChooseResultDialog::GetChosenItemIndex() const
