@@ -1,3 +1,4 @@
+#include <QDialog>
 #include <QList>
 #include <QMainWindow>
 #include <QMessageBox>
@@ -18,6 +19,7 @@
 #include "Common/MainConfig.h"
 #include "Common/ServiceLocator.h"
 #include "ActionManager.h"
+#include "ChooseResultDialog.h"
 #include "StateManager.h"
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
@@ -35,7 +37,7 @@ QString CreateItemText(QString const &name, QString const &suffix)
     return descriptor;
 }
 
-void ShowResult(ResultDef const &result, ViewersConfig const &viewers, LoggerPtr logger)
+void ShowResultInViewer(ResultDef const &result, ViewersConfig const &viewers, LoggerPtr logger)
 {
     QList<ViewerDef>::const_iterator iterator = std::find_if(viewers.Viewers.cbegin(),
                                                              viewers.Viewers.cend(),
@@ -138,9 +140,21 @@ void MainWindow::ResultButtonClick()
     }
     else if (chainDef.get()->Results.size() == 1)
     {
+        ShowResultInViewer(chainDef.get()->Results.at(0), _serviceLocator.get()->GetConfig().get()->Viewers, _serviceLocator.get()->GetLogger());
     }
     else
     {
+        QStringList resultItemsList;
+        std::transform(chainDef.get()->Results.cbegin(),
+                       chainDef.get()->Results.cend(),
+                       std::back_inserter(resultItemsList),
+                       [](ResultDef const &result){ return result.Descriptor; });
+        ChooseResultDialog chooseResultDialog(resultItemsList);
+        if (QDialog::Accepted == chooseResultDialog.exec())
+        {
+            int selectedResultIndex = chooseResultDialog.GetChosenItemIndex();
+            ShowResultInViewer(chainDef.get()->Results.at(selectedResultIndex), _serviceLocator.get()->GetConfig().get()->Viewers, _serviceLocator.get()->GetLogger());
+        }
     }
 }
 
