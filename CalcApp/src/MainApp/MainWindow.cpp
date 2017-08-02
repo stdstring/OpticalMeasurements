@@ -1,14 +1,17 @@
 #include <QList>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QProcess>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
 
 #include <algorithm>
 #include <iterator>
+#include <stdexcept>
 
 #include "Common/CommonDefs.h"
+#include "Common/Logger/ILogger.h"
 #include "Common/ActionsConfig.h"
 #include "Common/ExceptionData.h"
 #include "Common/IAction.h"
@@ -32,11 +35,29 @@ QString CreateItemText(QString const &name, QString const &suffix)
     return descriptor;
 }
 
+void ShowResult(ResultDef const &result, ViewersConfig const &viewers, LoggerPtr logger)
+{
+    QList<ViewerDef>::const_iterator iterator = std::find_if(viewers.Viewers.cbegin(),
+                                                             viewers.Viewers.cend(),
+                                                             [&result](ViewerDef const &viewer){ return viewer.Name == result.ViewerName; });
+    if (viewers.Viewers.cend() == iterator)
+    {
+        logger.get()->WriteError(LoggerCategory("ResultViewer"),  QString("Unknown viewer named \"%1\"").arg(result.ViewerName));
+        throw std::logic_error("viewer");
+    }
+    ViewerDef const &viewer = *iterator;
+    // TODO (std_string) : move process creation into another place
+    QProcess::execute(viewer.Args.isEmpty() ?
+                      QString("%1 %2").arg(viewer.Filename).arg(result.DataFilename) :
+                      QString("%1 %2 %3").arg(viewer.Filename).arg(viewer.Args).arg(result.DataFilename));
+}
+
 }
 
 MainWindow::MainWindow(ServiceLocatorPtr serviceLocator, QWidget *parent) :
     QMainWindow(parent),
     _ui(new Ui::MainWindow),
+    _serviceLocator(serviceLocator),
     _actionManager(new ActionManager(serviceLocator, this)),
     _stateManager(nullptr)
 {
@@ -106,10 +127,21 @@ void MainWindow::ClearButtonClick()
 
 void MainWindow::ResultButtonClick()
 {
-    // TODO (std_string) : extract data from context
-    QMessageBox resultInfo;
-    resultInfo.setText("There is the result of the execution");
-    resultInfo.exec();
+    ActionChainDefPtr chainDef = _actionManager->GetCurrentChainDef();
+    // TODO (std_string) : use more functional approach
+    // TODO (std_string) : separate on several methods
+    if (chainDef.get()->Results.size() == 0)
+    {
+        QMessageBox resultInfo;
+        resultInfo.setText("This chain doesn't contain any defined results for view.");
+        resultInfo.exec();
+    }
+    else if (chainDef.get()->Results.size() == 1)
+    {
+    }
+    else
+    {
+    }
 }
 
 void MainWindow::ProcessActionRunning(QString name)

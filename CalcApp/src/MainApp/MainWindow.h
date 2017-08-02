@@ -26,6 +26,7 @@ public:
 
 private:
     Ui::MainWindow *_ui;
+    ServiceLocatorPtr _serviceLocator;
     ActionManager *_actionManager;
     StateManager *_stateManager;
     QStringList _actions;
