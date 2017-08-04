@@ -18,23 +18,23 @@ namespace CalcApp
 namespace
 {
 
-typedef QListContextItem<Vertex3D> Vertex3DContextItem;
+typedef QListContextItem<Vertex3DData> Vertex3DDataContextItem;
 
 // TODO (std_string) : think about location and value of this const
 constexpr int RealNumberPrecision = 8;
 
-void SaveData(QTextStream &stream, Vertex3DContextItem *item, int start)
+void SaveData(QTextStream &stream, Vertex3DDataContextItem *item, int start)
 {
     QReadLocker locker(&item->Lock);
     for (int index = start; index < item->Data.length(); ++index)
     {
-        Vertex3D value  = item->Data[index];
+        Vertex3D value  = item->Data[index].SurfacePoint;
         stream << "# vertex " << index + 1 << endl;
         stream << value.X << " " << value.Y << " " << value.Z << endl;
     }
 }
 
-void SaveData(QString const &filename, Vertex3DContextItem *item, int start)
+void SaveData(QString const &filename, Vertex3DDataContextItem *item, int start)
 {
     QFile file(filename);
     file.open(start == 0 ? QIODevice::WriteOnly : QIODevice::WriteOnly | QIODevice::Append);
@@ -109,7 +109,7 @@ void SaveVertexDataAction::FinishProcessData()
 void SaveVertexDataAction::ProcessDataImpl()
 {
     ContextPtr context = GetContext();
-    Vertex3DContextItem *item = context.get()->GetValue<Vertex3DContextItem>(_key);
+    Vertex3DDataContextItem *item = context.get()->GetValue<Vertex3DDataContextItem>(_key);
     SaveData(_filename, item, _index + 1);
     _index = item->Data.length() - 1;
 }

@@ -25,9 +25,9 @@ namespace
 {
 
 typedef QListContextItem<EncodersData> EncodersDataContextItem;
-typedef QListContextItem<Vertex3D> Vertex3DContextItem;
+typedef QListContextItem<Vertex3DData> Vertex3DDataContextItem;
 
-Vertex3D CreateVertex(EncodersData const &data, EncodersConstraints const &constraints)
+Matrix CreateTransformation(EncodersData const &data, EncodersConstraints const &constraints)
 {
     double globalTransferX = data.GlobalTransferX * constraints.GlobalTransferStep;
     double globalTransferY = data.GlobalTransferY * constraints.GlobalTransferStep;
@@ -35,19 +35,30 @@ Vertex3D CreateVertex(EncodersData const &data, EncodersConstraints const &const
     double localRotation = (2 * M_PI * data.LocalRotation) / constraints.LocalRotationLength;
     double localTransfer = data.LocalTransfer * constraints.LocalTransferStep;
     double sensorTransfer = data.SensorTransfer * constraints.SensorTransferStep;
-    double sensorValue = data.Value * constraints.SensorResolution;
-    Matrix localValueColumn = Matrix::CreateColumnMatrix({sensorValue, 0, 0, 1});
-    Matrix globalValueColumn = CreateXTransferMatrix(globalTransferX) *
-                               CreateYTransferMatrix(globalTransferY) *
-                               CreateZTransferMatrix(globalTransferZ) *
-                               CreateZRotationMatrix(localRotation) *
-                               CreateXTransferMatrix(localTransfer) *
-                               CreateYTransferMatrix(sensorTransfer) *
-                               localValueColumn;
-    return Vertex3D(globalValueColumn.GetValue(0, 0), globalValueColumn.GetValue(1, 0), globalValueColumn.GetValue(2, 0));
+    return CreateXTransferMatrix(globalTransferX) *
+           CreateYTransferMatrix(globalTransferY) *
+           CreateZTransferMatrix(globalTransferZ) *
+           CreateZRotationMatrix(localRotation) *
+           CreateXTransferMatrix(localTransfer) *
+           CreateYTransferMatrix(sensorTransfer);
 }
 
-void TransformData(EncodersDataContextItem *sourceItem, Vertex3DContextItem *destItem, int start, EncodersConstraints const &constraints)
+Vertex3D CreateVertex(Matrix const &transformation, Matrix const &localColumn)
+{
+    Matrix globalColumn(transformation * localColumn);
+    return Vertex3D(globalColumn.GetValue(0, 0), globalColumn.GetValue(1, 0), globalColumn.GetValue(2, 0));
+}
+
+Vertex3DData CreateVertexData(EncodersData const &data, EncodersConstraints const &constraints)
+{
+    Matrix transformation(CreateTransformation(data, constraints));
+    double sensorValue = data.Value * constraints.SensorResolution;
+    Vertex3D surfacePoint(CreateVertex(transformation, Matrix::CreateColumnMatrix({sensorValue, 0, 0, 1})));
+    Vertex3D sensor(CreateVertex(transformation, Matrix::CreateColumnMatrix({0, 0, 0, 1})));
+    return Vertex3DData(surfacePoint, sensor);
+}
+
+void TransformData(EncodersDataContextItem *sourceItem, Vertex3DDataContextItem *destItem, int start, EncodersConstraints const &constraints)
 {
     QReadLocker _readLocker(&sourceItem->Lock);
     QWriteLocker _writeLocker(&destItem->Lock);
@@ -55,8 +66,7 @@ void TransformData(EncodersDataContextItem *sourceItem, Vertex3DContextItem *des
     for (int index = start; index < sourceItem->Data.length(); ++index)
     {
         transformed = true;
-        EncodersData sourceValue = sourceItem->Data[index];
-        destItem->Data.append(CreateVertex(sourceValue, constraints));
+        destItem->Data.append(CreateVertexData(sourceItem->Data[index], constraints));
     }
     if (transformed)
         emit destItem->NotifyDataChange();
@@ -76,7 +86,7 @@ EncodersDataTransformAction::EncodersDataTransformAction(QString const &name,
     _destKey(destKey),
     _constraints(constraints)
 {
-    context.get()->Set(_destKey, std::make_shared<Vertex3DContextItem>(new Vertex3DContextItem()));
+    context.get()->Set(_destKey, std::make_shared<Vertex3DDataContextItem>());
 }
 
 QString EncodersDataTransformAction::GetName()
@@ -132,7 +142,7 @@ void EncodersDataTransformAction::FinishProcessData()
 void EncodersDataTransformAction::ProcessData(ContextPtr context)
 {
     EncodersDataContextItem *sourceItem = context.get()->GetValue<EncodersDataContextItem>(_sourceKey);
-    Vertex3DContextItem *destItem = context.get()->GetValue<Vertex3DContextItem>(_destKey);
+    Vertex3DDataContextItem *destItem = context.get()->GetValue<Vertex3DDataContextItem>(_destKey);
     TransformData(sourceItem, destItem, _index + 1, _constraints);
     _index = sourceItem->Data.length() - 1;
 }
