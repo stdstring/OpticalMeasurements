@@ -4,12 +4,13 @@
 namespace CalcApp
 {
 
-MainWindow::MainWindow(QString const &data, QWidget *parent) :
+MainWindow::MainWindow(QString const &header, QString const &data, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->TextViewer->setPlainText(data);
+    setWindowTitle(header);
 }
 
 MainWindow::~MainWindow()

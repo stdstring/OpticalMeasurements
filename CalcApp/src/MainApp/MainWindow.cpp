@@ -50,8 +50,8 @@ void ShowResultInViewer(ResultDef const &result, ViewersConfig const &viewers, L
     ViewerDef const &viewer = *iterator;
     // TODO (std_string) : move process creation into another place
     QProcess::execute(viewer.Args.isEmpty() ?
-                      QString("%1 %2").arg(viewer.Filename).arg(result.DataFilename) :
-                      QString("%1 %2 %3").arg(viewer.Filename).arg(viewer.Args).arg(result.DataFilename));
+                      QString("%1 --header=\"%2\" %3").arg(viewer.Filename).arg(result.Descriptor).arg(result.DataFilename) :
+                      QString("%1 %2 --header=\"%3\" %4").arg(viewer.Filename).arg(viewer.Args).arg(result.Descriptor).arg(result.DataFilename));
 }
 
 }

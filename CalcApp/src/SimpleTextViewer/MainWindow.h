@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QString const &data, QWidget *parent = 0);
+    explicit MainWindow(QString const &header, QString const &data, QWidget *parent = 0);
     ~MainWindow();
 
 private:
