@@ -11,6 +11,7 @@ MainWindow::MainWindow(QString const &header, QString const &data, QWidget *pare
     ui->setupUi(this);
     ui->TextViewer->setPlainText(data);
     setWindowTitle(header);
+    QObject::connect(ui->ActionExit, &QAction::triggered, this, [this](bool){ close(); });
 }
 
 MainWindow::~MainWindow()
