@@ -8,7 +8,6 @@
 #include <memory>
 
 #include "GL/gl.h"
-#include "GL/glu.h"
 
 #include "Vertex3D.h"
 
@@ -30,7 +29,6 @@ protected:
 
 private:
     bool _hasData;
-    GLUquadricObj *_quadric;
     GLuint _dataDisplayList;
     double _rotationX;
     double _rotationY;

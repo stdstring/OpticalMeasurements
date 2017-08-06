@@ -21,14 +21,12 @@ GLfloat LightPosition[]= {0.0f, 0.0f, 2.0f, 1.0f};
 GLdouble RotationXDelta = 5;
 GLdouble RotationYDelta = 5;
 
-/*GLdouble SphereRadius = 0.2;
-GLint SphereParts = 16;
-GLdouble ZDefault = -5.0;
+/*GLdouble ZDefault = -5.0;
 GLdouble ShiftZDelta = 0.2;*/
-GLdouble SphereRadius = 10;
-GLint SphereParts = 16;
-GLdouble ZDefault = -4000.0;
-GLdouble ShiftZDelta = 50;
+/*GLdouble ZDefault = -4000.0;
+GLdouble ShiftZDelta = 10;*/
+GLdouble ZDefault = -400.0;
+GLdouble ShiftZDelta = 10;
 
 GLdouble Rotate(GLdouble angle, GLdouble delta)
 {
@@ -40,17 +38,14 @@ GLdouble Rotate(GLdouble angle, GLdouble delta)
     return newAngle;
 }
 
-GLuint CreateDisplayList(GLUquadricObj *quadric, QList<Vertex3D> const &vertexList)
+GLuint CreateDisplayList(QList<Vertex3D> const &vertexList)
 {
     GLuint displayList = glGenLists(1);
     glNewList(displayList, GL_COMPILE);
+    glBegin(GL_POINTS);
     for (Vertex3D vertex : vertexList)
-    {
-        glPushMatrix();
-        glTranslated(vertex.X, vertex.Y, vertex.Z);
-        gluSphere(quadric, SphereRadius, SphereParts, SphereParts);
-        glPopMatrix();
-    }
+        glVertex3d(vertex.X, vertex.Y, vertex.Z);
+    glEnd();
     glEndList();
     return displayList;
 }
@@ -60,7 +55,6 @@ GLuint CreateDisplayList(GLUquadricObj *quadric, QList<Vertex3D> const &vertexLi
 OpenGLXYZWidget::OpenGLXYZWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     _hasData(false),
-    _quadric(nullptr),
     _rotationX(0),
     _rotationY(0),
     _shiftZ(ZDefault)
@@ -69,8 +63,6 @@ OpenGLXYZWidget::OpenGLXYZWidget(QWidget *parent) :
 
 OpenGLXYZWidget::~OpenGLXYZWidget()
 {
-    if (_quadric != nullptr)
-        gluDeleteQuadric(_quadric);
 }
 
 void OpenGLXYZWidget::initializeGL()
@@ -86,10 +78,9 @@ void OpenGLXYZWidget::initializeGL()
     glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHTING);
-    glColorMaterial(GL_FRONT, GL_DIFFUSE);
+    //glColorMaterial(GL_FRONT, GL_DIFFUSE);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
-    _quadric = gluNewQuadric();
-    gluQuadricNormals(_quadric, GLU_SMOOTH);
 }
 
 void OpenGLXYZWidget::paintGL()
@@ -97,8 +88,9 @@ void OpenGLXYZWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (!_hasData)
         return;
-    // TODO (std_string) : think about problems with RGBA
-    glColor3d(0.1875, 0.832, 0.7813);
+    /*// TODO (std_string) : think about problems with RGBA
+    glColor3d(0.1875, 0.832, 0.7813);*/
+    glColor3d(0, 0, 0);
     glLoadIdentity();
     glPushMatrix();
     glTranslated(0.0, 0.0, _shiftZ);
@@ -163,7 +155,7 @@ void OpenGLXYZWidget::ShowData(QList<Vertex3D> const &vertexList)
 {
     if (_hasData)
         glDeleteLists(_dataDisplayList, 1);
-    _dataDisplayList = CreateDisplayList(_quadric, vertexList);
+    _dataDisplayList = CreateDisplayList(/*_quadric,*/ vertexList);
     _hasData = true;
     repaint();
 }
