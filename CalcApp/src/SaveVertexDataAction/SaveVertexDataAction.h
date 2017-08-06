@@ -34,6 +34,8 @@ private:
     QString _filename;
     // TODO (std_string) : probably move into separate state object
     int _index;
+    QString _vertexList;
+    QString _normalList;
 };
 
 }

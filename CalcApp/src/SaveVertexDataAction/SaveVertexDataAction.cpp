@@ -6,6 +6,8 @@
 #include <QString>
 #include <QTextStream>
 
+#include <cmath>
+
 #include "Common/CommonDefs.h"
 #include "Common/Data/Vertex3D.h"
 #include "Common/Context.h"
@@ -23,30 +25,54 @@ typedef QListContextItem<Vertex3DData> Vertex3DDataContextItem;
 // TODO (std_string) : think about location and value of this const
 constexpr int RealNumberPrecision = 8;
 
-void SaveData(QTextStream &stream, Vertex3DDataContextItem *item, int start)
+void WriteData(QTextStream &vertexListStream, QTextStream &normalListStream, Vertex3DDataContextItem *item, int start)
 {
     QReadLocker locker(&item->Lock);
     for (int index = start; index < item->Data.length(); ++index)
     {
-        Vertex3D value  = item->Data[index].SurfacePoint;
-        stream << "# vertex " << index + 1 << endl;
-        stream << value.X << " " << value.Y << " " << value.Z << endl;
+        Vertex3D surfacePoint  = item->Data[index].SurfacePoint;
+        Vertex3D sensor  = item->Data[index].Sensor;
+        // TODO (std_string) : probably create class for Vectors
+        double vectorX = sensor.X - surfacePoint.X;
+        double vectorY = sensor.Y - surfacePoint.Y;
+        double vectorZ = sensor.Z - surfacePoint.Z;
+        double vectorLength = sqrt(vectorX * vectorX + vectorY * vectorY + vectorZ * vectorZ);
+        double normalX = vectorX / vectorLength;
+        double normalY = vectorY / vectorLength;
+        double normalZ = vectorZ / vectorLength;
+        vertexListStream << "# vertex " << index + 1 << endl;
+        vertexListStream << "v " << surfacePoint.X << " " << surfacePoint.Y << " " << surfacePoint.Z << endl;
+        normalListStream << "# vertex " << index + 1 << endl;
+        normalListStream << "vn " << normalX << " " << normalY << " " << normalZ << endl;
     }
 }
 
-void SaveData(QString const &filename, Vertex3DDataContextItem *item, int start)
+void WriteData(QString *vertexList, QString *normalList, Vertex3DDataContextItem *item, int start)
+{
+    QTextStream vertexListStream(vertexList, QIODevice::Append);
+    QTextStream normalListStream(normalList, QIODevice::Append);
+    // we using C locale
+    vertexListStream.setLocale(QLocale::c());
+    normalListStream.setLocale(QLocale::c());
+    // set real number params
+    vertexListStream.setRealNumberNotation(QTextStream::RealNumberNotation::FixedNotation);
+    vertexListStream.setRealNumberPrecision(RealNumberPrecision);
+    normalListStream.setRealNumberNotation(QTextStream::RealNumberNotation::FixedNotation);
+    normalListStream.setRealNumberPrecision(RealNumberPrecision);
+    WriteData(vertexListStream, normalListStream, item, start);
+}
+
+void SaveData(QString const &filename, QString const &vertexList, QString const &normalList)
 {
     QFile file(filename);
-    file.open(start == 0 ? QIODevice::WriteOnly : QIODevice::WriteOnly | QIODevice::Append);
+    file.open(QIODevice::WriteOnly);
     QTextStream stream(&file);
-    // we using C locale
-    stream.setLocale(QLocale::c());
-    // set real number params
-    stream.setRealNumberNotation(QTextStream::RealNumberNotation::FixedNotation);
-    stream.setRealNumberPrecision(RealNumberPrecision);
-    if (start == 0)
-        stream << "# vertex 3D data" << endl;
-    SaveData(stream, item, start);
+    stream << "# begin" << endl << endl;
+    stream << "# vertex list" << endl;
+    stream << vertexList << endl;
+    stream << "# normal list" << endl;
+    stream << normalList << endl;
+    stream << "# end" << endl;
 }
 
 }
@@ -103,6 +129,7 @@ void SaveVertexDataAction::ProcessData()
 void SaveVertexDataAction::FinishProcessData()
 {
     ProcessDataImpl();
+    SaveData(_filename, _vertexList, _normalList);
     emit ActionFinished();
 }
 
@@ -110,7 +137,7 @@ void SaveVertexDataAction::ProcessDataImpl()
 {
     ContextPtr context = GetContext();
     Vertex3DDataContextItem *item = context.get()->GetValue<Vertex3DDataContextItem>(_key);
-    SaveData(_filename, item, _index + 1);
+    WriteData(&_vertexList, &_normalList, item, _index + 1);
     _index = item->Data.length() - 1;
 }
 
