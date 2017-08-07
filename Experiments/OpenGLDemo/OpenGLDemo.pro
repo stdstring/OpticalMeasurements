@@ -28,12 +28,14 @@ SOURCES += main.cpp \
            Vertex3D.cpp \
            XYZReader.cpp \
            #OpenGLSphereWidget.cpp \
-           OpenGLXYZWidget.cpp
+           OpenGLXYZWidget.cpp \
+           ObjReader.cpp
 
 HEADERS += MainWindow.h \
            Vertex3D.h \
            XYZReader.h \
            #OpenGLSphereWidget.h \
-           OpenGLXYZWidget.h
+           OpenGLXYZWidget.h \
+           ObjReader.h
 
 FORMS += MainWindow.ui
