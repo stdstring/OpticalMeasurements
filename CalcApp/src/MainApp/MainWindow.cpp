@@ -1,15 +1,10 @@
-#include <QDialog>
-#include <QList>
 #include <QMainWindow>
-#include <QMessageBox>
-#include <QProcess>
 #include <QString>
-#include <QStringList>
 #include <QTextStream>
+#include <QWidget>
 
 #include <algorithm>
 #include <iterator>
-#include <stdexcept>
 
 #include "Common/CommonDefs.h"
 #include "Common/Logger/ILogger.h"
@@ -19,7 +14,7 @@
 #include "Common/MainConfig.h"
 #include "Common/ServiceLocator.h"
 #include "ActionManager.h"
-#include "ChooseResultDialog.h"
+#include "ResultProcessor.h"
 #include "StateManager.h"
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
@@ -37,23 +32,6 @@ QString CreateItemText(QString const &name, QString const &suffix)
     return descriptor;
 }
 
-void ShowResultInViewer(ResultDef const &result, ViewersConfig const &viewers, LoggerPtr logger)
-{
-    QList<ViewerDef>::const_iterator iterator = std::find_if(viewers.Viewers.cbegin(),
-                                                             viewers.Viewers.cend(),
-                                                             [&result](ViewerDef const &viewer){ return viewer.Name == result.ViewerName; });
-    if (viewers.Viewers.cend() == iterator)
-    {
-        logger.get()->WriteError(LoggerCategory("ResultViewer"),  QString("Unknown viewer named \"%1\"").arg(result.ViewerName));
-        throw std::logic_error("viewer");
-    }
-    ViewerDef const &viewer = *iterator;
-    // TODO (std_string) : move process creation into another place
-    QProcess::execute(viewer.Args.isEmpty() ?
-                      QString("%1 --header=\"%2\" %3").arg(viewer.Filename).arg(result.Descriptor).arg(result.DataFilename) :
-                      QString("%1 %2 --header=\"%3\" %4").arg(viewer.Filename).arg(viewer.Args).arg(result.Descriptor).arg(result.DataFilename));
-}
-
 }
 
 MainWindow::MainWindow(ServiceLocatorPtr serviceLocator, QWidget *parent) :
@@ -61,7 +39,8 @@ MainWindow::MainWindow(ServiceLocatorPtr serviceLocator, QWidget *parent) :
     _ui(new Ui::MainWindow),
     _serviceLocator(serviceLocator),
     _actionManager(new ActionManager(serviceLocator, this)),
-    _stateManager(nullptr)
+    _stateManager(nullptr),
+    _resultProcessor(new ResultProcessor(serviceLocator.get()->GetConfig(), serviceLocator.get()->GetLogger(), this))
 {
     _ui->setupUi(this);
     _stateManager = new StateManager(_ui->ActionChainsComboBox,
@@ -129,33 +108,8 @@ void MainWindow::ClearButtonClick()
 
 void MainWindow::ResultButtonClick()
 {
-    ActionChainDefPtr chainDef = _actionManager->GetCurrentChainDef();
-    // TODO (std_string) : use more functional approach
-    // TODO (std_string) : separate on several methods
-    if (chainDef.get()->Results.size() == 0)
-    {
-        QMessageBox resultInfo;
-        resultInfo.setText("This chain doesn't contain any defined results for view.");
-        resultInfo.exec();
-    }
-    else if (chainDef.get()->Results.size() == 1)
-    {
-        ShowResultInViewer(chainDef.get()->Results.at(0), _serviceLocator.get()->GetConfig().get()->Viewers, _serviceLocator.get()->GetLogger());
-    }
-    else
-    {
-        QStringList resultItemsList;
-        std::transform(chainDef.get()->Results.cbegin(),
-                       chainDef.get()->Results.cend(),
-                       std::back_inserter(resultItemsList),
-                       [](ResultDef const &result){ return result.Descriptor; });
-        ChooseResultDialog chooseResultDialog(resultItemsList);
-        if (QDialog::Accepted == chooseResultDialog.exec())
-        {
-            int selectedResultIndex = chooseResultDialog.GetChosenItemIndex();
-            ShowResultInViewer(chainDef.get()->Results.at(selectedResultIndex), _serviceLocator.get()->GetConfig().get()->Viewers, _serviceLocator.get()->GetLogger());
-        }
-    }
+    ActionChainDefPtr chain = _actionManager->GetCurrentChainDef();
+    _resultProcessor->ShowResult(chain);
 }
 
 void MainWindow::ProcessActionRunning(QString name)

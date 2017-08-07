@@ -7,6 +7,7 @@
 #include "Common/CommonDefs.h"
 #include "Common/ExceptionData.h"
 #include "ActionManager.h"
+#include "ResultProcessor.h"
 #include "StateManager.h"
 
 namespace Ui
@@ -30,6 +31,7 @@ private:
     ActionManager *_actionManager;
     StateManager *_stateManager;
     QStringList _actions;
+    ResultProcessor *_resultProcessor;
 
 private slots:
     void CreateButtonClick();

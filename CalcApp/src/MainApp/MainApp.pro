@@ -18,7 +18,8 @@ SOURCES += main.cpp \
            ActionExecuter.cpp \
            XmlConfigReader.cpp \
            CommandLineDefs.cpp \
-           ChooseResultDialog.cpp
+           ChooseResultDialog.cpp \
+           ResultProcessor.cpp
 
 HEADERS  += MainWindow.h \
             StateManager.h \
@@ -27,7 +28,8 @@ HEADERS  += MainWindow.h \
             ActionExecuter.h \
             XmlConfigReader.h \
             CommandLineDefs.h \
-            ChooseResultDialog.h
+            ChooseResultDialog.h \
+            ResultProcessor.h
 
 FORMS    += MainWindow.ui \
             ChooseResultDialog.ui
