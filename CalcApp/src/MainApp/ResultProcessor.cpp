@@ -34,8 +34,8 @@ void ShowViewer(ResultDef const &result, ViewersConfig const &viewers, LoggerPtr
     }
     ViewerDef const &viewer = *iterator;
     QProcess::execute(viewer.Args.isEmpty() ?
-                      QString("%1 --header=\"%2\" %3").arg(viewer.Filename).arg(result.Descriptor).arg(result.DataFilename) :
-                      QString("%1 %2 --header=\"%3\" %4").arg(viewer.Filename).arg(viewer.Args).arg(result.Descriptor).arg(result.DataFilename));
+                      QString("%1 --header=\"%2\" --data=%3").arg(viewer.Filename).arg(result.Descriptor).arg(result.DataFilename) :
+                      QString("%1 %2 --header=\"%3\"--data=%4").arg(viewer.Filename).arg(viewer.Args).arg(result.Descriptor).arg(result.DataFilename));
 }
 
 void ProcessEmptyResults()

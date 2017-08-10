@@ -21,13 +21,14 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     // TODO (std_string) : move definitions into separate place
     const QString headerOptionName = "header";
+    const QString dataOptionName = "data";
     QCommandLineParser parser;
     parser.addHelpOption();
     parser.addOption({headerOptionName, "Header", "header"});
-    parser.addPositionalArgument("Data filename", "Path to data file");
+    parser.addOption({dataOptionName, "path to data file", "filename"});
     parser.process(app);
     QString header = parser.value(headerOptionName);
-    QString dataFilename = parser.positionalArguments().isEmpty() ? QString() : parser.positionalArguments().last();
+    QString dataFilename = parser.value(dataOptionName);
     if (header.isEmpty() || dataFilename.isEmpty())
         return -1;
     if (!QFile::exists(dataFilename))
