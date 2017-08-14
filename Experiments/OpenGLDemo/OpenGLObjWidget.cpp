@@ -6,7 +6,7 @@
 #include "GL/gl.h"
 #include "GL/glu.h"
 
-#include "OpenGLXYZWidget.h"
+#include "OpenGLObjWidget.h"
 
 namespace OpenGLDemo
 {
@@ -24,7 +24,7 @@ GLdouble RotationYDelta = 5;
 /*GLdouble ZDefault = -5.0;
 GLdouble ShiftZDelta = 0.2;*/
 GLdouble ZDefault = -4000.0;
-GLdouble ShiftZDelta = 100;
+GLdouble ShiftZDelta = 50;
 /*GLdouble ZDefault = -400.0;
 GLdouble ShiftZDelta = 10;*/
 
@@ -38,13 +38,18 @@ GLdouble Rotate(GLdouble angle, GLdouble delta)
     return newAngle;
 }
 
-GLuint CreateDisplayList(QList<Vertex3D> const &vertexList)
+GLuint CreateDisplayList(QList<Vertex3DData> const &dataList)
 {
     GLuint displayList = glGenLists(1);
     glNewList(displayList, GL_COMPILE);
     glBegin(GL_POINTS);
-    for (Vertex3D vertex : vertexList)
-        glVertex3d(vertex.X, vertex.Y, vertex.Z);
+    for (Vertex3DData data : dataList)
+    {
+        glNormal3d(data.Normal.X, data.Normal.Y, data.Normal.Z);
+        glVertex3d(data.Vertex.X, data.Vertex.Y, data.Vertex.Z);
+        //glNormal3d(-data.Normal.X, -data.Normal.Y, -data.Normal.Z);
+        //glVertex3d(1.0001 * data.Vertex.X, 1.0001 * data.Vertex.Y, 1.0001 * data.Vertex.Z);
+    }
     glEnd();
     glEndList();
     return displayList;
@@ -52,7 +57,7 @@ GLuint CreateDisplayList(QList<Vertex3D> const &vertexList)
 
 }
 
-OpenGLXYZWidget::OpenGLXYZWidget(QWidget *parent) :
+OpenGLObjWidget::OpenGLObjWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     _hasData(false),
     _rotationX(0),
@@ -61,11 +66,11 @@ OpenGLXYZWidget::OpenGLXYZWidget(QWidget *parent) :
 {
 }
 
-OpenGLXYZWidget::~OpenGLXYZWidget()
+OpenGLObjWidget::~OpenGLObjWidget()
 {
 }
 
-void OpenGLXYZWidget::initializeGL()
+void OpenGLObjWidget::initializeGL()
 {
     glClearColor(1, 1, 1, 0);
     glShadeModel(GL_SMOOTH);
@@ -83,7 +88,7 @@ void OpenGLXYZWidget::initializeGL()
     glEnable(GL_COLOR_MATERIAL);
 }
 
-void OpenGLXYZWidget::paintGL()
+void OpenGLObjWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (!_hasData)
@@ -100,7 +105,7 @@ void OpenGLXYZWidget::paintGL()
     glPopMatrix();
 }
 
-void OpenGLXYZWidget::resizeGL(int width, int height)
+void OpenGLObjWidget::resizeGL(int width, int height)
 {
     if(height == 0)
     {
@@ -115,7 +120,7 @@ void OpenGLXYZWidget::resizeGL(int width, int height)
     glLoadIdentity();
 }
 
-void OpenGLXYZWidget::keyPressEvent(QKeyEvent *event)
+void OpenGLObjWidget::keyPressEvent(QKeyEvent *event)
 {
     if (!_hasData)
         return;
@@ -151,13 +156,14 @@ void OpenGLXYZWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void OpenGLXYZWidget::ShowData(QList<Vertex3D> const &vertexList)
+void OpenGLObjWidget::ShowData(QList<Vertex3DData> const &dataList)
 {
     if (_hasData)
         glDeleteLists(_dataDisplayList, 1);
-    _dataDisplayList = CreateDisplayList(/*_quadric,*/ vertexList);
+    _dataDisplayList = CreateDisplayList(dataList);
     _hasData = true;
     repaint();
 }
 
 }
+
