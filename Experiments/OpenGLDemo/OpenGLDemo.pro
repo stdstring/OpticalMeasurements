@@ -27,7 +27,6 @@ SOURCES += main.cpp \
            MainWindow.cpp \
            Vertex3D.cpp \
            XYZReader.cpp \
-           #OpenGLSphereWidget.cpp \
            OpenGLXYZWidget.cpp \
            ObjReader.cpp \
            OpenGLObjWidget.cpp
@@ -35,7 +34,6 @@ SOURCES += main.cpp \
 HEADERS += MainWindow.h \
            Vertex3D.h \
            XYZReader.h \
-           #OpenGLSphereWidget.h \
            OpenGLXYZWidget.h \
            ObjReader.h \
            OpenGLObjWidget.h
