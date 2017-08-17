@@ -5,9 +5,6 @@
 
 #include "Common/CommonDefs.h"
 #include "Common/IAction.h"
-#include "Common/ITransport.h"
-#include "Common/ITransportFactory.h"
-#include "Common/TransportConfig.h"
 
 namespace CalcApp
 {
