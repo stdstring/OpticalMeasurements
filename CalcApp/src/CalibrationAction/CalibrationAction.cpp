@@ -28,18 +28,42 @@ const QString CalibrationResponse("OK");
 /*QString ReadUtf8CString(QDataStream &stream)
 {
     QByteArray utf8String;
-    //return QString::fromUtf8()
+    while (!stream.atEnd())
+    {
+        quint8 codeUnit;
+        stream >> codeUnit;
+        if (codeUnit == 0)
+            break;
+        else
+            utf8String.append(codeUnit);
+    }
+    return QString::fromUtf8(utf8String);
 }*/
 
+QByteArray ReadUtf8CString(QDataStream &stream)
+{
+    QByteArray utf8String;
+    while (!stream.atEnd())
+    {
+        quint8 codeUnit;
+        stream >> codeUnit;
+        if (codeUnit == 0)
+            break;
+        else
+            utf8String.append(codeUnit);
+    }
+    return utf8String;
+}
+
 // TODO (std_string) : probably move into common place
-/*void WriteUtf8CString(QDataStream &stream, QString const &string)
+void WriteUtf8CString(QDataStream &stream, QString const &string)
 {
     QByteArray utf8String(string.toUtf8());
     stream.writeRawData(utf8String.data(), utf8String.size());
     stream << static_cast<quint8>(0);
-}*/
+}
 
-/*QByteArray CreateRequest(QByteArray const &sourceData)
+QByteArray CreateRequest(QByteArray const &sourceData)
 {
     QByteArray dest;
     QDataStream stream(&dest, QIODevice::WriteOnly);
@@ -51,14 +75,18 @@ const QString CalibrationResponse("OK");
 
 QByteArray ExtractResultData(QByteArray const &message)
 {
-}*/
-
-QByteArray CreateRequest(QByteArray const &sourceData)
-{
-}
-
-QByteArray ExtractResultData(QByteArray const &message)
-{
+    //QDataStream stream(&message, QIODevice::ReadOnly);
+    QDataStream stream(message);
+    stream.setVersion(DataStreamVersion);
+    QByteArray utf8ResponseString(ReadUtf8CString(stream));
+    QString responseString(QString::fromUtf8(utf8ResponseString));
+    // TODO (std_string) : check response string
+    Q_UNUSED(responseString);
+    int size = message.size() - utf8ResponseString.size() - 1;
+    QByteArray resultData;
+    resultData.reserve(size);
+    stream.readRawData(resultData.data(), size);
+    return resultData;
 }
 
 }
