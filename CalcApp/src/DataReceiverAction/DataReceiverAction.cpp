@@ -14,6 +14,7 @@
 #include "Common/ExceptionData.h"
 #include "Common/ExecutionState.h"
 #include "Common/IAction.h"
+#include "Common/ITransport.h"
 #include "Common/Message.h"
 #include "DataReceiverAction.h"
 

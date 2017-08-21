@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QByteArray>
 #include <QHash>
 #include <QList>
 #include <QObject>
@@ -41,6 +42,13 @@ public:
     explicit QListContextItem(QObject *parent = nullptr) : IContextItem(parent) {}
 
     QList<TItem> Data;
+};
+
+// TODO (std_string) : probably we need some encapsulation here
+class QByteArrayContextItem : public IContextItem
+{
+public:
+    QByteArray Data;
 };
 
 class Context : public QObject
