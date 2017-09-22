@@ -25,7 +25,7 @@ namespace CalcApp
 namespace
 {
 
-constexpr QChar CommentStart = '#';
+const QChar CommentStart = '#';
 
 constexpr int ServerConfigLinesCount = 4;
 
