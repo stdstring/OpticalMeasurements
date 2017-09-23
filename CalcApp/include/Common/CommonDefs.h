@@ -9,7 +9,7 @@ namespace CalcApp
 {
 
 // forward definitions
-class ActionChainDef;
+struct ActionChainDef;
 class ComponentStorage;
 class Context;
 class ExecutionState;
