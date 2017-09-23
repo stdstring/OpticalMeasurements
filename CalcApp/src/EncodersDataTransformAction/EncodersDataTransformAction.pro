@@ -14,7 +14,8 @@ LIBS += -lCommon
 # Armadillo
 #LIBS += -L../../../external/armadillo/lib -larmadillo.dll -lblas -llapack -ltmglib ???
 #LIBS += -L../../../external/armadillo/lib -larmadillo.dll -lblas ???
-LIBS += -L../../../external/armadillo/lib -larmadillo.dll
+#LIBS += -L../../../external/armadillo/lib -larmadillo.dll
+LIBS += -L../../../external/armadillo/lib -larmadillo
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings

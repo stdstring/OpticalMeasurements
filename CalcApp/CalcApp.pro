@@ -26,3 +26,5 @@ SUBDIRS += src/Common \
 
 # tests
 SUBDIRS += tests/TransportTests
+
+CONFIG += ordered
