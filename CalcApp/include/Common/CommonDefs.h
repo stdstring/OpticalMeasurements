@@ -21,7 +21,7 @@ class ITransport;
 class MainConfig;
 class Message;
 class ServiceLocator;
-class TransportConfig;
+struct TransportConfig;
 
 // ptr definitions
 typedef std::shared_ptr<ActionChainDef> ActionChainDefPtr;
