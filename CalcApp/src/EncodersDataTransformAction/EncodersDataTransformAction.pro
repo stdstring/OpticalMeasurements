@@ -12,9 +12,8 @@ DEFINES += ENCODERS_DATA_TRANSFORM_ACTION_LIBRARY
 LIBS += -lCommon
 
 # Armadillo
-#LIBS += -L../../../external/armadillo/lib -larmadillo.dll -lblas -llapack -ltmglib ???
-#LIBS += -L../../../external/armadillo/lib -larmadillo.dll -lblas ???
-#LIBS += -L../../../external/armadillo/lib -larmadillo.dll
+#LIBS += -L../../../external/armadillo/lib -larmadillo -lblas -llapack -ltmglib ???
+#LIBS += -L../../../external/armadillo/lib -larmadillo -lblas ???
 LIBS += -L../../../external/armadillo/lib -larmadillo
 
 # The following define makes your compiler emit warnings if you use
